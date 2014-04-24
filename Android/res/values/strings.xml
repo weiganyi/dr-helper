@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">餐厅助手</string>
+    <string name="action_settings">Settings</string>
+    <string name="user_name">用户名</string>
+    <string name="user_passwd">密码</string>
+    <string name="login">登录</string>
+
+</resources>
