@@ -6,5 +6,8 @@
     <string name="user_name">用户名</string>
     <string name="user_passwd">密码</string>
     <string name="login">登录</string>
+    <string name="ok">确定</string>
+    <string name="user_name_is_null">用户名为空，请输入用户名！</string>
+    <string name="user_passwd_is_null">密码为空，请输入密码！</string>
 
 </resources>
