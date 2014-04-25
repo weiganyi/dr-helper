@@ -1,8 +1,8 @@
 package com.drhelper.activity;
 
 import com.drhelper.R;
+import com.drhelper.task.LoginTask;
 import com.drhelper.util.DialogBox;
-import com.drhelper.util.LoginTask;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -34,17 +34,18 @@ public class LoginActivity extends Activity {
 		loginBtn = (Button)findViewById(R.id.button_login);
 
 		//set listen handler for login button
-		loginBtn.setOnClickListener(new OnClickListener()
-		{
-			public void onClick(View v)
-			{
-				if (checkInput())
-				{
-					doLogin();
+		loginBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				String userName = userText.getText().toString();
+				String userPasswd = passwdText.getText().toString();
+
+				if (checkInput(userName, userPasswd)) {
+					doLogin(userName, userPasswd);
 				}
 			}
 		});
 		
+		return;
 	}
 
 	@Override
@@ -54,19 +55,14 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
-	private boolean checkInput()
-	{
-		String user_name = userText.getText().toString();
-		if (user_name.equals(""))
-		{
+	private boolean checkInput(String userName, String userPasswd) {
+		if (userName.equals("")){
 			DialogBox.showAlertDialog(LoginActivity.this, 
 					this.getString(R.string.user_name_is_null));
 			return false;
 		}
 		
-		String user_passwd = passwdText.getText().toString();
-		if (user_passwd.equals(""))
-		{
+		if (userPasswd.equals("")){
 			DialogBox.showAlertDialog(LoginActivity.this, 
 					this.getString(R.string.user_passwd_is_null));
 			return false;
@@ -75,16 +71,12 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 	
-	private void doLogin()
-	{
-		String user_name = userText.getText().toString();
-		String user_passwd = passwdText.getText().toString();
-		
+	private void doLogin(String userName, String userPasswd) {
 		//start a AsyncTask thread to do something:
 		//1. do the json serialization
 		//2. construct the request and sending, waiting for the response
 		//3. after recv correct response, start a intent to MainActivity
 		LoginTask task = new LoginTask(LoginActivity.this);
-		task.execute(user_name, user_passwd);
+		task.execute(userName, userPasswd);
 	}
 }

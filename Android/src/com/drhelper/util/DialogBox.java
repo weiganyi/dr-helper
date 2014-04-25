@@ -6,8 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 
 public class DialogBox {
-	public static void showAlertDialog(Activity act, String msg)
-	{
+	public static void showAlertDialog(Activity act, String msg) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(act);
 		
 		builder.setMessage(msg)
@@ -23,5 +22,7 @@ public class DialogBox {
 
 		AlertDialog alert = builder.create();
 		alert.show();
+		
+		return;
 	}
 }
