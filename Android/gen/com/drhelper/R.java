@@ -35,10 +35,11 @@ public final class R {
         public static final int zhuantai=0x7f02000b;
     }
     public static final class id {
-        public static final int action_settings=0x7f080008;
         public static final int button_login=0x7f080007;
         public static final int editText_passwd=0x7f080005;
         public static final int editText_user=0x7f080002;
+        public static final int menu_config=0x7f080009;
+        public static final int menu_exit=0x7f080008;
         public static final int tableRow_button=0x7f080006;
         public static final int tableRow_passwd=0x7f080003;
         public static final int tableRow_user=0x7f080000;
@@ -55,14 +56,16 @@ public final class R {
         public static final int main=0x7f070001;
     }
     public static final class string {
-        public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int login=0x7f050004;
+        public static final int menu_config=0x7f050001;
+        public static final int menu_exit=0x7f050008;
         public static final int ok=0x7f050005;
         public static final int user_name=0x7f050002;
         public static final int user_name_is_null=0x7f050006;
         public static final int user_passwd=0x7f050003;
         public static final int user_passwd_is_null=0x7f050007;
+        public static final int user_want_to_logout=0x7f050009;
     }
     public static final class style {
         /** 

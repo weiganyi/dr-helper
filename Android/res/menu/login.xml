@@ -1,8 +1,6 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_exit" android:orderInCategory="101" android:title="@string/menu_exit"></item>
+    <item android:id="@+id/menu_config" android:orderInCategory="100" android:title="@string/menu_config"></item>
 
 </menu>

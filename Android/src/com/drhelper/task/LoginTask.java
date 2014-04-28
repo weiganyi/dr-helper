@@ -1,6 +1,7 @@
 package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
+import com.drhelper.activity.LoginActivity;
 import com.drhelper.activity.MainActivity;
 import com.drhelper.bean.Login;
 import com.drhelper.util.HttpEngine;
@@ -11,31 +12,31 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class LoginTask extends AsyncTask<String, Integer, Integer> {
-	private Activity uiAct;
+	private Activity act;
 	private static final String LOGINTASK_TAG = "LoginTask";
 	
 	private static final int LOGINTASK_SUCCESS = 1;
 	private static final int LOGINTASK_FALIURE = 0;
 	
 	public LoginTask(Activity act) {
-		//save the activity that call this asynctask
-		uiAct = act;
+		//save the Activity that call this AsyncTask
+		this.act = act;
 	}
 	
 	protected void onPreExecute() {
-		return;
 	}
 	
 	protected void onProgressUpdate(Integer... progress) {
-		return;
 	}
 	
 	protected void onPostExecute(Integer result) {
 		if (result == LOGINTASK_SUCCESS) {
-			Intent intent = new Intent(uiAct, MainActivity.class);
-			uiAct.startActivity(intent);
+			//save the login user
+			((LoginActivity)act).saveLoginUser();
+			
+			//start a intent to the MainActivity
+			((LoginActivity)act).jump2MainActivity();
 		}
-		return;
 	}
 	
 	@Override
