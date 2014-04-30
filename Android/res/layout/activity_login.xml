@@ -31,10 +31,8 @@
                 android:id="@+id/login_activity_edittext_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ems="10" >
-
-                <requestFocus />
-            </EditText>
+                android:ems="10"
+                android:inputType="textPersonName" />
 
         </TableRow>
 

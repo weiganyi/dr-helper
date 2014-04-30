@@ -1,8 +1,16 @@
 package com.drhelper.activity;
 
 import com.drhelper.R;
+
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
+import android.widget.ImageView;
 
 public class MainActivity extends AfterLoginActivity {
 
@@ -10,10 +18,145 @@ public class MainActivity extends AfterLoginActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//add the selfdefined title
+		//add the self defined title
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_main);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_main);
+		
+		//load the data for gridview
+		GridView gridView = (GridView)findViewById(R.id.main_activity_gridview);
+		gridView.setAdapter(new ImageAdapter(this));
 	}
+	
+	private class ImageAdapter extends BaseAdapter {
 
+		private Context context;
+		//picture id list
+		private Integer[] picId = {
+			R.drawable.chazhuo, R.drawable.kaizhuo, R.drawable.dingdan, 
+			R.drawable.diancan, R.drawable.zhuantai, R.drawable.bingtai, 
+			R.drawable.gengxin
+		};
+		
+		ImageAdapter(Context context) {
+			this.context = context;
+		}
+		
+		@Override
+		public int getCount() {
+			// TODO Auto-generated method stub
+			return picId.length;
+		}
+
+		@Override
+		public Object getItem(int position) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			// TODO Auto-generated method stub
+			ImageView imgView;
+
+			if (convertView == null) {
+				imgView = new ImageView(context);
+			}else {
+				imgView = (ImageView) convertView;
+			}
+			
+			imgView.setImageResource(picId[position]);
+			
+			switch (position) {
+				case 0:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+				
+				case 1:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+				
+				case 2:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+				
+				case 3:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+				
+				case 4:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+				
+				case 5:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+				
+				case 6:
+					imgView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+					break;
+
+				default:
+					break;
+			}
+
+			return imgView;
+		}
+	}
+	
 }
