@@ -22,11 +22,13 @@ public class HttpEngine {
 		HttpClient client = new DefaultHttpClient();
 		HttpPost request = new HttpPost(url);
 
-		try	{
-			StringEntity entity = new StringEntity(reqBody);
-			request.setEntity(entity);
-		}catch(Exception e)	{
-			Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): construct entity failure");
+		if (reqBody.length() != 0) {
+			try	{
+				StringEntity entity = new StringEntity(reqBody);
+				request.setEntity(entity);
+			}catch(Exception e)	{
+				Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): construct entity failure");
+			}
 		}
 		
 		try {

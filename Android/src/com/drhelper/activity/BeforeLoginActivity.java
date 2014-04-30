@@ -2,6 +2,7 @@ package com.drhelper.activity;
 
 import com.drhelper.R;
 import com.drhelper.util.DialogBox;
+import com.drhelper.util.HttpEngine;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -38,9 +39,9 @@ public class BeforeLoginActivity extends Activity {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.menu_exit) {
+		if (item.getItemId() == R.id.exit_menu) {
 			doLogout();
-		}else if (item.getItemId() == R.id.menu_prefs) {
+		}else if (item.getItemId() == R.id.prefs_menu) {
 			launchPrefsActivity();
 		}
 		return true;
@@ -48,10 +49,10 @@ public class BeforeLoginActivity extends Activity {
 	
 	private void doLogout() {
 		DialogBox.showAlertDialog(BeforeLoginActivity.this, 
-				this.getString(R.string.before_login_activity_want_to_logout), "doLogoutCallBack");
+				this.getString(R.string.before_login_activity_want_to_logout), "doLogoutResult");
 	}
 	
-	public void doLogoutCallBack() {
+	public void doLogoutResult() {
 		//get the prefs manager
 		SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
 		if (prefs != null) {
@@ -78,12 +79,14 @@ public class BeforeLoginActivity extends Activity {
 		
 		//get the saved prefs item
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		String addr = prefs.getString("server_address", 
+		String address = prefs.getString("server_address", 
 				getString(R.string.prefs_activity_server_address_default_value));
 		//check if the server address is null
-		if (addr.length() == 0) {
+		if (address.length() == 0) {
 			DialogBox.showAlertDialog(BeforeLoginActivity.this, 
 					this.getString(R.string.before_login_activity_server_address_is_null), null);
+		}else {
+			HttpEngine.setHttpSrvBaseUrl(address);
 		}
 	}
 

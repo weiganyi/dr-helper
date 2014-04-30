@@ -21,6 +21,7 @@ public class LoginActivity extends BeforeLoginActivity {
 	private Button loginBtn;
 	private EditText userText, passwdText;
 	private String userName, userPasswd;
+	private int startLoginTask = 0;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +29,13 @@ public class LoginActivity extends BeforeLoginActivity {
 
 		//add the self defined title
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		setContentView(R.layout.activity_login);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_main);
+		setContentView(R.layout.login_activity);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 
 		//get widget handler
-		userText = (EditText)findViewById(R.id.login_activity_edittext_user);
-		passwdText = (EditText)findViewById(R.id.login_activity_edittext_passwd);
-		loginBtn = (Button)findViewById(R.id.login_activity_button_login);
+		userText = (EditText)findViewById(R.id.login_activity_user_edittext);
+		passwdText = (EditText)findViewById(R.id.login_activity_passwd_edittext);
+		loginBtn = (Button)findViewById(R.id.login_activity_button);
 
 		//set listen handler for login button
 		loginBtn.setOnClickListener(new OnClickListener() {
@@ -66,15 +67,19 @@ public class LoginActivity extends BeforeLoginActivity {
 	}
 	
 	private void doLogin(String userName, String userPasswd) {
-		//start a AsyncTask thread to do something:
-		//1. do the json serialization
-		//2. construct the request and sending, waiting for the response
-		//3. after recv correct response, start a intent to MainActivity
-		LoginTask task = new LoginTask(LoginActivity.this);
-		task.execute(userName, userPasswd);
+		if (startLoginTask == 0) {
+			startLoginTask = 1;
+
+			//start a AsyncTask thread to do something:
+			//1. do the json serialization
+			//2. construct the request and sending, waiting for the response
+			//3. after recv correct response, start a intent to MainActivity
+			LoginTask task = new LoginTask(LoginActivity.this);
+			task.execute(userName, userPasswd);
+		}
 	}
 	
-	public void saveLoginUser() {
+	public void doLoginResult() {
 		//get the prefs manager
 		SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
 		if (prefs != null) {
@@ -83,11 +88,11 @@ public class LoginActivity extends BeforeLoginActivity {
 			editor.putString("user_name", userName);
 			editor.commit();
 		}
-	}
-	
-	public void launchMainActivity() {
+		
 		//launch to MainActivity
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		startActivity(intent);
+		
+		startLoginTask = 0;
 	}
 }

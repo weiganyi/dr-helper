@@ -17,18 +17,18 @@
         android:orientation="vertical" >
 
         <TableRow
-            android:id="@+id/login_activity_tablerow_user"
+            android:id="@+id/login_activity_user_tablerow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/login_activity_textview_title"
+                android:id="@+id/main_title_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_activity_user_name" />
 
             <EditText
-                android:id="@+id/login_activity_edittext_user"
+                android:id="@+id/login_activity_user_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -37,18 +37,18 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/login_activity_tablerow_passwd"
+            android:id="@+id/login_activity_passwd_tablerow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
             <TextView
-                android:id="@+id/login_activity_textview_passwd"
+                android:id="@+id/login_activity_passwd_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/login_activity_user_passwd" />
 
             <EditText
-                android:id="@+id/login_activity_edittext_passwd"
+                android:id="@+id/login_activity_passwd_edittext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -57,13 +57,13 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/login_activity_tablerow_button"
+            android:id="@+id/login_activity_button_tablerow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center" >
 
             <Button
-                android:id="@+id/login_activity_button_login"
+                android:id="@+id/login_activity_button"
                 android:text="@string/login_activity_login" />
 
         </TableRow>

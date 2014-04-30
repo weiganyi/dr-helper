@@ -29,11 +29,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 	
 	protected void onPostExecute(Integer result) {
 		if (result == LOGINTASK_SUCCESS) {
-			//save the login user
-			((LoginActivity)act).saveLoginUser();
-			
-			//start a intent to the MainActivity
-			((LoginActivity)act).launchMainActivity();
+			((LoginActivity)act).doLoginResult();
 		}
 	}
 	
@@ -56,7 +52,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 			String reqBody = JSON.toJSONString(loginReq);
 			
 			//send the http post and recv response
-			String specUrl = "test";
+			String specUrl = "login";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody.length() != 0) {
 				//unserialize from response string

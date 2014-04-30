@@ -3,6 +3,7 @@ package com.drhelper.activity;
 import com.drhelper.R;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,8 +21,8 @@ public class MainActivity extends AfterLoginActivity {
 
 		//add the self defined title
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		setContentView(R.layout.activity_main);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_main);
+		setContentView(R.layout.main_activity);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 		
 		//load the data for gridview
 		GridView gridView = (GridView)findViewById(R.id.main_activity_gridview);
@@ -33,9 +34,8 @@ public class MainActivity extends AfterLoginActivity {
 		private Context context;
 		//picture id list
 		private Integer[] picId = {
-			R.drawable.chazhuo, R.drawable.kaizhuo, R.drawable.dingdan, 
-			R.drawable.diancan, R.drawable.zhuantai, R.drawable.bingtai, 
-			R.drawable.gengxin
+			R.drawable.chazhuo, R.drawable.kaizhuo, R.drawable.chadan, 
+			R.drawable.zhuantai, R.drawable.bingtai, R.drawable.gengxin
 		};
 		
 		ImageAdapter(Context context) {
@@ -79,7 +79,9 @@ public class MainActivity extends AfterLoginActivity {
 						
 						@Override
 						public void onClick(View v) {
-							// TODO Auto-generated method stub
+							//launch to CheckTableActivity
+							Intent intent = new Intent(MainActivity.this, CheckTableActivity.class);
+							startActivity(intent);
 							return;
 						}
 					});

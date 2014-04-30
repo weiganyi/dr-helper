@@ -12,7 +12,7 @@ import android.util.Log;
 public class DialogBox {
 	private final static String DIALOGBOX_TAG = "DialogBox";
 	
-	public static void showAlertDialog(final Activity act, String msg, final String cb) {
+	public static void showAlertDialog(final Activity act, String msg, final String result) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(act);
 		
 		builder.setMessage(msg)
@@ -22,13 +22,13 @@ public class DialogBox {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					// TODO Auto-generated method stub
-					if (cb.length() != 0) {
+					if (result.length() != 0) {
 						try {
 							Class<? extends Activity> cls = act.getClass();
-							Class<?> param[] = null;
+							Class<?>[] param = new Class<?>[]{};
 
 							//get the callback method
-							Method meth = cls.getMethod(cb, param);
+							Method meth = cls.getMethod(result, param);
 							if (meth != null) {
 								Object argList[] = null;
 

@@ -2,20 +2,23 @@
 <resources>
 
     <string name="app_name">餐厅助手</string>
-    <string name="menu_prefs">配置</string>
+    <string name="prefs_menu">配置</string>
     <string name="login_activity_user_name">用户名</string>
     <string name="login_activity_user_passwd">密码</string>
     <string name="login_activity_login">登录</string>
     <string name="dialogbox_ok">确定</string>
     <string name="login_activity_user_name_is_null">用户名为空，请输入用户名！</string>
     <string name="login_activity_user_passwd_is_null">密码为空，请输入密码！</string>
-    <string name="menu_exit">退出</string>
+    <string name="exit_menu">退出</string>
     <string name="before_login_activity_want_to_logout">你确定要退出吗？</string>
     <string name="prefs_activity_server_address_title">设置服务器地址</string>
     <string name="prefs_activity_server_address_summary">请填入后台服务器地址或域名</string>
     <string name="prefs_activity_server_address_dialog_title">服务器地址</string>
     <string name="before_login_activity_server_address_is_null">服务器地址不能为空</string>
     <string name="prefs_activity_server_address_default_value">http://172.16.3.146/dr_helper/</string>
-    <string name="menu_main">主页</string>
+    <string name="main_menu">主页</string>
+    <string name="check_table_activity_check_empty_table">查找空桌</string>
+    <string name="check_table_activity_table_num">桌号</string>
+    <string name="check_table_activity_table_seat_num">座位数</string>
 
 </resources>

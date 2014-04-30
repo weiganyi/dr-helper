@@ -21,7 +21,7 @@ public class AfterLoginActivity extends BeforeLoginActivity {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.menu_main) {
+		if (item.getItemId() == R.id.main_menu) {
 			launchMainActivity();
 		}
 		
