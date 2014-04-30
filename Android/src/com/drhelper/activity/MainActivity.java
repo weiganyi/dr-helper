@@ -2,11 +2,9 @@ package com.drhelper.activity;
 
 import com.drhelper.R;
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
 import android.view.Window;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AfterLoginActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -15,14 +13,7 @@ public class MainActivity extends Activity {
 		//add the selfdefined title
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.activity_main);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.login_title);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_main);
 	}
 
 }

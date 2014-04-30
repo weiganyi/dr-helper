@@ -6,25 +6,21 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="8" />
-
-    <application
-        android:icon="@drawable/icon"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name="com.drhelper.activity.LoginActivity"
-            android:label="@string/app_name" >
+        android:targetSdkVersion="8" /><application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/AppTheme">
+        <activity android:name="com.drhelper.activity.LoginActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.drhelper.activity.MainActivity"
-            android:label="@string/app_name" >
+        <activity android:name="com.drhelper.activity.MainActivity" android:label="@string/app_name">
         </activity>
-    </application>
+        <activity android:name="com.drhelper.activity.PrefsActivity" android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.PREFS" />
+                <category android:name="android.intent.category.PREFERENCE" />
+            </intent-filter>
+        </activity>
+        </application>
 
 </manifest>

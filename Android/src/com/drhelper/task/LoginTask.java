@@ -2,12 +2,10 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.LoginActivity;
-import com.drhelper.activity.MainActivity;
 import com.drhelper.bean.Login;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -35,7 +33,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 			((LoginActivity)act).saveLoginUser();
 			
 			//start a intent to the MainActivity
-			((LoginActivity)act).jump2MainActivity();
+			((LoginActivity)act).launchMainActivity();
 		}
 	}
 	

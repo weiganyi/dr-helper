@@ -2,7 +2,8 @@ package com.drhelper.util;
 
 import java.lang.reflect.Method;
 
-import android.R;
+import com.drhelper.R;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,7 +17,7 @@ public class DialogBox {
 		
 		builder.setMessage(msg)
 			.setCancelable(false)
-			.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+			.setPositiveButton(R.string.dialogbox_ok, new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -25,7 +26,6 @@ public class DialogBox {
 						try {
 							Class<? extends Activity> cls = act.getClass();
 							Class<?> param[] = null;
-							String test = cb;
 
 							//get the callback method
 							Method meth = cls.getMethod(cb, param);
