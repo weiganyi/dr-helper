@@ -1,7 +1,7 @@
 package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
-import com.drhelper.activity.CreateTableActivity;
+import com.drhelper.activity.CheckOrderActivity;
 import com.drhelper.bean.Table;
 import com.drhelper.util.HttpEngine;
 
@@ -9,17 +9,17 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
-	private static final String CREATETABLETASK_TAG = "CreateTableTask";
+public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
+	private static final String CHECKORDERTASK_TAG = "CheckOrderTask";
 
 	private Activity act;
 	private String orderNum;
 	private String tableNum;
 	
-	public static final int CREATETABLETASK_SUCCESS = 1;
-	public static final int CREATETABLETASK_FALIURE = 0;
+	public static final int CHECKORDERTASK_SUCCESS = 1;
+	public static final int CHECKORDERTASK_FALIURE = 0;
 	
-	public CreateTableTask(Activity act) {
+	public CheckOrderTask(Activity act) {
 		//save the Activity that call this AsyncTask
 		this.act = act;
 	}
@@ -31,34 +31,39 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((CreateTableActivity)act).doCreateTableResult(result, orderNum, tableNum);
+		((CheckOrderActivity)act).doCheckOrderResult(result, orderNum, tableNum);
 	}
 	
 	@Override
 	protected Integer doInBackground(String... param) {
 		// TODO Auto-generated method stub
-		if (param.length != 1) {
-			Log.e(CREATETABLETASK_TAG, "CreateTableTask.doInBackground(): there isn't one input param");
-			return CREATETABLETASK_FALIURE;
+		if (param.length != 2) {
+			Log.e(CHECKORDERTASK_TAG, "CheckOrderTask.doInBackground(): there isn't two input param");
+			return CHECKORDERTASK_FALIURE;
 		}
 		
 		Table tableReq = new Table();
-		tableReq.setTableNum(param[0]);
+		if (param[0] != null) {
+			tableReq.setOrderNum(param[0]);
+		}else if (param[1] != null) {
+			tableReq.setTableNum(param[1]);
+		}
 		
 		tableReq.setOrderNum("1234");
-		tableReq.setResult(CREATETABLETASK_SUCCESS);
+		tableReq.setResult(CHECKORDERTASK_SUCCESS);
 		
 		try	{
 			//serialize by fastjson
 			String reqBody = JSON.toJSONString(tableReq);
 			
 			//send the http post and recv response
-			String specUrl = "createTable";
+			String specUrl = "checkOrder";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Table tableResp = JSON.parseObject(respBody, Table.class);
-				if (tableResp.getTableNum().equals(tableReq.getTableNum())) {
+				if (tableResp.getOrderNum().equals(tableReq.getOrderNum()) || 
+						tableResp.getTableNum().equals(tableReq.getTableNum())) {
 					int result = tableResp.getResult();
 					
 					//get the order num and table num from tableResp
@@ -68,12 +73,12 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 					return result;
 				}
 			}else {
-				Log.e(CREATETABLETASK_TAG, "CreateTableTask.doInBackground(): respBody is null");
+				Log.e(CHECKORDERTASK_TAG, "CheckOrderTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(CREATETABLETASK_TAG, "CheckTableTask.doInBackground(): json serialize or http post is failure");
+			Log.e(CHECKORDERTASK_TAG, "CheckOrderTask.doInBackground(): json serialize or http post is failure");
 		}
 		
-		return CREATETABLETASK_FALIURE;
+		return CHECKORDERTASK_FALIURE;
 	}
 }

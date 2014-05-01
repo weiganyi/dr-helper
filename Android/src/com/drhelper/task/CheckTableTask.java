@@ -16,8 +16,8 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 
 	private Activity act;
 	
-	private static final int CHECKTABLETASK_SUCCESS = 1;
-	private static final int CHECKTABLETASK_FALIURE = 0;
+	public static final int CHECKTABLETASK_SUCCESS = 1;
+	public static final int CHECKTABLETASK_FALIURE = 0;
 	
 	private List<EmptyTable> emptyTableList = null;
 	
@@ -33,11 +33,7 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		if (result == CHECKTABLETASK_SUCCESS) {
-			((CheckTableActivity)act).doCheckTableResult(emptyTableList);
-		}else {
-			Log.e(CHECKTABLETASK_TAG, "CheckTableTask.onPostExecute(): the check table result is failure");
-		}
+		((CheckTableActivity)act).doCheckTableResult(result, emptyTableList);
 	}
 	
 	@Override

@@ -105,7 +105,9 @@ public class MainActivity extends AfterLoginActivity {
 						
 						@Override
 						public void onClick(View v) {
-							// TODO Auto-generated method stub
+							//launch to CheckOrderActivity
+							Intent intent = new Intent(MainActivity.this, CheckOrderActivity.class);
+							startActivity(intent);
 							return;
 						}
 					});

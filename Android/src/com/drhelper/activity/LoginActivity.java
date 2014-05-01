@@ -9,7 +9,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -18,8 +17,6 @@ import android.widget.EditText;
 
 @SuppressLint("WorldWriteableFiles")
 public class LoginActivity extends BeforeLoginActivity {
-	private static final String LOGINACTIVITY_TAG = "LoginActivity";
-	
 	private Button loginBtn;
 	private EditText userText, passwdText;
 	private String userName, userPasswd;
@@ -79,10 +76,21 @@ public class LoginActivity extends BeforeLoginActivity {
 			//3. after recv correct response, start a intent to MainActivity
 			LoginTask task = new LoginTask(LoginActivity.this);
 			task.execute(userName, userPasswd);
+		}else {
+			DialogBox.showAlertDialog(LoginActivity.this, 
+					this.getString(R.string.activity_asynctask_running), null);
 		}
 	}
 	
-	public void doLoginResult() {
+	public void doLoginResult(Integer result) {
+		if (result != LoginTask.LOGINTASK_SUCCESS) {
+			DialogBox.showAlertDialog(LoginActivity.this, 
+					this.getString(R.string.activity_asynctask_failure), null);
+			
+			startLoginTask = 0;
+			return;
+		}
+
 		//get the prefs manager
 		SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
 		if (prefs != null) {
@@ -91,7 +99,10 @@ public class LoginActivity extends BeforeLoginActivity {
 			editor.putString("user_name", userName);
 			editor.commit();
 		}else {
-			Log.e(LOGINACTIVITY_TAG, "LoginActivity.doLoginResult(): login_user prefs isn't exist");
+			DialogBox.showAlertDialog(LoginActivity.this, 
+					this.getString(R.string.activity_asynctask_failure), null);
+			
+			startLoginTask = 0;
 			return;
 		}
 		

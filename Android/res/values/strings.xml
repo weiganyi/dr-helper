@@ -24,5 +24,13 @@
     <string name="create_table_activity_table_num">桌号</string>
     <string name="create_table_activity_button">开新桌</string>
     <string name="create_table_activity_table_num_is_null">桌号不能为空</string>
+    <string name="check_order_activity_table_num">桌号</string>
+    <string name="check_order_activity_table_num_button">通过桌号查找</string>
+    <string name="check_order_activity_table_num_is_null">桌号不能全为空</string>
+    <string name="check_order_activity_order_num">订单号</string>
+    <string name="check_order_activity_order_num_button">通过订单号查找</string>
+    <string name="check_order_activity_order_num_is_null">订单号不能为空</string>
+    <string name="activity_asynctask_running">操作正在处理，请稍候再试</string>
+    <string name="activity_asynctask_failure">操作失败，请重新再试</string>
 
 </resources>

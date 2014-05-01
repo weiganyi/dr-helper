@@ -14,8 +14,8 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 
 	private Activity act;
 	
-	private static final int LOGINTASK_SUCCESS = 1;
-	private static final int LOGINTASK_FALIURE = 0;
+	public static final int LOGINTASK_SUCCESS = 1;
+	public static final int LOGINTASK_FALIURE = 0;
 	
 	public LoginTask(Activity act) {
 		//save the Activity that call this AsyncTask
@@ -29,11 +29,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		if (result == LOGINTASK_SUCCESS) {
-			((LoginActivity)act).doLoginResult();
-		}else {
-			Log.e(LOGINTASK_TAG, "LoginTask.onPostExecute(): result is failure");
-		}
+		((LoginActivity)act).doLoginResult(result);
 	}
 	
 	@Override

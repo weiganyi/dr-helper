@@ -8,9 +8,9 @@ import java.util.ListIterator;
 import com.drhelper.R;
 import com.drhelper.bean.EmptyTable;
 import com.drhelper.task.CheckTableTask;
+import com.drhelper.util.DialogBox;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -19,8 +19,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class CheckTableActivity extends AfterLoginActivity {
-	private static final String CHECKTABLEACTIVITY_TAG = "CheckTableActivity";
-	
 	private Button checkBtn;
 	private ListView tableListView;
 
@@ -62,12 +60,18 @@ public class CheckTableActivity extends AfterLoginActivity {
 
 			CheckTableTask task = new CheckTableTask(CheckTableActivity.this);
 			task.execute();
+		}else {
+			DialogBox.showAlertDialog(CheckTableActivity.this, 
+					this.getString(R.string.activity_asynctask_running), null);
 		}
 	}
 	
-	public void doCheckTableResult(List<EmptyTable> emptyTableList) {
-		if (emptyTableList == null) {
-			Log.e(CHECKTABLEACTIVITY_TAG, "CheckTableActivity.doCheckTableResult(): input param is null");
+	public void doCheckTableResult(Integer result, List<EmptyTable> emptyTableList) {
+		if (result != CheckTableTask.CHECKTABLETASK_SUCCESS || emptyTableList == null) {
+			DialogBox.showAlertDialog(CheckTableActivity.this, 
+					this.getString(R.string.activity_asynctask_failure), null);
+
+			startCheckTableTask = 0;
 			return;
 		}
 		

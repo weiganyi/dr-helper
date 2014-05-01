@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class CreateTableActivity extends AfterLoginActivity {
-	private Button createBtn;
+	private Button tableBtn;
 	private EditText tableText;
 	private String tableNum;
 	
@@ -30,11 +30,11 @@ public class CreateTableActivity extends AfterLoginActivity {
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
 		
 		//get widget handler
-		createBtn = (Button)findViewById(R.id.create_table_activity_button);
+		tableBtn = (Button)findViewById(R.id.create_table_activity_button);
 		tableText = (EditText)findViewById(R.id.create_table_activity_table_num_edittext);
 		
 		//set listen handler for create button
-		createBtn.setOnClickListener(new OnClickListener() {
+		tableBtn.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -64,12 +64,30 @@ public class CreateTableActivity extends AfterLoginActivity {
 
 			CreateTableTask task = new CreateTableTask(CreateTableActivity.this);
 			task.execute(tableNum);
+		}else {
+			DialogBox.showAlertDialog(CreateTableActivity.this, 
+					this.getString(R.string.activity_asynctask_running), null);
 		}
 	}
 	
-	public void doCreateTableResult() {
+	public void doCreateTableResult(Integer result, String orderNum, String tableNum) {
+		if (result != CreateTableTask.CREATETABLETASK_SUCCESS || 
+				orderNum == null || orderNum.length() == 0 || 
+				tableNum == null || tableNum.length() == 0) {
+			DialogBox.showAlertDialog(CreateTableActivity.this, 
+					this.getString(R.string.activity_asynctask_failure), null);
+			
+			startCreateTableTask = 0;
+			return;
+		}
+		
 		//launch to OrderActivity
 		Intent intent = new Intent(CreateTableActivity.this, OrderActivity.class);
+		//append the order num and table num as extras data
+		Bundle bundle = new Bundle();
+		bundle.putString(OrderActivity.ORDER_NUM, orderNum);
+		bundle.putString(OrderActivity.TABLE_NUM, tableNum);
+		intent.putExtras(bundle);
 		startActivity(intent);
 		
 		startCreateTableTask = 0;
