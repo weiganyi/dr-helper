@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -17,10 +18,12 @@ import android.widget.EditText;
 
 @SuppressLint("WorldWriteableFiles")
 public class LoginActivity extends BeforeLoginActivity {
-
+	private static final String LOGINACTIVITY_TAG = "LoginActivity";
+	
 	private Button loginBtn;
 	private EditText userText, passwdText;
 	private String userName, userPasswd;
+
 	private int startLoginTask = 0;
 	
 	@Override
@@ -51,13 +54,13 @@ public class LoginActivity extends BeforeLoginActivity {
 	}
 	
 	private boolean checkInput(String userName, String userPasswd) {
-		if (userName.equals("")){
+		if (userName == null || userName.equals("")){
 			DialogBox.showAlertDialog(LoginActivity.this, 
 					this.getString(R.string.login_activity_user_name_is_null), null);
 			return false;
 		}
 		
-		if (userPasswd.equals("")){
+		if (userPasswd == null || userPasswd.equals("")){
 			DialogBox.showAlertDialog(LoginActivity.this, 
 					this.getString(R.string.login_activity_user_passwd_is_null), null);
 			return false;
@@ -87,6 +90,9 @@ public class LoginActivity extends BeforeLoginActivity {
 			Editor editor = prefs.edit();
 			editor.putString("user_name", userName);
 			editor.commit();
+		}else {
+			Log.e(LOGINACTIVITY_TAG, "LoginActivity.doLoginResult(): login_user prefs isn't exist");
+			return;
 		}
 		
 		//launch to MainActivity

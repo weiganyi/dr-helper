@@ -92,7 +92,9 @@ public class MainActivity extends AfterLoginActivity {
 						
 						@Override
 						public void onClick(View v) {
-							// TODO Auto-generated method stub
+							//launch to CreateTableActivity
+							Intent intent = new Intent(MainActivity.this, CreateTableActivity.class);
+							startActivity(intent);
 							return;
 						}
 					});

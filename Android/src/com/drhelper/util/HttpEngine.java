@@ -7,22 +7,33 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.util.Log;
 
 public class HttpEngine {
-	private static String httpSrvBaseUrl = "http://172.16.3.146/DrHelperServer/";
 	private static final String HTTPENGINE_TAG = "HttpEngine";
+
+	private static String httpSrvBaseUrl = "http://172.16.3.146/DrHelperServer/";
 	
 	public static String getHttpSrvBaseUrl() {
 		return httpSrvBaseUrl;
 	}
 	
 	public static void setHttpSrvBaseUrl(String httpSrvBaseUrl)	{
-		HttpEngine.httpSrvBaseUrl = httpSrvBaseUrl;
+		if (httpSrvBaseUrl != null) {
+			HttpEngine.httpSrvBaseUrl = httpSrvBaseUrl;
+		}else {
+			Log.e(HTTPENGINE_TAG, "HttpEngine.setHttpSrvBaseUrl(): input param httpSrvBaseUrl is null");
+		}
 	}
 	
 	public static String doPost(String url, String reqBody) {
 		HttpClient client = new DefaultHttpClient();
+
+		if (url == null || url.length() == 0) {
+			Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): input param url is null");
+			return null;
+		}
+		
 		HttpPost request = new HttpPost(url);
 
-		if (reqBody.length() != 0) {
+		if (reqBody != null && reqBody.length() != 0) {
 			try	{
 				StringEntity entity = new StringEntity(reqBody);
 				request.setEntity(entity);
@@ -40,7 +51,7 @@ public class HttpEngine {
 			}*/
 			return reqBody;
 		}catch(Exception e) {
-			Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): send request and recv respose failure");
+			Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): send http request or recv respose failure");
 		}
 		
 		return null;

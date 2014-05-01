@@ -12,8 +12,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
-	private Activity act;
 	private static final String CHECKTABLETASK_TAG = "CheckTableTask";
+
+	private Activity act;
 	
 	private static final int CHECKTABLETASK_SUCCESS = 1;
 	private static final int CHECKTABLETASK_FALIURE = 0;
@@ -34,6 +35,8 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 	protected void onPostExecute(Integer result) {
 		if (result == CHECKTABLETASK_SUCCESS) {
 			((CheckTableActivity)act).doCheckTableResult(emptyTableList);
+		}else {
+			Log.e(CHECKTABLETASK_TAG, "CheckTableTask.onPostExecute(): the check table result is failure");
 		}
 	}
 	
@@ -43,17 +46,19 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 		try	{
 			//send the http post and recv response
 			String specUrl = "checkTable";
-			String respBody = HttpEngine.doPost(specUrl, new String());
+			String respBody = HttpEngine.doPost(specUrl, null);
 			respBody = "[{\"tableNum\":\"1\", \"tableSeatNum\":\"1\"}, {\"tableNum\":\"2\", \"tableSeatNum\":\"2\"}, {\"tableNum\":\"3\", \"tableSeatNum\":\"3\"}]";
-			if (respBody.length() != 0) {
+			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				emptyTableList = JSON.parseArray(respBody, EmptyTable.class);
 				if (emptyTableList.isEmpty() != true) {
 					return CHECKTABLETASK_SUCCESS;
 				}
+			}else {
+				Log.e(CHECKTABLETASK_TAG, "CheckTableTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(CHECKTABLETASK_TAG, "CheckTableTask.doInBackground(): json serialize failure");
+			Log.e(CHECKTABLETASK_TAG, "CheckTableTask.doInBackground(): json serialize or http post is failure");
 		}
 		
 		return CHECKTABLETASK_FALIURE;

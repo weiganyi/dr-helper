@@ -10,6 +10,7 @@ import com.drhelper.bean.EmptyTable;
 import com.drhelper.task.CheckTableTask;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -18,7 +19,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 public class CheckTableActivity extends AfterLoginActivity {
-
+	private static final String CHECKTABLEACTIVITY_TAG = "CheckTableActivity";
+	
 	private Button checkBtn;
 	private ListView tableListView;
 
@@ -64,9 +66,14 @@ public class CheckTableActivity extends AfterLoginActivity {
 	}
 	
 	public void doCheckTableResult(List<EmptyTable> emptyTableList) {
+		if (emptyTableList == null) {
+			Log.e(CHECKTABLEACTIVITY_TAG, "CheckTableActivity.doCheckTableResult(): input param is null");
+			return;
+		}
+		
+		EmptyTable emptyTable = null;
 		HashMap<String, String> map = null;
 		ListIterator<EmptyTable> it = emptyTableList.listIterator();
-		EmptyTable emptyTable = null;
 
 		//fill the title into the map
 		map = new HashMap<String, String>();

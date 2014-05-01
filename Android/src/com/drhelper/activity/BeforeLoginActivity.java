@@ -14,13 +14,16 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 @SuppressLint("WorldWriteableFiles")
 public class BeforeLoginActivity extends Activity {
-	private ExitReceiver receiver;
+	private static final String BEFORELOGINACTIVITY_TAG = "BeforeLoginActivity";
 
+	private ExitReceiver receiver;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -48,7 +51,7 @@ public class BeforeLoginActivity extends Activity {
 	}
 	
 	private void doLogout() {
-		DialogBox.showAlertDialog(BeforeLoginActivity.this, 
+		DialogBox.showConfirmDialog(BeforeLoginActivity.this, 
 				this.getString(R.string.before_login_activity_want_to_logout), "doLogoutResult");
 	}
 	
@@ -60,6 +63,8 @@ public class BeforeLoginActivity extends Activity {
 			Editor editor = prefs.edit();
 			editor.putString("user_name", "");
 			editor.commit();
+		}else {
+			Log.e(BEFORELOGINACTIVITY_TAG, "BeforeLoginActivity.doLogoutResult(): login_user prefs isn't exist");
 		}
 
 		//send the exit broadcast
@@ -82,7 +87,7 @@ public class BeforeLoginActivity extends Activity {
 		String address = prefs.getString("server_address", 
 				getString(R.string.prefs_activity_server_address_default_value));
 		//check if the server address is null
-		if (address.length() == 0) {
+		if (address != null && address.length() == 0) {
 			DialogBox.showAlertDialog(BeforeLoginActivity.this, 
 					this.getString(R.string.before_login_activity_server_address_is_null), null);
 		}else {

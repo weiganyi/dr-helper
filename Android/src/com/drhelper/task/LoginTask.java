@@ -10,8 +10,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class LoginTask extends AsyncTask<String, Integer, Integer> {
-	private Activity act;
 	private static final String LOGINTASK_TAG = "LoginTask";
+
+	private Activity act;
 	
 	private static final int LOGINTASK_SUCCESS = 1;
 	private static final int LOGINTASK_FALIURE = 0;
@@ -30,6 +31,8 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 	protected void onPostExecute(Integer result) {
 		if (result == LOGINTASK_SUCCESS) {
 			((LoginActivity)act).doLoginResult();
+		}else {
+			Log.e(LOGINTASK_TAG, "LoginTask.onPostExecute(): result is failure");
 		}
 	}
 	
@@ -37,7 +40,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 	protected Integer doInBackground(String... param) {
 		// TODO Auto-generated method stub
 		if (param.length != 2) {
-			Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): the number of input param isn't two");
+			Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): there isn't two input param");
 			return LOGINTASK_FALIURE;
 		}
 		
@@ -54,7 +57,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 			//send the http post and recv response
 			String specUrl = "login";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
-			if (respBody.length() != 0) {
+			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Login loginResp = JSON.parseObject(respBody, Login.class);
 				if (loginResp.getUserName().equals(loginReq.getUserName()) && 
@@ -62,9 +65,11 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 					int result = loginResp.getResult();
 					return result;
 				}
+			}else {
+				Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): json serialize failure");
+			Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): json serialize or http post is failure");
 		}
 		
 		return LOGINTASK_FALIURE;

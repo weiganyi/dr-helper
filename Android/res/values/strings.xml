@@ -20,5 +20,9 @@
     <string name="check_table_activity_check_empty_table">查找空桌</string>
     <string name="check_table_activity_table_num">桌号</string>
     <string name="check_table_activity_table_seat_num">座位数</string>
+    <string name="dialogbox_cancel">取消</string>
+    <string name="create_table_activity_table_num">桌号</string>
+    <string name="create_table_activity_button">开新桌</string>
+    <string name="create_table_activity_table_num_is_null">桌号不能为空</string>
 
 </resources>
