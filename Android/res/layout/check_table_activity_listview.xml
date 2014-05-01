@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="horizontal" >
+    android:orientation="vertical"
+    android:stretchColumns="*" >
 
-    <TextView
-        android:id="@+id/check_table_activity_listview_table_num_textview"
+    <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/check_table_activity_table_num" />
+        android:gravity="center" >
 
-    <TextView
-        android:id="@+id/check_table_activity_listview_table_seat_num_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/check_table_activity_table_seat_num" />
+        <TextView
+            android:id="@+id/check_table_activity_listview_table_num_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/check_table_activity_table_num" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/check_table_activity_listview_table_seat_num_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/check_table_activity_table_seat_num" />
+
+    </TableRow>
+</TableLayout>

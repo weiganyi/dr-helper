@@ -17,7 +17,6 @@
         android:orientation="vertical" >
 
         <TableRow
-            android:id="@+id/login_activity_user_tablerow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
@@ -37,7 +36,6 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/login_activity_passwd_tablerow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
@@ -57,7 +55,6 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/login_activity_button_tablerow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center" >

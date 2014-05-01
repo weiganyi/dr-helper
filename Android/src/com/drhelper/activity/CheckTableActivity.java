@@ -9,7 +9,6 @@ import com.drhelper.R;
 import com.drhelper.bean.EmptyTable;
 import com.drhelper.task.CheckTableTask;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -69,14 +68,20 @@ public class CheckTableActivity extends AfterLoginActivity {
 		ListIterator<EmptyTable> it = emptyTableList.listIterator();
 		EmptyTable emptyTable = null;
 
+		//fill the title into the map
+		map = new HashMap<String, String>();
+		map.put(table_num, getString(R.string.check_table_activity_table_num));
+		map.put(table_seat_num,	getString(R.string.check_table_activity_table_seat_num));
+		//append the map into the list
+		list.add(map);
+
 		while(it.hasNext()) {
 			emptyTable = it.next();
 
-			//fill the map
+			//fill data into the map
 			map = new HashMap<String, String>();
 			map.put(table_num, emptyTable.getTableNum());
 			map.put(table_seat_num,	emptyTable.getTableSeatNum());
-			
 			//append the map into the list
 			list.add(map);
 		}
