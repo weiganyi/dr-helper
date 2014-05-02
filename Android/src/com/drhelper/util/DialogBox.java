@@ -10,11 +10,11 @@ import android.content.DialogInterface;
 import android.util.Log;
 
 public class DialogBox {
-	private final static String DIALOGBOX_TAG = "DialogBox";
+	private final static String DIALOG_BOX_TAG = "DialogBox";
 	
 	public static void showAlertDialog(final Activity act, String msg, final String result) {
 		if (act == null || msg == null) {
-			Log.e(DIALOGBOX_TAG, "DialogBox.showAlertDialog(): input param is null");
+			Log.e(DIALOG_BOX_TAG, "DialogBox.showAlertDialog(): input param is null");
 			return;
 		}
 		
@@ -41,7 +41,7 @@ public class DialogBox {
 								meth.invoke(act, argList);
 							}
 						} catch(Exception e) {
-							Log.e(DIALOGBOX_TAG, "DialogBox.showAlertDialog(): reflect get some exception");
+							Log.e(DIALOG_BOX_TAG, "DialogBox.showAlertDialog(): reflect get some exception");
 						}
 					}
 				}
@@ -53,7 +53,7 @@ public class DialogBox {
 	
 	public static void showConfirmDialog(final Activity act, String msg, final String result) {
 		if (act == null || msg == null) {
-			Log.e(DIALOGBOX_TAG, "DialogBox.showConfirmDialog(): input param is null");
+			Log.e(DIALOG_BOX_TAG, "DialogBox.showConfirmDialog(): input param is null");
 			return;
 		}
 
@@ -80,7 +80,7 @@ public class DialogBox {
 								meth.invoke(act, argList);
 							}
 						} catch(Exception e) {
-							Log.e(DIALOGBOX_TAG, "DialogBox.showConfirmDialog(): reflect get some exception");
+							Log.e(DIALOG_BOX_TAG, "DialogBox.showConfirmDialog(): reflect get some exception");
 						}
 					}
 				}

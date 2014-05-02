@@ -4,10 +4,40 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_bg"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:shrinkColumns="1" >
 
     <TableRow
         android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/check_order_activity_table_num_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="@string/check_order_activity_table_num" />
+
+        <EditText
+            android:id="@+id/check_order_activity_table_num_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/check_order_activity_table_num_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/check_order_activity_table_num_button" />
+
+    </TableRow>
+    
+    <TableRow
+        android:id="@+id/tableRow2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal" >
@@ -28,57 +58,11 @@
             android:ems="10"
             android:inputType="number" />
 
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal" >
-
         <Button
             android:id="@+id/check_order_activity_order_num_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/check_order_activity_order_num_button" />
-
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/tableRow3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal" >
-
-        <TextView
-            android:id="@+id/check_order_activity_table_num_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:text="@string/check_order_activity_table_num" />
-
-        <EditText
-            android:id="@+id/check_order_activity_table_num_edittext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="number" />
-
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/tableRow4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal" >
-
-        <Button
-            android:id="@+id/check_order_activity_table_num_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/check_order_activity_table_num_button" />
 
     </TableRow>
 

@@ -1,19 +1,19 @@
 package com.drhelper.bean;
 
 public class EmptyTable {
-	private String tableNum;
-	private String tableSeatNum;
+	private int tableNum;
+	private int tableSeatNum;
 
-	public String getTableNum() {
+	public int getTableNum() {
 		return tableNum;
 	}
-	public void setTableNum(String tableNum) {
+	public void setTableNum(int tableNum) {
 		this.tableNum = tableNum;
 	}
-	public String getTableSeatNum() {
+	public int getTableSeatNum() {
 		return tableSeatNum;
 	}
-	public void setTableSeatNum(String tableSeatNum) {
+	public void setTableSeatNum(int tableSeatNum) {
 		this.tableSeatNum = tableSeatNum;
-	} 
+	}
 }

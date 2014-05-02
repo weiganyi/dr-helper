@@ -10,14 +10,15 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
-	private static final String CREATETABLETASK_TAG = "CreateTableTask";
+	private static final String CREATE_TABLE_TASK_TAG = "CreateTableTask";
 
 	private Activity act;
-	private String orderNum;
-	private String tableNum;
+	private int orderNum;
+	private int tableNum;
 	
-	public static final int CREATETABLETASK_SUCCESS = 1;
-	public static final int CREATETABLETASK_FALIURE = 0;
+	public static final int CREATE_TABLE_TASK_SUCCESS = 0;
+	public static final int CREATE_TABLE_TASK_LOCAL_FALIURE = 1;
+	public static final int CREATE_TABLE_TASK_REMOTE_FALIURE = 2;
 	
 	public CreateTableTask(Activity act) {
 		//save the Activity that call this AsyncTask
@@ -38,15 +39,14 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 	protected Integer doInBackground(String... param) {
 		// TODO Auto-generated method stub
 		if (param.length != 1) {
-			Log.e(CREATETABLETASK_TAG, "CreateTableTask.doInBackground(): there isn't one input param");
-			return CREATETABLETASK_FALIURE;
+			Log.e(CREATE_TABLE_TASK_TAG, "CreateTableTask.doInBackground(): there isn't one input param");
+			return CREATE_TABLE_TASK_LOCAL_FALIURE;
 		}
 		
 		Table tableReq = new Table();
-		tableReq.setTableNum(param[0]);
+		tableReq.setTableNum(Integer.valueOf(param[0]));
 		
-		tableReq.setOrderNum("1234");
-		tableReq.setResult(CREATETABLETASK_SUCCESS);
+		tableReq.setOrderNum(2);
 		
 		try	{
 			//serialize by fastjson
@@ -58,22 +58,22 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Table tableResp = JSON.parseObject(respBody, Table.class);
-				if (tableResp.getTableNum().equals(tableReq.getTableNum())) {
-					int result = tableResp.getResult();
-					
+				if (tableResp.getTableNum() == tableReq.getTableNum()) {
 					//get the order num and table num from tableResp
 					orderNum = tableResp.getOrderNum();
 					tableNum = tableResp.getTableNum();
-					
-					return result;
+						
+					return CREATE_TABLE_TASK_SUCCESS;
+				}else {
+					return CREATE_TABLE_TASK_REMOTE_FALIURE;
 				}
 			}else {
-				Log.e(CREATETABLETASK_TAG, "CreateTableTask.doInBackground(): respBody is null");
+				Log.e(CREATE_TABLE_TASK_TAG, "CreateTableTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(CREATETABLETASK_TAG, "CheckTableTask.doInBackground(): json serialize or http post is failure");
+			Log.e(CREATE_TABLE_TASK_TAG, "CheckTableTask.doInBackground(): json serialize or http post is failure");
 		}
 		
-		return CREATETABLETASK_FALIURE;
+		return CREATE_TABLE_TASK_LOCAL_FALIURE;
 	}
 }

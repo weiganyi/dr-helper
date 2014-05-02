@@ -10,14 +10,15 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
-	private static final String CHECKORDERTASK_TAG = "CheckOrderTask";
+	private static final String CHECK_ORDER_TASK_TAG = "CheckOrderTask";
 
 	private Activity act;
-	private String orderNum;
-	private String tableNum;
+	private int orderNum;
+	private int tableNum;
 	
-	public static final int CHECKORDERTASK_SUCCESS = 1;
-	public static final int CHECKORDERTASK_FALIURE = 0;
+	public static final int CHECK_ORDER_TASK_SUCCESS = 0;
+	public static final int CHECK_ORDER_TASK_LOCAL_FALIURE = 1;
+	public static final int CHECK_ORDER_TASK_REMOTE_FALIURE = 2;
 	
 	public CheckOrderTask(Activity act) {
 		//save the Activity that call this AsyncTask
@@ -38,19 +39,18 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 	protected Integer doInBackground(String... param) {
 		// TODO Auto-generated method stub
 		if (param.length != 2) {
-			Log.e(CHECKORDERTASK_TAG, "CheckOrderTask.doInBackground(): there isn't two input param");
-			return CHECKORDERTASK_FALIURE;
+			Log.e(CHECK_ORDER_TASK_TAG, "CheckOrderTask.doInBackground(): there isn't two input param");
+			return CHECK_ORDER_TASK_LOCAL_FALIURE;
 		}
 		
 		Table tableReq = new Table();
 		if (param[0] != null) {
-			tableReq.setOrderNum(param[0]);
+			tableReq.setOrderNum(Integer.valueOf(param[0]));
 		}else if (param[1] != null) {
-			tableReq.setTableNum(param[1]);
+			tableReq.setTableNum(Integer.valueOf(param[1]));
 		}
 		
-		tableReq.setOrderNum("1234");
-		tableReq.setResult(CHECKORDERTASK_SUCCESS);
+		tableReq.setOrderNum(2);
 		
 		try	{
 			//serialize by fastjson
@@ -62,23 +62,22 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Table tableResp = JSON.parseObject(respBody, Table.class);
-				if (tableResp.getOrderNum().equals(tableReq.getOrderNum()) || 
-						tableResp.getTableNum().equals(tableReq.getTableNum())) {
-					int result = tableResp.getResult();
-					
+				if (tableResp.getOrderNum() == tableReq.getOrderNum() || 
+						tableResp.getTableNum() == tableReq.getTableNum()) {
 					//get the order num and table num from tableResp
 					orderNum = tableResp.getOrderNum();
 					tableNum = tableResp.getTableNum();
-					
-					return result;
+					return CHECK_ORDER_TASK_SUCCESS;
+				}else {
+					return CHECK_ORDER_TASK_REMOTE_FALIURE;
 				}
 			}else {
-				Log.e(CHECKORDERTASK_TAG, "CheckOrderTask.doInBackground(): respBody is null");
+				Log.e(CHECK_ORDER_TASK_TAG, "CheckOrderTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(CHECKORDERTASK_TAG, "CheckOrderTask.doInBackground(): json serialize or http post is failure");
+			Log.e(CHECK_ORDER_TASK_TAG, "CheckOrderTask.doInBackground(): json serialize or http post is failure");
 		}
 		
-		return CHECKORDERTASK_FALIURE;
+		return CHECK_ORDER_TASK_LOCAL_FALIURE;
 	}
 }

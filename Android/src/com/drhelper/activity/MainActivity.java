@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class MainActivity extends AfterLoginActivity {
 
@@ -23,7 +24,9 @@ public class MainActivity extends AfterLoginActivity {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.main_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
-		
+		String title = getString(R.string.app_name) + " - " + getString(R.string.main_activity_title);
+		((TextView)findViewById(R.id.main_title_textview)).setText(title);
+
 		//load the data for gridview
 		GridView gridView = (GridView)findViewById(R.id.main_activity_gridview);
 		gridView.setAdapter(new ImageAdapter(this));

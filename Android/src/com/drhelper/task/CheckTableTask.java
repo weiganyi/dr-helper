@@ -12,14 +12,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
-	private static final String CHECKTABLETASK_TAG = "CheckTableTask";
+	private static final String CHECK_TABLE_TASK_TAG = "CheckTableTask";
 
 	private Activity act;
+	private List<EmptyTable> emptyTableListResp = null;
 	
-	public static final int CHECKTABLETASK_SUCCESS = 1;
-	public static final int CHECKTABLETASK_FALIURE = 0;
-	
-	private List<EmptyTable> emptyTableList = null;
+	public static final int CHECK_TABLE_TASK_SUCCESS = 0;
+	public static final int CHECK_TABLE_TASK_LOCAL_FALIURE = 1;
+	public static final int CHECK_TABLE_TASK_REMOTE_FALIURE = 2;
 	
 	public CheckTableTask(Activity act) {
 		//save the Activity that call this AsyncTask
@@ -33,7 +33,7 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((CheckTableActivity)act).doCheckTableResult(result, emptyTableList);
+		((CheckTableActivity)act).doCheckTableResult(result, emptyTableListResp);
 	}
 	
 	@Override
@@ -43,20 +43,22 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 			//send the http post and recv response
 			String specUrl = "checkTable";
 			String respBody = HttpEngine.doPost(specUrl, null);
-			respBody = "[{\"tableNum\":\"1\", \"tableSeatNum\":\"1\"}, {\"tableNum\":\"2\", \"tableSeatNum\":\"2\"}, {\"tableNum\":\"3\", \"tableSeatNum\":\"3\"}]";
+			respBody = "[{\"tableNum\":1, \"tableSeatNum\":1}, {\"tableNum\":2, \"tableSeatNum\":2}, {\"tableNum\":3, \"tableSeatNum\":3}]";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				emptyTableList = JSON.parseArray(respBody, EmptyTable.class);
-				if (emptyTableList.isEmpty() != true) {
-					return CHECKTABLETASK_SUCCESS;
+				emptyTableListResp = JSON.parseArray(respBody, EmptyTable.class);
+				if (emptyTableListResp.isEmpty() != true) {
+					return CHECK_TABLE_TASK_SUCCESS;
+				}else {
+					return CHECK_TABLE_TASK_REMOTE_FALIURE;
 				}
 			}else {
-				Log.e(CHECKTABLETASK_TAG, "CheckTableTask.doInBackground(): respBody is null");
+				Log.e(CHECK_TABLE_TASK_TAG, "CheckTableTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(CHECKTABLETASK_TAG, "CheckTableTask.doInBackground(): json serialize or http post is failure");
+			Log.e(CHECK_TABLE_TASK_TAG, "CheckTableTask.doInBackground(): json serialize or http post is failure");
 		}
 		
-		return CHECKTABLETASK_FALIURE;
+		return CHECK_TABLE_TASK_LOCAL_FALIURE;
 	}
 }

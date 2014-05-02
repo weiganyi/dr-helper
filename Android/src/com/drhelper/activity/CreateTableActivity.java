@@ -11,6 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class CreateTableActivity extends AfterLoginActivity {
 	private Button tableBtn;
@@ -28,7 +29,9 @@ public class CreateTableActivity extends AfterLoginActivity {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.create_table_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
-		
+		String title = getString(R.string.app_name) + " - " + getString(R.string.create_table_activity_title);
+		((TextView)findViewById(R.id.main_title_textview)).setText(title);
+
 		//get widget handler
 		tableBtn = (Button)findViewById(R.id.create_table_activity_button);
 		tableText = (EditText)findViewById(R.id.create_table_activity_table_num_edittext);
@@ -70,23 +73,26 @@ public class CreateTableActivity extends AfterLoginActivity {
 		}
 	}
 	
-	public void doCreateTableResult(Integer result, String orderNum, String tableNum) {
-		if (result != CreateTableTask.CREATETABLETASK_SUCCESS || 
-				orderNum == null || orderNum.length() == 0 || 
-				tableNum == null || tableNum.length() == 0) {
+	public void doCreateTableResult(Integer result, int orderNum, int tableNum) {
+		if (result == CreateTableTask.CREATE_TABLE_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(CreateTableActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
-			
+			startCreateTableTask = 0;
+			return;
+		}else if (result == CreateTableTask.CREATE_TABLE_TASK_REMOTE_FALIURE) {
+			DialogBox.showAlertDialog(CreateTableActivity.this, 
+					this.getString(R.string.create_table_activity_remote_failure), null);
 			startCreateTableTask = 0;
 			return;
 		}
+
 		
 		//launch to OrderActivity
 		Intent intent = new Intent(CreateTableActivity.this, OrderActivity.class);
 		//append the order num and table num as extras data
 		Bundle bundle = new Bundle();
-		bundle.putString(OrderActivity.ORDER_NUM, orderNum);
-		bundle.putString(OrderActivity.TABLE_NUM, tableNum);
+		bundle.putString(OrderActivity.ORDER_NUM, String.valueOf(orderNum));
+		bundle.putString(OrderActivity.TABLE_NUM, String.valueOf(tableNum));
 		intent.putExtras(bundle);
 		startActivity(intent);
 		

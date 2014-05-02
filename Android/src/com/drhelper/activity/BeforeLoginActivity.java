@@ -20,7 +20,7 @@ import android.view.MenuItem;
 
 @SuppressLint("WorldWriteableFiles")
 public class BeforeLoginActivity extends Activity {
-	private static final String BEFORELOGINACTIVITY_TAG = "BeforeLoginActivity";
+	private static final String BEFORE_LOGIN_ACTIVITY_TAG = "BeforeLoginActivity";
 
 	private ExitReceiver receiver;
 	
@@ -64,7 +64,7 @@ public class BeforeLoginActivity extends Activity {
 			editor.putString("user_name", "");
 			editor.commit();
 		}else {
-			Log.e(BEFORELOGINACTIVITY_TAG, "BeforeLoginActivity.doLogoutResult(): login_user prefs isn't exist");
+			Log.e(BEFORE_LOGIN_ACTIVITY_TAG, "BeforeLoginActivity.doLogoutResult(): login_user prefs isn't exist");
 		}
 
 		//send the exit broadcast

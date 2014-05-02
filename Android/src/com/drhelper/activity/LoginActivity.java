@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 @SuppressLint("WorldWriteableFiles")
 public class LoginActivity extends BeforeLoginActivity {
@@ -31,6 +32,8 @@ public class LoginActivity extends BeforeLoginActivity {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.login_activity);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.main_title);
+		String title = getString(R.string.app_name) + " - " + getString(R.string.login_activity_title);
+		((TextView)findViewById(R.id.main_title_textview)).setText(title);
 
 		//get widget handler
 		userText = (EditText)findViewById(R.id.login_activity_user_edittext);
@@ -83,10 +86,14 @@ public class LoginActivity extends BeforeLoginActivity {
 	}
 	
 	public void doLoginResult(Integer result) {
-		if (result != LoginTask.LOGINTASK_SUCCESS) {
+		if (result == LoginTask.LOGIN_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(LoginActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
-			
+			startLoginTask = 0;
+			return;
+		}else if (result == LoginTask.LOGIN_TASK_REMOTE_FALIURE) {
+			DialogBox.showAlertDialog(LoginActivity.this, 
+					this.getString(R.string.login_activity_remote_failure), null);
 			startLoginTask = 0;
 			return;
 		}
@@ -101,7 +108,6 @@ public class LoginActivity extends BeforeLoginActivity {
 		}else {
 			DialogBox.showAlertDialog(LoginActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
-			
 			startLoginTask = 0;
 			return;
 		}
@@ -109,7 +115,7 @@ public class LoginActivity extends BeforeLoginActivity {
 		//launch to MainActivity
 		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 		startActivity(intent);
-		
+
 		startLoginTask = 0;
 	}
 }

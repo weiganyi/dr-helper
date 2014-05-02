@@ -7,7 +7,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.util.Log;
 
 public class HttpEngine {
-	private static final String HTTPENGINE_TAG = "HttpEngine";
+	private static final String HTTP_ENGINE_TAG = "HttpEngine";
 
 	private static String httpSrvBaseUrl = "http://172.16.3.146/DrHelperServer/";
 	
@@ -19,7 +19,7 @@ public class HttpEngine {
 		if (httpSrvBaseUrl != null) {
 			HttpEngine.httpSrvBaseUrl = httpSrvBaseUrl;
 		}else {
-			Log.e(HTTPENGINE_TAG, "HttpEngine.setHttpSrvBaseUrl(): input param httpSrvBaseUrl is null");
+			Log.e(HTTP_ENGINE_TAG, "HttpEngine.setHttpSrvBaseUrl(): input param httpSrvBaseUrl is null");
 		}
 	}
 	
@@ -27,7 +27,7 @@ public class HttpEngine {
 		HttpClient client = new DefaultHttpClient();
 
 		if (url == null || url.length() == 0) {
-			Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): input param url is null");
+			Log.e(HTTP_ENGINE_TAG, "HttpEngine.doPost(): input param url is null");
 			return null;
 		}
 		
@@ -38,7 +38,7 @@ public class HttpEngine {
 				StringEntity entity = new StringEntity(reqBody);
 				request.setEntity(entity);
 			}catch(Exception e)	{
-				Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): construct entity failure");
+				Log.e(HTTP_ENGINE_TAG, "HttpEngine.doPost(): construct entity failure");
 			}
 		}
 		
@@ -51,7 +51,7 @@ public class HttpEngine {
 			}*/
 			return reqBody;
 		}catch(Exception e) {
-			Log.e(HTTPENGINE_TAG, "HttpEngine.doPost(): send http request or recv respose failure");
+			Log.e(HTTP_ENGINE_TAG, "HttpEngine.doPost(): send http request or recv respose failure");
 		}
 		
 		return null;

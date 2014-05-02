@@ -10,12 +10,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 public class LoginTask extends AsyncTask<String, Integer, Integer> {
-	private static final String LOGINTASK_TAG = "LoginTask";
+	private static final String LOGIN_TASK_TAG = "LoginTask";
 
 	private Activity act;
 	
-	public static final int LOGINTASK_SUCCESS = 1;
-	public static final int LOGINTASK_FALIURE = 0;
+	public static final int LOGIN_TASK_SUCCESS = 0;
+	public static final int LOGIN_TASK_LOCAL_FALIURE = 1;
+	public static final int LOGIN_TASK_REMOTE_FALIURE = 2;
 	
 	public LoginTask(Activity act) {
 		//save the Activity that call this AsyncTask
@@ -36,15 +37,13 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 	protected Integer doInBackground(String... param) {
 		// TODO Auto-generated method stub
 		if (param.length != 2) {
-			Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): there isn't two input param");
-			return LOGINTASK_FALIURE;
+			Log.e(LOGIN_TASK_TAG, "LoginTask.doInBackground(): there isn't two input param");
+			return LOGIN_TASK_LOCAL_FALIURE;
 		}
 		
 		Login loginReq = new Login();
 		loginReq.setUserName(param[0]);
 		loginReq.setUserPasswd(param[1]);
-
-		loginReq.setResult(LOGINTASK_SUCCESS);
 		
 		try	{
 			//serialize by fastjson
@@ -58,16 +57,17 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 				Login loginResp = JSON.parseObject(respBody, Login.class);
 				if (loginResp.getUserName().equals(loginReq.getUserName()) && 
 					loginResp.getUserPasswd().equals(loginReq.getUserPasswd())) {
-					int result = loginResp.getResult();
-					return result;
+					return LOGIN_TASK_SUCCESS;
+				}else {
+					return LOGIN_TASK_REMOTE_FALIURE;
 				}
 			}else {
-				Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): respBody is null");
+				Log.e(LOGIN_TASK_TAG, "LoginTask.doInBackground(): respBody is null");
 			}
 		}catch(Exception e) {
-			Log.e(LOGINTASK_TAG, "LoginTask.doInBackground(): json serialize or http post is failure");
+			Log.e(LOGIN_TASK_TAG, "LoginTask.doInBackground(): json serialize or http post is failure");
 		}
 		
-		return LOGINTASK_FALIURE;
+		return LOGIN_TASK_LOCAL_FALIURE;
 	}
 }

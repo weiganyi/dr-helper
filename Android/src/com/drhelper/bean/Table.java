@@ -1,31 +1,20 @@
 package com.drhelper.bean;
 
 public class Table {
-	private String tableNum;
-	private String orderNum;
-	private int result;
+	private int tableNum;
+	private int orderNum;
 
-	public String getTableNum() {
+	public int getTableNum() {
 		return tableNum;
 	}
-
-	public void setTableNum(String tableNum) {
+	public void setTableNum(int tableNum) {
 		this.tableNum = tableNum;
 	}
-
-	public int getResult() {
-		return result;
-	}
-
-	public void setResult(int result) {
-		this.result = result;
-	}
-
-	public String getOrderNum() {
+	public int getOrderNum() {
 		return orderNum;
 	}
-
-	public void setOrderNum(String orderNum) {
+	public void setOrderNum(int orderNum) {
 		this.orderNum = orderNum;
 	}
+
 }
