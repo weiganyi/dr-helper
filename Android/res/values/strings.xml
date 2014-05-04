@@ -63,5 +63,9 @@
     <string name="union_table_activity_title">并桌</string>
     <string name="update_activity_title">更新</string>
     <string name="order_activity_submit_order">提交订单</string>
+    <string name="order_activity_want_to_delete_menu">确定要删除这个菜么？</string>
+    <string name="order_activity_want_to_delete_order">确定要删除这个订单么？</string>
+    <string name="order_activity_submit_order_remote_failure">订单提交失败，请重新再试</string>
+    <string name="order_activity_delete_order_remote_failure">删除订单失败，请重新再试</string>
 
 </resources>

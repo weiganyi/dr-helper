@@ -43,7 +43,7 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 			//send the http post and recv response
 			String specUrl = "checkTable";
 			String respBody = HttpEngine.doPost(specUrl, null);
-			respBody = "[{\"tableNum\":1, \"tableSeatNum\":1}, {\"tableNum\":2, \"tableSeatNum\":2}, {\"tableNum\":3, \"tableSeatNum\":3}]";
+			respBody = "[{\"tableNum\":1, \"tableSeatNum\":1}, {\"tableNum\":222, \"tableSeatNum\":222}, {\"tableNum\":33, \"tableSeatNum\":33}]";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				emptyTableListResp = JSON.parseArray(respBody, EmptyTable.class);

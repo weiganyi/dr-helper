@@ -7,15 +7,18 @@ import java.util.ListIterator;
 import com.drhelper.R;
 import com.drhelper.bean.Menu;
 import com.drhelper.bean.Order;
+import com.drhelper.task.DeleteOrderTask;
 import com.drhelper.task.LoadOrderTask;
+import com.drhelper.task.SubmitOrderTask;
 import com.drhelper.util.DialogBox;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -54,6 +57,9 @@ public class OrderActivity extends AfterLoginActivity {
 			R.id.order_activity_listview_amount_textview, R.id.order_activity_listview_finish_textview, 
 			R.id.order_activity_listview_remark_textview};
 
+	private Order order;
+	private int deleteItem;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -121,10 +127,10 @@ public class OrderActivity extends AfterLoginActivity {
 		});
 		
 		//load the order data for background
-		doLoad();
+		doLoadOrder();
 	}
 
-	private void doLoad() {
+	private void doLoadOrder() {
 		if (startOrderTask == 0) {
 			startOrderTask = 1;
 
@@ -136,7 +142,7 @@ public class OrderActivity extends AfterLoginActivity {
 		}
 	}
 	
-	public void doLoadResult(Integer result, Order order) {
+	public void doLoadOrderResult(Integer result, Order order) {
 		if (result == LoadOrderTask.LOAD_ORDER_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(OrderActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
@@ -149,6 +155,47 @@ public class OrderActivity extends AfterLoginActivity {
 			return;
 		}
 		
+		//save the ListView data
+		this.order = order;
+		
+		//fill the ListView data
+		fillListView();
+
+		//set long click listener for ListView
+		menuLV.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				if (position > 0) {
+					deleteItem = position-1;
+					DialogBox.showConfirmDialog(OrderActivity.this, 
+							getString(R.string.order_activity_want_to_delete_menu), 
+							"deleteMenu");
+				}
+				return false;
+			}
+		});
+		
+		startOrderTask = 0;
+	}
+	
+	public void deleteMenu() {
+		ArrayList<Menu> menuList = order.getMenuList();
+		if (menuList.isEmpty() != true) {
+			//delete the selected menu from menu list
+			menuList.remove(deleteItem);
+			
+			//clear the list
+			list.clear();
+			
+			//refill the ListView data
+			fillListView();
+		}
+	}
+
+	private void fillListView() {
 		//fill the value into TextView 
 		orderTV.setText(String.valueOf(order.getOrder()));
 		tableTV.setText(String.valueOf(order.getTable()));
@@ -188,19 +235,51 @@ public class OrderActivity extends AfterLoginActivity {
 		SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.order_activity_listview, 
 				from, to);
 		//bind the adapter
-		menuLV.setAdapter(adapter);
-		
-		startOrderTask = 0;
+		menuLV.setAdapter(adapter);	
 	}
 	
 	private void doOrderMenu() {
+		//launch to MenuActivity
+		Intent intent = new Intent(OrderActivity.this, MenuActivity.class);
+		startActivityForResult(intent, 0);
+	}
+	
+	public void onActivityResult(int reqCode, int resCode, Intent data) {
+		super.onActivityResult(reqCode, resCode, data);
 		
 	}
 	
 	private void doSubmitOrder() {
-		
+		if (startOrderTask == 0) {
+			startOrderTask = 1;
+
+			SubmitOrderTask task = new SubmitOrderTask(OrderActivity.this);
+			task.execute(order);
+		}else {
+			DialogBox.showAlertDialog(OrderActivity.this, 
+					this.getString(R.string.activity_asynctask_running), null);
+		}
 	}
 	
+	public void doSubmitOrderResult(Integer result) {
+		if (result == LoadOrderTask.LOAD_ORDER_TASK_LOCAL_FALIURE) {
+			DialogBox.showAlertDialog(OrderActivity.this, 
+					this.getString(R.string.activity_asynctask_failure), null);
+			startOrderTask = 0;
+			return;
+		}else if (result == LoadOrderTask.LOAD_ORDER_TASK_REMOTE_FALIURE) {
+			DialogBox.showAlertDialog(OrderActivity.this, 
+					this.getString(R.string.order_activity_submit_order_remote_failure), null);
+			startOrderTask = 0;
+			return;
+		}
+		
+		startOrderTask = 0;
+
+		//launch to MainActivity
+		doReturnMainActivity();
+	}
+
 	private void doReturnMainActivity() {
 		//launch to MainActivity
 		Intent intent = new Intent(OrderActivity.this, MainActivity.class);
@@ -208,6 +287,33 @@ public class OrderActivity extends AfterLoginActivity {
 	}
 	
 	private void doDeleteOrder() {
+		if (startOrderTask == 0) {
+			startOrderTask = 1;
+
+			DeleteOrderTask task = new DeleteOrderTask(OrderActivity.this);
+			task.execute(order);
+		}else {
+			DialogBox.showAlertDialog(OrderActivity.this, 
+					this.getString(R.string.activity_asynctask_running), null);
+		}
+	}
+	
+	public void doDeleteOrderResult(Integer result) {
+		if (result == LoadOrderTask.LOAD_ORDER_TASK_LOCAL_FALIURE) {
+			DialogBox.showAlertDialog(OrderActivity.this, 
+					this.getString(R.string.activity_asynctask_failure), null);
+			startOrderTask = 0;
+			return;
+		}else if (result == LoadOrderTask.LOAD_ORDER_TASK_REMOTE_FALIURE) {
+			DialogBox.showAlertDialog(OrderActivity.this, 
+					this.getString(R.string.order_activity_delete_order_remote_failure), null);
+			startOrderTask = 0;
+			return;
+		}
 		
+		startOrderTask = 0;
+		
+		//launch to MainActivity
+		doReturnMainActivity();
 	}
 }

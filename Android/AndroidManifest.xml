@@ -24,6 +24,7 @@
         <activity android:name=".activity.CreateTableActivity"></activity>
         <activity android:name=".activity.OrderActivity"></activity>
         <activity android:name=".activity.CheckOrderActivity"></activity>
+        <activity android:name=".activity.MenuActivity"></activity>
         </application>
 
 </manifest>

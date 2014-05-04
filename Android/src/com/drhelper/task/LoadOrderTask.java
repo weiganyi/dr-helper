@@ -31,7 +31,7 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((OrderActivity)act).doLoadResult(result, order);
+		((OrderActivity)act).doLoadOrderResult(result, order);
 	}
 	
 	@Override

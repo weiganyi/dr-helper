@@ -85,7 +85,6 @@ public class CreateTableActivity extends AfterLoginActivity {
 			startCreateTableTask = 0;
 			return;
 		}
-
 		
 		//launch to OrderActivity
 		Intent intent = new Intent(CreateTableActivity.this, OrderActivity.class);
