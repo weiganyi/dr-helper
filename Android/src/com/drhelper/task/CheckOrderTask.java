@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CheckOrderActivity;
-import com.drhelper.bean.Table;
+import com.drhelper.bean.TableOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -43,30 +43,30 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 			return CHECK_ORDER_TASK_LOCAL_FALIURE;
 		}
 		
-		Table tableReq = new Table();
+		TableOrder tableOrderReq = new TableOrder();
 		if (param[0] != null) {
-			tableReq.setOrderNum(Integer.valueOf(param[0]));
+			tableOrderReq.setOrderNum(Integer.valueOf(param[0]));
 		}else if (param[1] != null) {
-			tableReq.setTableNum(Integer.valueOf(param[1]));
+			tableOrderReq.setTableNum(Integer.valueOf(param[1]));
 		}
 		
-		tableReq.setOrderNum(2);
+		tableOrderReq.setOrderNum(2);
 		
 		try	{
 			//serialize by fastjson
-			String reqBody = JSON.toJSONString(tableReq);
+			String reqBody = JSON.toJSONString(tableOrderReq);
 			
 			//send the http post and recv response
 			String specUrl = "checkOrder";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				Table tableResp = JSON.parseObject(respBody, Table.class);
-				if (tableResp.getOrderNum() == tableReq.getOrderNum() || 
-						tableResp.getTableNum() == tableReq.getTableNum()) {
+				TableOrder tableOrderResp = JSON.parseObject(respBody, TableOrder.class);
+				if (tableOrderResp.getOrderNum() == tableOrderReq.getOrderNum() || 
+						tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
 					//get the order num and table num from tableResp
-					orderNum = tableResp.getOrderNum();
-					tableNum = tableResp.getTableNum();
+					orderNum = tableOrderResp.getOrderNum();
+					tableNum = tableOrderResp.getTableNum();
 					return CHECK_ORDER_TASK_SUCCESS;
 				}else {
 					return CHECK_ORDER_TASK_REMOTE_FALIURE;

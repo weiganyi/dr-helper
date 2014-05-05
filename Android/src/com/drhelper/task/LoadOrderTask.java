@@ -57,7 +57,7 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 			//send the http post and recv response
 			String specUrl = "loadOrder";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
-			respBody = "{\"id\":\"1\", \"order\":2, \"table\":2, \"user\":\"Œ§∏…“Ì\", \"time\":\"20140501 16:45\", \"pay\":true, \"menulist\":[{\"menu\":\"œ„«€œ„∏…»‚Àø\", \"price\":12, \"amount\":1, \"finish\":true, \"remark\":\"Œ¢¿±\"}, {\"menu\":\"∂ÁΩ∑”„Õ∑\", \"price\":32, \"amount\":1, \"finish\":true, \"remark\":\"\"}]}";
+			respBody = "{\"id\":\"1\", \"order\":2, \"table\":2, \"user\":\"Œ§∏…“Ì\", \"time\":\"20140501 16:45\", \"pay\":true, \"detail\":[{\"menu\":\"œ„«€œ„∏…»‚Àø\", \"price\":12, \"amount\":1, \"finish\":true, \"remark\":\"Œ¢¿±\"}, {\"menu\":\"∂ÁΩ∑”„Õ∑\", \"price\":32, \"amount\":1, \"finish\":true, \"remark\":\"\"}]}";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Order orderResp = JSON.parseObject(respBody, Order.class);

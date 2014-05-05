@@ -5,4 +5,10 @@
     android:background="@drawable/main_bg"
     android:orientation="vertical" >
 
+    <ListView
+        android:id="@+id/menu_activity_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
 </LinearLayout>

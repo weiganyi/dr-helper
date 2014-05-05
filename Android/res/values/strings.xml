@@ -67,5 +67,17 @@
     <string name="order_activity_want_to_delete_order">确定要删除这个订单么？</string>
     <string name="order_activity_submit_order_remote_failure">订单提交失败，请重新再试</string>
     <string name="order_activity_delete_order_remote_failure">删除订单失败，请重新再试</string>
+    <string name="menu_activity_listview_menu_type">类别</string>
+    <string name="menu_activity_listview_menu">菜名</string>
+    <string name="menu_activity_listview_price">价格</string>
+    <string name="menu_activity_menu_type_is_incorrect">这种菜单类型不存在，请检查数据库</string>
+    <string name="order_menu_activity_menu_label_textview">菜名</string>
+    <string name="order_menu_activity_amount_label_textview">数量</string>
+    <string name="order_menu_activity_remark_label_textview">备注</string>
+    <string name="order_menu_activity_ok_button">确定</string>
+    <string name="order_menu_activity_cancel_button">取消</string>
+    <string name="order_menu_activity_amount_is_null">输入不能为空，请重新输入</string>
+    <string name="order_activity_finish_true">是</string>
+    <string name="order_activity_finish_false">否</string>
 
 </resources>

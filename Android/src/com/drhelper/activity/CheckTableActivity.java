@@ -25,10 +25,10 @@ public class CheckTableActivity extends AfterLoginActivity {
 
 	private int startCheckTableTask = 0;
 
-	private final String TABLE_NUM = "table_num";
-	private final String TABLE_SEAT_NUM = "table_seat_num";
+	private final String TABLE_NUM_TAG = "table_num";
+	private final String TABLE_SEAT_NUM_TAG = "table_seat_num";
 	private ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-	private String[] from = {TABLE_NUM, TABLE_SEAT_NUM};
+	private String[] from = {TABLE_NUM_TAG, TABLE_SEAT_NUM_TAG};
 	private int[] to = {R.id.check_table_activity_listview_table_num_textview, 
 			R.id.check_table_activity_listview_table_seat_num_textview};
 
@@ -89,8 +89,8 @@ public class CheckTableActivity extends AfterLoginActivity {
 
 		//fill the title into the map
 		map = new HashMap<String, String>();
-		map.put(TABLE_NUM, getString(R.string.check_table_activity_table_num));
-		map.put(TABLE_SEAT_NUM,	getString(R.string.check_table_activity_table_seat_num));
+		map.put(TABLE_NUM_TAG, getString(R.string.check_table_activity_table_num));
+		map.put(TABLE_SEAT_NUM_TAG,	getString(R.string.check_table_activity_table_seat_num));
 		//append the map into the list
 		list.add(map);
 
@@ -99,8 +99,8 @@ public class CheckTableActivity extends AfterLoginActivity {
 
 			//fill data into the map
 			map = new HashMap<String, String>();
-			map.put(TABLE_NUM, String.valueOf(emptyTable.getTableNum()));
-			map.put(TABLE_SEAT_NUM,	String.valueOf(emptyTable.getTableSeatNum()));
+			map.put(TABLE_NUM_TAG, String.valueOf(emptyTable.getTableNum()));
+			map.put(TABLE_SEAT_NUM_TAG,	String.valueOf(emptyTable.getTableSeatNum()));
 			//append the map into the list
 			list.add(map);
 		}

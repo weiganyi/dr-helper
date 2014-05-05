@@ -1,6 +1,6 @@
 package com.drhelper.bean;
 
-public class Menu {
+public class Detail {
 	private String menu;
 	private int price;
 	private int amount;

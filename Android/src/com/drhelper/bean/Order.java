@@ -8,7 +8,7 @@ public class Order {
 	private String user;
 	private String time;
 	private boolean pay;
-	private ArrayList<Menu> menulist;
+	private ArrayList<Detail> detail;
 	
 	public int getOrder() {
 		return order;
@@ -40,10 +40,10 @@ public class Order {
 	public void setPay(boolean pay) {
 		this.pay = pay;
 	}
-	public ArrayList<Menu> getMenuList() {
-		return menulist;
+	public ArrayList<Detail> getDetail() {
+		return detail;
 	}
-	public void setMenuList(ArrayList<Menu> menulist) {
-		this.menulist = menulist;
+	public void setDetail(ArrayList<Detail> detail) {
+		this.detail = detail;
 	}
 }

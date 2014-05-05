@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CreateTableActivity;
-import com.drhelper.bean.Table;
+import com.drhelper.bean.TableOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -43,25 +43,25 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 			return CREATE_TABLE_TASK_LOCAL_FALIURE;
 		}
 		
-		Table tableReq = new Table();
-		tableReq.setTableNum(Integer.valueOf(param[0]));
+		TableOrder tableOrderReq = new TableOrder();
+		tableOrderReq.setTableNum(Integer.valueOf(param[0]));
 		
-		tableReq.setOrderNum(2);
+		tableOrderReq.setOrderNum(2);
 		
 		try	{
 			//serialize by fastjson
-			String reqBody = JSON.toJSONString(tableReq);
+			String reqBody = JSON.toJSONString(tableOrderReq);
 			
 			//send the http post and recv response
 			String specUrl = "createTable";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				Table tableResp = JSON.parseObject(respBody, Table.class);
-				if (tableResp.getTableNum() == tableReq.getTableNum()) {
+				TableOrder tableOrderResp = JSON.parseObject(respBody, TableOrder.class);
+				if (tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
 					//get the order num and table num from tableResp
-					orderNum = tableResp.getOrderNum();
-					tableNum = tableResp.getTableNum();
+					orderNum = tableOrderResp.getOrderNum();
+					tableNum = tableOrderResp.getTableNum();
 						
 					return CREATE_TABLE_TASK_SUCCESS;
 				}else {

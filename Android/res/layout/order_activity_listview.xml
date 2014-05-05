@@ -17,7 +17,7 @@
         android:text="@string/order_activity_listview_price" />
 
     <TextView
-        android:id="@+id/order_activity_listview_amount_textview"
+        android:id="@+id/order_activity_listview_menu_type_textview"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:text="@string/order_activity_listview_amount" />

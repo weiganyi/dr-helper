@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/menu_activity_listview_menu_type_textview"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="@string/menu_activity_listview_menu_type" />
+
+    <TextView
+        android:id="@+id/menu_activity_listview_menu_textview"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:text="@string/menu_activity_listview_menu" />
+
+    <TextView
+        android:id="@+id/menu_activity_listview_price_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/menu_activity_listview_price" />
+
+</LinearLayout>

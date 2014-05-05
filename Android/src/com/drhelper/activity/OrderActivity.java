@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.ListIterator;
 
 import com.drhelper.R;
-import com.drhelper.bean.Menu;
+import com.drhelper.bean.Detail;
 import com.drhelper.bean.Order;
 import com.drhelper.task.DeleteOrderTask;
 import com.drhelper.task.LoadOrderTask;
@@ -25,7 +25,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 public class OrderActivity extends AfterLoginActivity {
-	private static final String ORDERACTIVITY_TAG = "OrderActivity";
+	private static final String ORDER_ACTIVITY_TAG = "OrderActivity";
 	
 	public static final String ORDER_NUM = "order_num";
 	public static final String TABLE_NUM = "table_num";
@@ -46,19 +46,19 @@ public class OrderActivity extends AfterLoginActivity {
 	
 	private int startOrderTask = 0;
 	
-	private static final String MENU = "menu";
-	private static final String PRICE = "price";
-	private static final String AMOUNT = "amount";
-	private static final String FINISH = "finish";
-	private static final String REMARK = "remark";
+	private static final String MENU_TAG = "menu";
+	private static final String PRICE_TAG = "price";
+	private static final String AMOUNT_TAG = "amount";
+	private static final String FINISH_TAG = "finish";
+	private static final String REMARK_TAG = "remark";
 	private ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
-	private String[] from = {MENU, PRICE, AMOUNT, FINISH, REMARK};
+	private String[] from = {MENU_TAG, PRICE_TAG, AMOUNT_TAG, FINISH_TAG, REMARK_TAG};
 	private int[] to = {R.id.order_activity_listview_menu_textview, R.id.order_activity_listview_price_textview, 
-			R.id.order_activity_listview_amount_textview, R.id.order_activity_listview_finish_textview, 
+			R.id.order_activity_listview_menu_type_textview, R.id.order_activity_listview_finish_textview, 
 			R.id.order_activity_listview_remark_textview};
 
 	private Order order;
-	private int deleteItem;
+	private int deletePos;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -78,7 +78,7 @@ public class OrderActivity extends AfterLoginActivity {
 		tableNum = bundle.getString(TABLE_NUM);
 		if (orderNum == null || orderNum.length() == 0 || 
 				tableNum == null || tableNum.length() == 0) {
-			Log.e(ORDERACTIVITY_TAG, "OrderActivity.onCreate(): the order number or table number isn't exist");
+			Log.e(ORDER_ACTIVITY_TAG, "OrderActivity.onCreate(): the order number or table number isn't exist");
 			return;
 		}
 		
@@ -169,7 +169,7 @@ public class OrderActivity extends AfterLoginActivity {
 					int position, long id) {
 				// TODO Auto-generated method stub
 				if (position > 0) {
-					deleteItem = position-1;
+					deletePos = position-1;
 					DialogBox.showConfirmDialog(OrderActivity.this, 
 							getString(R.string.order_activity_want_to_delete_menu), 
 							"deleteMenu");
@@ -182,10 +182,10 @@ public class OrderActivity extends AfterLoginActivity {
 	}
 	
 	public void deleteMenu() {
-		ArrayList<Menu> menuList = order.getMenuList();
-		if (menuList.isEmpty() != true) {
-			//delete the selected menu from menu list
-			menuList.remove(deleteItem);
+		ArrayList<Detail> detail = order.getDetail();
+		if (detail != null && detail.isEmpty() != true) {
+			//delete the selected menu from detail
+			detail.remove(deletePos);
 			
 			//clear the list
 			list.clear();
@@ -202,34 +202,40 @@ public class OrderActivity extends AfterLoginActivity {
 		userTV.setText(order.getUser());
 		timeTV.setText(order.getTime());
 		payTV.setText(String.valueOf(order.isPay()));
-		
-		Menu menu = null;
-		HashMap<String, String> map = null;
-		ListIterator<Menu> it = order.getMenuList().listIterator();
 
 		//fill the title into the map
-		map = new HashMap<String, String>();
-		map.put(MENU, getString(R.string.order_activity_listview_menu));
-		map.put(PRICE, getString(R.string.order_activity_listview_price));
-		map.put(AMOUNT, getString(R.string.order_activity_listview_amount));
-		map.put(FINISH, getString(R.string.order_activity_listview_finish));
-		map.put(REMARK, getString(R.string.order_activity_listview_remark));
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put(MENU_TAG, getString(R.string.order_activity_listview_menu));
+		map.put(PRICE_TAG, getString(R.string.order_activity_listview_price));
+		map.put(AMOUNT_TAG, getString(R.string.order_activity_listview_amount));
+		map.put(FINISH_TAG, getString(R.string.order_activity_listview_finish));
+		map.put(REMARK_TAG, getString(R.string.order_activity_listview_remark));
 		//append the map into the list
 		list.add(map);
+		
+		ArrayList<Detail> detail = order.getDetail();
+		if (detail != null && detail.isEmpty() != true) {
+			Detail menu = null;
+			ListIterator<Detail> it = detail.listIterator();
 
-		while(it.hasNext()) {
-			menu = it.next();
+			while(it.hasNext()) {
+				menu = it.next();
 
-			//fill data into the map
-			map = new HashMap<String, String>();
-			map.put(MENU, menu.getMenu());
-			map.put(PRICE, String.valueOf(menu.getPrice()));
-			map.put(AMOUNT, String.valueOf(menu.getAmount()));
-			map.put(FINISH, String.valueOf(menu.isFinish()));
-			map.put(REMARK, menu.getRemark());
-			//append the map into the list
-			list.add(map);
-		}
+				//fill data into the map
+				map = new HashMap<String, String>();
+				map.put(MENU_TAG, menu.getMenu());
+				map.put(PRICE_TAG, String.valueOf(menu.getPrice()));
+				map.put(AMOUNT_TAG, String.valueOf(menu.getAmount()));
+				if (menu.isFinish() == true) {
+					map.put(FINISH_TAG, getString(R.string.order_activity_finish_true));
+				}else {
+					map.put(FINISH_TAG, getString(R.string.order_activity_finish_false));
+				}
+				map.put(REMARK_TAG, menu.getRemark());
+				//append the map into the list
+				list.add(map);
+			}
+		}		
 
 		//construct the adapter
 		SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.order_activity_listview, 
@@ -247,6 +253,49 @@ public class OrderActivity extends AfterLoginActivity {
 	public void onActivityResult(int reqCode, int resCode, Intent data) {
 		super.onActivityResult(reqCode, resCode, data);
 		
+		String menu;
+		String price;
+		String amount;
+		String remark;
+		HashMap<String, String> map;
+
+		if (resCode == RESULT_OK && data != null) {
+			Bundle bundle = data.getExtras();
+			if (bundle != null) {
+				menu = bundle.getString(MENU_TAG);
+				price = bundle.getString(PRICE_TAG);
+				amount = bundle.getString(AMOUNT_TAG);
+				remark = bundle.getString(REMARK_TAG);
+				
+				//fill data into the order 
+				ListIterator<Detail> iterator = order.getDetail().listIterator();
+				Detail detail;
+				
+				detail = new Detail();
+				detail.setMenu(menu);
+				detail.setPrice(Integer.valueOf(price));
+				detail.setAmount(Integer.valueOf(amount));
+				detail.setFinish(false);
+				detail.setRemark(remark);
+				iterator.add(detail);
+				
+				//fill data into the map
+				map = new HashMap<String, String>();
+				map.put(MENU_TAG, menu);
+				map.put(PRICE_TAG, price);
+				map.put(AMOUNT_TAG, amount);
+				map.put(FINISH_TAG, getString(R.string.order_activity_finish_false));
+				map.put(REMARK_TAG, remark);
+				//append the map into the list
+				list.add(map);
+				
+				//construct the adapter
+				SimpleAdapter adapter = new SimpleAdapter(this, list, R.layout.order_activity_listview, 
+						from, to);
+				//bind the adapter
+				menuLV.setAdapter(adapter);	
+			}
+		}
 	}
 	
 	private void doSubmitOrder() {
