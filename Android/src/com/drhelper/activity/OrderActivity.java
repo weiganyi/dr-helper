@@ -46,11 +46,11 @@ public class OrderActivity extends AfterLoginActivity {
 	
 	private int startOrderTask = 0;
 	
-	private static final String MENU_TAG = "menu";
-	private static final String PRICE_TAG = "price";
-	private static final String AMOUNT_TAG = "amount";
-	private static final String FINISH_TAG = "finish";
-	private static final String REMARK_TAG = "remark";
+	public static final String MENU_TAG = "menu";
+	public static final String PRICE_TAG = "price";
+	public static final String AMOUNT_TAG = "amount";
+	public static final String FINISH_TAG = "finish";
+	public static final String REMARK_TAG = "remark";
 	private ArrayList<HashMap<String, String>> list = new ArrayList<HashMap<String, String>>();
 	private String[] from = {MENU_TAG, PRICE_TAG, AMOUNT_TAG, FINISH_TAG, REMARK_TAG};
 	private int[] to = {R.id.order_activity_listview_menu_textview, R.id.order_activity_listview_price_textview, 

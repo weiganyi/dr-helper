@@ -27,6 +27,7 @@
         <activity android:name=".activity.MenuActivity"></activity>
         <provider android:name=".provider.MenuProvider" android:authorities="com.drhelper.provider.MenuProvider"></provider>
         <activity android:name=".activity.OrderMenuActivity"></activity>
+        <activity android:name=".activity.UpdateActivity"></activity>
         </application>
 
 </manifest>

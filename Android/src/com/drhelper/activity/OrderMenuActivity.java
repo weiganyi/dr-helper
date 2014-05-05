@@ -15,10 +15,6 @@ import android.widget.TextView;
 
 public class OrderMenuActivity extends AfterLoginActivity {
 	private static final String ORDER_MENU_ACTIVITY_TAG = "OrderMenuActivity";
-
-	private static final String MENU_TAG = "menu";
-	private static final String AMOUNT_TAG = "amount";
-	private static final String REMARK_TAG = "remark";
 	
 	private String menu;
 	private String amount;
@@ -46,7 +42,7 @@ public class OrderMenuActivity extends AfterLoginActivity {
 		
 		//get the extras data from intent
 		Bundle bundle = getIntent().getExtras();
-		menu = bundle.getString(MENU_TAG);
+		menu = bundle.getString(OrderActivity.MENU_TAG);
 		if (menu == null || menu.length() == 0) {
 			Log.e(ORDER_MENU_ACTIVITY_TAG, "OrderMenuActivity.onCreate(): the menu isn't exist");
 			return;
@@ -82,8 +78,8 @@ public class OrderMenuActivity extends AfterLoginActivity {
 				Intent intent = new Intent();
 				//append the menu as extras data
 				Bundle bundle = new Bundle();
-				bundle.putString(AMOUNT_TAG, amount);
-				bundle.putString(REMARK_TAG, remark);
+				bundle.putString(OrderActivity.AMOUNT_TAG, amount);
+				bundle.putString(OrderActivity.REMARK_TAG, remark);
 				intent.putExtras(bundle);
 				setResult(RESULT_OK, intent);
 				

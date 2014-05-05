@@ -40,9 +40,6 @@ public class MenuActivity extends AfterLoginActivity {
 	private MenuList menuList = new MenuList();
 	private int selectPos;
 
-	private static final String AMOUNT_TAG = "amount";
-	private static final String REMARK_TAG = "remark";
-	
 	private String menu;
 	private String price;
 	private String amount;
@@ -101,17 +98,17 @@ public class MenuActivity extends AfterLoginActivity {
 		if (resCode == RESULT_OK && data != null) {
 			Bundle bundle = data.getExtras();
 			if (bundle != null) {
-				amount = bundle.getString(AMOUNT_TAG);
-				remark = bundle.getString(REMARK_TAG);
+				amount = bundle.getString(OrderActivity.AMOUNT_TAG);
+				remark = bundle.getString(OrderActivity.REMARK_TAG);
 				
 				//construct a Intent
 				Intent intent = new Intent();
 				//append the fields as extras data
 				Bundle bundle2 = new Bundle();
-				bundle2.putString(MENU_TAG, menu);
-				bundle2.putString(PRICE_TAG, price);
-				bundle2.putString(AMOUNT_TAG, amount);
-				bundle2.putString(REMARK_TAG, remark);
+				bundle2.putString(OrderActivity.MENU_TAG, menu);
+				bundle2.putString(OrderActivity.PRICE_TAG, price);
+				bundle2.putString(OrderActivity.AMOUNT_TAG, amount);
+				bundle2.putString(OrderActivity.REMARK_TAG, remark);
 				intent.putExtras(bundle2);
 				setResult(RESULT_OK, intent);
 				

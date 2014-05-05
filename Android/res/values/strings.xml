@@ -79,5 +79,9 @@
     <string name="order_menu_activity_amount_is_null">输入不能为空，请重新输入</string>
     <string name="order_activity_finish_true">是</string>
     <string name="order_activity_finish_false">否</string>
+    <string name="update_activity_button">开始更新</string>
+    <string name="update_activity_result_label_textview">更新结果</string>
+    <string name="update_activity_result_true">成功</string>
+    <string name="update_activity_result_false">失败</string>
 
 </resources>

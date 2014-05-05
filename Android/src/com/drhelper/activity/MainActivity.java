@@ -143,18 +143,9 @@ public class MainActivity extends AfterLoginActivity {
 						
 						@Override
 						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							return;
-						}
-					});
-					break;
-				
-				case 6:
-					imgView.setOnClickListener(new OnClickListener() {
-						
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
+							//launch to UpdateActivity
+							Intent intent = new Intent(MainActivity.this, UpdateActivity.class);
+							startActivity(intent);
 							return;
 						}
 					});

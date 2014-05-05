@@ -81,7 +81,6 @@ public class CheckTableActivity extends AfterLoginActivity {
 			startCheckTableTask = 0;
 			return;
 		}
-
 		
 		EmptyTable emptyTable = null;
 		HashMap<String, String> map = null;
