@@ -73,7 +73,7 @@ public class CreateTableActivity extends AfterLoginActivity {
 		}
 	}
 	
-	public void doCreateTableResult(Integer result, int orderNum, int tableNum) {
+	public void doCreateTableResult(Integer result, int orderNum) {
 		if (result == CreateTableTask.CREATE_TABLE_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(CreateTableActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
@@ -88,10 +88,9 @@ public class CreateTableActivity extends AfterLoginActivity {
 		
 		//launch to OrderActivity
 		Intent intent = new Intent(CreateTableActivity.this, OrderActivity.class);
-		//append the order num and table num as extras data
+		//append the order num as extras data
 		Bundle bundle = new Bundle();
 		bundle.putString(OrderActivity.ORDER_NUM, String.valueOf(orderNum));
-		bundle.putString(OrderActivity.TABLE_NUM, String.valueOf(tableNum));
 		intent.putExtras(bundle);
 		startActivity(intent);
 		

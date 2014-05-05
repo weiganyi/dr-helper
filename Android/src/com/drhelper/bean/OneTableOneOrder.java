@@ -1,6 +1,6 @@
 package com.drhelper.bean;
 
-public class TableOrder {
+public class OneTableOneOrder {
 	private int tableNum;
 	private int orderNum;
 

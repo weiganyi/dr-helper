@@ -37,17 +37,14 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 	@Override
 	protected Integer doInBackground(String... param) {
 		// TODO Auto-generated method stub
-		if (param.length != 2) {
-			Log.e(LOAD_ORDER_TASK_TAG, "LoadOrderTask.doInBackground(): there isn't two input param");
+		if (param.length != 1) {
+			Log.e(LOAD_ORDER_TASK_TAG, "LoadOrderTask.doInBackground(): there isn't one input param");
 			return LOAD_ORDER_TASK_LOCAL_FALIURE;
 		}
 		
 		Order orderReq = new Order();
 		if (param[0] != null) {
 			orderReq.setOrder(Integer.parseInt(param[0]));
-		}
-		if (param[1] != null) {
-			orderReq.setTable(Integer.parseInt(param[1]));
 		}
 		
 		try	{
@@ -61,8 +58,7 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Order orderResp = JSON.parseObject(respBody, Order.class);
-				if (orderResp.getOrder() == orderReq.getOrder() && 
-						orderResp.getTable() == orderReq.getTable()) {
+				if (orderResp.getOrder() == orderReq.getOrder()) {
 					//store the order object
 					order = orderResp;
 					return LOAD_ORDER_TASK_SUCCESS;

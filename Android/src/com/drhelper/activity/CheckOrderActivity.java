@@ -114,7 +114,7 @@ public class CheckOrderActivity extends AfterLoginActivity {
 		}
 	}
 	
-	public void doCheckOrderResult(Integer result, int orderNum, int tableNum) {
+	public void doCheckOrderResult(Integer result, int orderNum) {
 		if (result == CheckOrderTask.CHECK_ORDER_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(CheckOrderActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
@@ -129,10 +129,9 @@ public class CheckOrderActivity extends AfterLoginActivity {
 		
 		//launch to OrderActivity
 		Intent intent = new Intent(CheckOrderActivity.this, OrderActivity.class);
-		//append the order num and table num as extras data
+		//append the order num as extras data
 		Bundle bundle = new Bundle();
 		bundle.putString(OrderActivity.ORDER_NUM, String.valueOf(orderNum));
-		bundle.putString(OrderActivity.TABLE_NUM, String.valueOf(tableNum));
 		intent.putExtras(bundle);
 		startActivity(intent);
 		

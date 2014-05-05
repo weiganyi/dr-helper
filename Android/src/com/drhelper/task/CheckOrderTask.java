@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CheckOrderActivity;
-import com.drhelper.bean.TableOrder;
+import com.drhelper.bean.OneTableOneOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -14,7 +14,6 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 
 	private Activity act;
 	private int orderNum;
-	private int tableNum;
 	
 	public static final int CHECK_ORDER_TASK_SUCCESS = 0;
 	public static final int CHECK_ORDER_TASK_LOCAL_FALIURE = 1;
@@ -32,7 +31,7 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((CheckOrderActivity)act).doCheckOrderResult(result, orderNum, tableNum);
+		((CheckOrderActivity)act).doCheckOrderResult(result, orderNum);
 	}
 	
 	@Override
@@ -43,7 +42,7 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 			return CHECK_ORDER_TASK_LOCAL_FALIURE;
 		}
 		
-		TableOrder tableOrderReq = new TableOrder();
+		OneTableOneOrder tableOrderReq = new OneTableOneOrder();
 		if (param[0] != null) {
 			tableOrderReq.setOrderNum(Integer.valueOf(param[0]));
 		}else if (param[1] != null) {
@@ -61,12 +60,11 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				TableOrder tableOrderResp = JSON.parseObject(respBody, TableOrder.class);
+				OneTableOneOrder tableOrderResp = JSON.parseObject(respBody, OneTableOneOrder.class);
 				if (tableOrderResp.getOrderNum() == tableOrderReq.getOrderNum() || 
 						tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
-					//get the order num and table num from tableResp
+					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();
-					tableNum = tableOrderResp.getTableNum();
 					return CHECK_ORDER_TASK_SUCCESS;
 				}else {
 					return CHECK_ORDER_TASK_REMOTE_FALIURE;

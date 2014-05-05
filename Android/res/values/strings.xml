@@ -83,5 +83,15 @@
     <string name="update_activity_result_label_textview">更新结果</string>
     <string name="update_activity_result_true">成功</string>
     <string name="update_activity_result_false">失败</string>
+    <string name="change_table_activity_table1_label_textview">桌号1</string>
+    <string name="change_table_activity_table2_label_textview">桌号2</string>
+    <string name="change_table_activity_button">转换</string>
+    <string name="change_table_activity_table_num_is_null">桌号为空，请重新输入</string>
+    <string name="union_table_activity_table1_label_textview">桌号1</string>
+    <string name="union_table_activity_button">合并</string>
+    <string name="union_table_activity_table_num_is_null">桌号不能为空，请重新输入</string>
+    <string name="union_table_activity_table2_label_textview">桌号2</string>
+    <string name="change_table_activity_remote_failure">桌号转换失败，请重新操作</string>
+    <string name="union_table_activity_remote_failure">桌号合并失败，请重新再试</string>
 
 </resources>

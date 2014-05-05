@@ -28,6 +28,8 @@
         <provider android:name=".provider.MenuProvider" android:authorities="com.drhelper.provider.MenuProvider"></provider>
         <activity android:name=".activity.OrderMenuActivity"></activity>
         <activity android:name=".activity.UpdateActivity"></activity>
+        <activity android:name=".activity.ChangeTableActivity"></activity>
+        <activity android:name=".activity.UnionTableActivity"></activity>
         </application>
 
 </manifest>

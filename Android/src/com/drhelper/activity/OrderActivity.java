@@ -28,10 +28,8 @@ public class OrderActivity extends AfterLoginActivity {
 	private static final String ORDER_ACTIVITY_TAG = "OrderActivity";
 	
 	public static final String ORDER_NUM = "order_num";
-	public static final String TABLE_NUM = "table_num";
 	
 	private String orderNum;
-	private String tableNum;
 
 	private TextView orderTV;
 	private TextView tableTV;
@@ -75,10 +73,8 @@ public class OrderActivity extends AfterLoginActivity {
 		//get the extras data from intent
 		Bundle bundle = getIntent().getExtras();
 		orderNum = bundle.getString(ORDER_NUM);
-		tableNum = bundle.getString(TABLE_NUM);
-		if (orderNum == null || orderNum.length() == 0 || 
-				tableNum == null || tableNum.length() == 0) {
-			Log.e(ORDER_ACTIVITY_TAG, "OrderActivity.onCreate(): the order number or table number isn't exist");
+		if (orderNum == null || orderNum.length() == 0) {
+			Log.e(ORDER_ACTIVITY_TAG, "OrderActivity.onCreate(): the order number isn't exist");
 			return;
 		}
 		
@@ -135,7 +131,7 @@ public class OrderActivity extends AfterLoginActivity {
 			startOrderTask = 1;
 
 			LoadOrderTask task = new LoadOrderTask(OrderActivity.this);
-			task.execute(orderNum, tableNum);
+			task.execute(orderNum);
 		}else {
 			DialogBox.showAlertDialog(OrderActivity.this, 
 					this.getString(R.string.activity_asynctask_running), null);

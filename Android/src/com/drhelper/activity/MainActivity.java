@@ -122,6 +122,9 @@ public class MainActivity extends AfterLoginActivity {
 						@Override
 						public void onClick(View v) {
 							// TODO Auto-generated method stub
+							//launch to ChangeTableActivity
+							Intent intent = new Intent(MainActivity.this, ChangeTableActivity.class);
+							startActivity(intent);
 							return;
 						}
 					});
@@ -133,6 +136,9 @@ public class MainActivity extends AfterLoginActivity {
 						@Override
 						public void onClick(View v) {
 							// TODO Auto-generated method stub
+							//launch to UnionTableActivity
+							Intent intent = new Intent(MainActivity.this, UnionTableActivity.class);
+							startActivity(intent);
 							return;
 						}
 					});

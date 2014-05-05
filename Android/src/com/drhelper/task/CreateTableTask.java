@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CreateTableActivity;
-import com.drhelper.bean.TableOrder;
+import com.drhelper.bean.OneTableOneOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -14,7 +14,6 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 
 	private Activity act;
 	private int orderNum;
-	private int tableNum;
 	
 	public static final int CREATE_TABLE_TASK_SUCCESS = 0;
 	public static final int CREATE_TABLE_TASK_LOCAL_FALIURE = 1;
@@ -32,7 +31,7 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((CreateTableActivity)act).doCreateTableResult(result, orderNum, tableNum);
+		((CreateTableActivity)act).doCreateTableResult(result, orderNum);
 	}
 	
 	@Override
@@ -43,7 +42,7 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 			return CREATE_TABLE_TASK_LOCAL_FALIURE;
 		}
 		
-		TableOrder tableOrderReq = new TableOrder();
+		OneTableOneOrder tableOrderReq = new OneTableOneOrder();
 		tableOrderReq.setTableNum(Integer.valueOf(param[0]));
 		
 		tableOrderReq.setOrderNum(2);
@@ -57,11 +56,10 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				TableOrder tableOrderResp = JSON.parseObject(respBody, TableOrder.class);
+				OneTableOneOrder tableOrderResp = JSON.parseObject(respBody, OneTableOneOrder.class);
 				if (tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
-					//get the order num and table num from tableResp
+					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();
-					tableNum = tableOrderResp.getTableNum();
 						
 					return CREATE_TABLE_TASK_SUCCESS;
 				}else {
