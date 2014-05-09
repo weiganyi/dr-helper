@@ -9,20 +9,6 @@ import android.util.Log;
 public class HttpEngine {
 	private static final String HTTP_ENGINE_TAG = "HttpEngine";
 
-	private static String httpSrvBaseUrl = "http://172.16.3.146/DrHelperServer/";
-	
-	public static String getHttpSrvBaseUrl() {
-		return httpSrvBaseUrl;
-	}
-	
-	public static void setHttpSrvBaseUrl(String httpSrvBaseUrl)	{
-		if (httpSrvBaseUrl != null) {
-			HttpEngine.httpSrvBaseUrl = httpSrvBaseUrl;
-		}else {
-			Log.e(HTTP_ENGINE_TAG, "HttpEngine.setHttpSrvBaseUrl(): input param httpSrvBaseUrl is null");
-		}
-	}
-	
 	public static String doPost(String url, String reqBody) {
 		HttpClient client = new DefaultHttpClient();
 
@@ -31,7 +17,8 @@ public class HttpEngine {
 			return null;
 		}
 		
-		HttpPost request = new HttpPost(url);
+		String fullUrl = "http://" + PrefsManager.getServer_address() + "/DrHelperServer/" + url;
+		HttpPost request = new HttpPost(fullUrl);
 
 		if (reqBody != null && reqBody.length() != 0) {
 			try	{

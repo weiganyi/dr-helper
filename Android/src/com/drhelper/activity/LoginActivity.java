@@ -1,8 +1,10 @@
 package com.drhelper.activity;
 
 import com.drhelper.R;
+import com.drhelper.service.NoticeService;
 import com.drhelper.task.LoginTask;
 import com.drhelper.util.DialogBox;
+import com.drhelper.util.PrefsManager;
 
 import android.os.Bundle;
 import android.annotation.SuppressLint;
@@ -40,6 +42,9 @@ public class LoginActivity extends BeforeLoginActivity {
 		passwdText = (EditText)findViewById(R.id.login_activity_passwd_edittext);
 		loginBtn = (Button)findViewById(R.id.login_activity_button);
 
+		//load the shared prefs
+		super.saveSharedPref();
+		
 		//set listen handler for login button
 		loginBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
@@ -104,6 +109,7 @@ public class LoginActivity extends BeforeLoginActivity {
 			//save the user
 			Editor editor = prefs.edit();
 			editor.putString("user_name", userName);
+			editor.putString("user_passwd", userPasswd);
 			editor.commit();
 		}else {
 			DialogBox.showAlertDialog(LoginActivity.this, 
@@ -112,9 +118,18 @@ public class LoginActivity extends BeforeLoginActivity {
 			return;
 		}
 		
+		//start the NoticeService
+		if (PrefsManager.isNotice_service_start() == false && 
+				(PrefsManager.isEmpty_table_notice() == true || 
+				PrefsManager.isFinish_menu_notice() == true)) {
+			Intent intent1 = new Intent(LoginActivity.this, NoticeService.class);
+			startService(intent1);
+			PrefsManager.setNotice_service_start(true);
+		}
+		
 		//launch to MainActivity
-		Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-		startActivity(intent);
+		Intent intent2 = new Intent(LoginActivity.this, MainActivity.class);
+		startActivity(intent2);
 
 		startLoginTask = 0;
 	}

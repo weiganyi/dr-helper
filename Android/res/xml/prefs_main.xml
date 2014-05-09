@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-    <EditTextPreference android:title="@string/prefs_activity_server_address_title" android:key="server_address" android:summary="@string/prefs_activity_server_address_summary" android:dialogTitle="@string/prefs_activity_server_address_dialog_title" android:defaultValue="@string/prefs_activity_server_address_default_value"/>
+    <EditTextPreference android:title="@string/prefs_activity_server_address_title" 
+        android:key="server_address" 
+        android:summary="@string/prefs_activity_server_address_summary" 
+        android:dialogTitle="@string/prefs_activity_server_address_dialog_title" 
+        android:defaultValue="@string/prefs_activity_server_address_default_value"/>
+    <CheckBoxPreference android:key="empty_table_notice" 
+        android:title="@string/prefs_activity_empty_table_notice_title" 
+        android:summary="@string/prefs_activity_empty_table_notice_summary"/>
+    <CheckBoxPreference android:key="finish_menu_notice" 
+        android:title="@string/prefs_activity_finish_menu_notice_title" 
+        android:summary="@string/prefs_activity_finish_menu_notice_summary"/>
     
 
 </PreferenceScreen>

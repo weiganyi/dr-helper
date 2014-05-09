@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="8" /><application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/AppTheme">
+        android:targetSdkVersion="8" /><application android:icon="@drawable/dr_helper" android:label="@string/app_name" android:theme="@style/AppTheme">
         <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +30,7 @@
         <activity android:name=".activity.UpdateActivity"></activity>
         <activity android:name=".activity.ChangeTableActivity"></activity>
         <activity android:name=".activity.UnionTableActivity"></activity>
+        <service android:name=".service.NoticeService"></service>
         </application>
 
 </manifest>
