@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.OrderActivity;
-import com.drhelper.bean.Order;
+import com.drhelper.entity.Order;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -52,13 +52,14 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 			String reqBody = JSON.toJSONString(orderReq);
 			
 			//send the http post and recv response
-			String specUrl = "loadOrder";
+			String specUrl = "loadOrder.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			respBody = "{\"id\":\"1\", \"order\":2, \"table\":2, \"user\":\"Œ§∏…“Ì\", \"time\":\"20140501 16:45\", \"pay\":true, \"detail\":[{\"menu\":\"œ„«€œ„∏…»‚Àø\", \"price\":12, \"amount\":1, \"finish\":true, \"remark\":\"Œ¢¿±\"}, {\"menu\":\"∂ÁΩ∑”„Õ∑\", \"price\":32, \"amount\":1, \"finish\":true, \"remark\":\"\"}]}";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Order orderResp = JSON.parseObject(respBody, Order.class);
-				if (orderResp.getOrder() == orderReq.getOrder()) {
+				if (orderResp != null && 
+						orderResp.getOrder() == orderReq.getOrder()) {
 					//store the order object
 					order = orderResp;
 					return LOAD_ORDER_TASK_SUCCESS;

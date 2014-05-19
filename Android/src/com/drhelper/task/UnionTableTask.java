@@ -56,12 +56,14 @@ public class UnionTableTask extends AsyncTask<String, Integer, Integer> {
 			String reqBody = JSON.toJSONString(tableOrderReq);
 			
 			//send the http post and recv response
-			String specUrl = "unionTable";
+			String specUrl = "unionTable.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				TwoTableOneOrder tableOrderResp = JSON.parseObject(respBody, TwoTableOneOrder.class);
-				if (tableOrderResp.getOrderNum().equals("") != true) {
+				if (tableOrderResp != null && 
+						tableOrderResp.getOrderNum() != null && 
+						tableOrderResp.getOrderNum().equals("") != true) {
 					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();
 					return UNION_TABLE_TASK_SUCCESS;

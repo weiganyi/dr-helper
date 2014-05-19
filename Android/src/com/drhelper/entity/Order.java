@@ -1,4 +1,4 @@
-package com.drhelper.bean;
+package com.drhelper.entity;
 
 import java.util.ArrayList;
 

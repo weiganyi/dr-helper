@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.OrderActivity;
-import com.drhelper.bean.Order;
+import com.drhelper.entity.Order;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -48,12 +48,13 @@ public class DeleteOrderTask extends AsyncTask<Order, Integer, Integer> {
 			String reqBody = JSON.toJSONString(orderReq);
 			
 			//send the http post and recv response
-			String specUrl = "deleteOrder";
+			String specUrl = "deleteOrder.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Order orderResp = JSON.parseObject(respBody, Order.class);
-				if (orderResp.getOrder() == orderReq.getOrder() && 
+				if (orderResp != null && 
+						orderResp.getOrder() == orderReq.getOrder() && 
 						orderResp.getTable() == orderReq.getTable()) {
 					return DELETE_ORDER_TASK_SUCCESS;
 				}else {

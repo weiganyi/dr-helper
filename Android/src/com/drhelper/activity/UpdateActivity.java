@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.drhelper.R;
-import com.drhelper.bean.Menu;
-import com.drhelper.bean.MenuType;
+import com.drhelper.entity.Menu;
+import com.drhelper.entity.MenuType;
 import com.drhelper.provider.MenuProvider;
 import com.drhelper.task.UpdateTask;
 import com.drhelper.util.DialogBox;

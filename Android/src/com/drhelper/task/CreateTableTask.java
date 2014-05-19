@@ -52,12 +52,13 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 			String reqBody = JSON.toJSONString(tableOrderReq);
 			
 			//send the http post and recv response
-			String specUrl = "createTable";
+			String specUrl = "createTable.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				OneTableOneOrder tableOrderResp = JSON.parseObject(respBody, OneTableOneOrder.class);
-				if (tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
+				if (tableOrderResp != null && 
+						tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
 					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();
 						

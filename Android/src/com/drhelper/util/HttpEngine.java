@@ -1,9 +1,12 @@
 package com.drhelper.util;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.util.Log;
 
 public class HttpEngine {
@@ -17,7 +20,7 @@ public class HttpEngine {
 			return null;
 		}
 		
-		String fullUrl = "http://" + PrefsManager.getServer_address() + "/DrHelperServer/" + url;
+		String fullUrl = "http://" + PrefsManager.getServer_address() + "/drhelper/" + url;
 		HttpPost request = new HttpPost(fullUrl);
 
 		if (reqBody != null && reqBody.length() != 0) {
@@ -30,13 +33,11 @@ public class HttpEngine {
 		}
 		
 		try {
-			/*
 			HttpResponse response = client.execute(request);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				String respBody = EntityUtils.toString(response.getEntity());
 				return respBody;
-			}*/
-			return reqBody;
+			}
 		}catch(Exception e) {
 			Log.e(HTTP_ENGINE_TAG, "HttpEngine.doPost(): send http request or recv respose failure");
 		}

@@ -50,13 +50,16 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 			String reqBody = JSON.toJSONString(loginReq);
 			
 			//send the http post and recv response
-			String specUrl = "login";
+			String specUrl = "login.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				Login loginResp = JSON.parseObject(respBody, Login.class);
-				if (loginResp.getUserName().equals(loginReq.getUserName()) && 
-					loginResp.getUserPasswd().equals(loginReq.getUserPasswd())) {
+				if (loginResp != null && 
+						loginResp.getUserName() != null && 
+						loginResp.getUserName().equals(loginReq.getUserName()) && 
+						loginResp.getUserPasswd() != null && 
+						loginResp.getUserPasswd().equals(loginReq.getUserPasswd())) {
 					return LOGIN_TASK_SUCCESS;
 				}else {
 					return LOGIN_TASK_REMOTE_FALIURE;

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.ListIterator;
 
 import com.drhelper.R;
-import com.drhelper.bean.Detail;
-import com.drhelper.bean.Order;
+import com.drhelper.entity.Detail;
+import com.drhelper.entity.Order;
 import com.drhelper.task.DeleteOrderTask;
 import com.drhelper.task.LoadOrderTask;
 import com.drhelper.task.SubmitOrderTask;

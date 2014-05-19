@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.UpdateActivity;
-import com.drhelper.bean.MenuType;
-import com.drhelper.bean.Menu;
+import com.drhelper.entity.Menu;
+import com.drhelper.entity.MenuType;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -47,7 +47,7 @@ public class UpdateTask extends AsyncTask<String, Integer, Integer> {
 		
 		try	{
 			//send the http post and recv response
-			specUrl = "updateMenuType";
+			specUrl = "updateMenuType.do";
 			respBody = HttpEngine.doPost(specUrl, null);
 			respBody = "[{\"menu_type_id\":0, \"menu_type_name\":\"Ö÷Ê³\"}, {\"menu_type_id\":1, \"menu_type_name\":\"³´²Ë\"}, {\"menu_type_id\":2, \"menu_type_name\":\"Ìðµã\"}]";
 			if (respBody != null && respBody.length() != 0) {
@@ -62,7 +62,8 @@ public class UpdateTask extends AsyncTask<String, Integer, Integer> {
 					if (respBody != null && respBody.length() != 0) {
 						//unserialize from response string
 						menuListResp = JSON.parseArray(respBody, Menu.class);
-						if (menuListResp.isEmpty() != true) {
+						if (menuListResp != null && 
+								menuListResp.isEmpty() != true) {
 							return UPDATE_TASK_SUCCESS;
 						}else {
 							return UPDATE_TASK_REMOTE_FALIURE;

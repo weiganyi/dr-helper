@@ -56,12 +56,13 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 			String reqBody = JSON.toJSONString(tableOrderReq);
 			
 			//send the http post and recv response
-			String specUrl = "checkOrder";
+			String specUrl = "checkOrder.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				OneTableOneOrder tableOrderResp = JSON.parseObject(respBody, OneTableOneOrder.class);
-				if (tableOrderResp.getOrderNum() == tableOrderReq.getOrderNum() || 
+				if (tableOrderResp != null && 
+						tableOrderResp.getOrderNum() == tableOrderReq.getOrderNum() || 
 						tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
 					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();

@@ -51,6 +51,7 @@ public class LoginService {
 		//close the connect
 		db.closeConnect();
 		
+		respBody = JSON.toJSONString(respLogin);
 		return respBody;
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
@@ -27,11 +28,13 @@ public class LoginServlet extends HttpServlet {
 	}
 	
 	@Override
-	public void init() {
+	public void init() throws ServletException {
+		super.init();
 	}
 	
 	@Override
-	public void service(ServletRequest request, ServletResponse response) {
+	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+		super.service(request, response);
 	}
 
 	@Override
@@ -44,11 +47,12 @@ public class LoginServlet extends HttpServlet {
 		InputStreamReader input = new InputStreamReader(request.getInputStream());
 		BufferedReader br = new BufferedReader(input);
 		String line = null;
-		String reqBody = null;
+		String reqBody = br.readLine();
 		while((line = br.readLine()) != null) {
 			reqBody = reqBody+line;
 		}
-		if (reqBody == null) {
+		if (reqBody.length() == 0) {
+			response.setStatus(400);
 			System.out.println("LoginServlet.doGet(): request body is null");
 			return;
 		}
@@ -57,12 +61,13 @@ public class LoginServlet extends HttpServlet {
 		LoginService service = new LoginService();
 		String respBody = service.doLogin(reqBody);
 		if (respBody == null) {
+			response.setStatus(400);
 			System.out.println("LoginServlet.doGet(): response body is null");
 			return;
 		}
 		
 		//output the result
-		out.print(respBody);
+		out.println(respBody);
 		out.flush();
 		out.close();
 	}

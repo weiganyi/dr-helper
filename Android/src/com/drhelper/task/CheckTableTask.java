@@ -41,13 +41,13 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 		// TODO Auto-generated method stub
 		try	{
 			//send the http post and recv response
-			String specUrl = "checkTable";
+			String specUrl = "checkTable.do";
 			String respBody = HttpEngine.doPost(specUrl, null);
 			respBody = "[{\"tableNum\":1, \"tableSeatNum\":1}, {\"tableNum\":222, \"tableSeatNum\":222}, {\"tableNum\":33, \"tableSeatNum\":33}]";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				emptyTableListResp = JSON.parseArray(respBody, EmptyTable.class);
-				if (emptyTableListResp.isEmpty() != true) {
+				if (emptyTableListResp != null && emptyTableListResp.isEmpty() != true) {
 					return CHECK_TABLE_TASK_SUCCESS;
 				}else {
 					return CHECK_TABLE_TASK_REMOTE_FALIURE;

@@ -1,4 +1,4 @@
-package com.drhelper.bean;
+package com.drhelper.entity;
 
 public class MenuType {
 	private int menu_type_id;

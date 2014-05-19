@@ -1,4 +1,4 @@
-package com.drhelper.bean;
+package com.drhelper.entity;
 
 public class Detail {
 	private String menu;
