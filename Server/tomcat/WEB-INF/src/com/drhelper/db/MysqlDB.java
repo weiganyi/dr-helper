@@ -6,8 +6,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
+import com.drhelper.entity.Table;
 import com.drhelper.entity.User;
 
 public class MysqlDB implements DataBase {
@@ -99,5 +101,43 @@ public class MysqlDB implements DataBase {
 		}
 		
 		return user;
+	}
+	
+	public ArrayList<Table> getEmptyTableList() {
+		ArrayList<Table> tableList = null;;
+		Table table = null;
+		PreparedStatement pstmt;
+		String sql = "select * from dr_table where table_empty=1";
+
+		try {
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			tableList = new ArrayList<Table>();
+			
+			//get the result
+			while (rs.next()) {
+				int table_id = rs.getInt(1);
+				int table_num = rs.getInt(2);
+				int table_seat_num = rs.getInt(3);
+				int table_empty = rs.getInt(4);
+				
+				table = new Table();
+				table.setTable_id(table_id);
+				table.setTable_num(table_num);
+				table.setTable_seat_num(table_seat_num);
+				table.setTable_empty(table_empty);
+				
+				tableList.add(table);
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getEmptyTable(): sql query catch SQLException");
+			return tableList;
+		}
+		
+		return tableList;
 	}
 }

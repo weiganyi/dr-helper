@@ -2,14 +2,14 @@ package com.drhelper.service;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.bean.Login;
-import com.drhelper.db.MysqlDB;
+import com.drhelper.db.DBManager;
 import com.drhelper.entity.User;
 
-public class LoginService {
-	public String doLogin(String reqBody) {
-		String respBody = null;
+public class LoginService extends Service {
+	public String doAction(String reqBody) {
 		Login reqLogin = null;
 		Login respLogin = null;
+		String respBody = null;
 		
 		//parse the body
 		try{
@@ -29,16 +29,10 @@ public class LoginService {
 		
 		respLogin = new Login();
 		
-		//create the connect to mysql
-		MysqlDB db = new MysqlDB();
-		boolean result = db.openConnect();
-		if (!result) {
-			respBody = JSON.toJSONString(respLogin);
-			return respBody;
-		}
-		
 		//check the user and passwd
+		DBManager db = new DBManager();
 		User user = db.getUser(userName, userPasswd);
+		db.clear();
 		if (user == null) {
 			respBody = JSON.toJSONString(respLogin);
 			return respBody;
@@ -48,9 +42,7 @@ public class LoginService {
 		respLogin.setUserName(user.getUser_name());
 		respLogin.setUserPasswd(user.getUser_passwd());
 		
-		//close the connect
-		db.closeConnect();
-		
+		//serialize the object
 		respBody = JSON.toJSONString(respLogin);
 		return respBody;
 	}

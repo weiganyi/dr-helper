@@ -13,4 +13,13 @@
         <url-pattern>/login.do</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>CheckTableServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.CheckTableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckTableServlet</servlet-name>
+        <url-pattern>/checkTable.do</url-pattern>
+    </servlet-mapping>
+
 </web-app>

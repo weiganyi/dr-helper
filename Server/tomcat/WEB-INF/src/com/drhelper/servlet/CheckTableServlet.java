@@ -1,18 +1,16 @@
 package com.drhelper.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.drhelper.service.LoginService;
+import com.drhelper.service.CheckTableService;
 
 @SuppressWarnings("serial")
-public class LoginServlet extends HttpServlet {
+public class CheckTableServlet extends HttpServlet {
 	private PrintWriter out;
 
 	@Override
@@ -20,27 +18,13 @@ public class LoginServlet extends HttpServlet {
 		//do some prepare
 		response.setContentType("text/html");
 		out = response.getWriter();
-		
-		//read the request body
-		InputStreamReader input = new InputStreamReader(request.getInputStream());
-		BufferedReader br = new BufferedReader(input);
-		String line = null;
-		String reqBody = br.readLine();
-		while((line = br.readLine()) != null) {
-			reqBody = reqBody+line;
-		}
-		if (reqBody.length() == 0) {
-			response.setStatus(400);
-			System.out.println("LoginServlet.doGet(): request body is null");
-			return;
-		}
 
 		//call the service
-		LoginService service = new LoginService();
-		String respBody = service.doAction(reqBody);
+		CheckTableService service = new CheckTableService();
+		String respBody = service.doAction(null);
 		if (respBody == null) {
 			response.setStatus(400);
-			System.out.println("LoginServlet.doGet(): response body is null");
+			System.out.println("CheckTableServlet.doGet(): response body is null");
 			return;
 		}
 		
