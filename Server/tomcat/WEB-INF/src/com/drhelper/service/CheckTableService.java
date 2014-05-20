@@ -3,13 +3,15 @@ package com.drhelper.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.servlet.http.HttpSession;
+
 import com.alibaba.fastjson.JSON;
-import com.drhelper.bean.EmptyTable;
+import com.drhelper.bean.com.EmptyTable;
 import com.drhelper.db.DBManager;
 import com.drhelper.entity.Table;
 
 public class CheckTableService extends Service {
-	public String doAction(String reqBody) {
+	public String doAction(HttpSession session, String reqBody) {
 		ArrayList<EmptyTable> respEmptyTableList = null;
 		String respBody = null;
 		
@@ -18,7 +20,6 @@ public class CheckTableService extends Service {
 		//get the empty table list
 		DBManager db = new DBManager();
 		ArrayList<Table> tableList = db.getEmptyTableList();
-		db.clear();
 		if (tableList == null) {
 			respBody = JSON.toJSONString(respEmptyTableList);
 			return respBody;

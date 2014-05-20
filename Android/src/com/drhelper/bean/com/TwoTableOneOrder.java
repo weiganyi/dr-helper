@@ -1,9 +1,10 @@
-package com.drhelper.bean;
+package com.drhelper.bean.com;
 
 public class TwoTableOneOrder {
 	private String table1;
 	private String table2;
 	private String orderNum;
+	private boolean result = false;
 
 	public String getTable1() {
 		return table1;
@@ -22,5 +23,11 @@ public class TwoTableOneOrder {
 	}
 	public void setOrderNum(String orderNum) {
 		this.orderNum = orderNum;
+	}
+	public boolean isResult() {
+		return result;
+	}
+	public void setResult(boolean result) {
+		this.result = result;
 	}
 }

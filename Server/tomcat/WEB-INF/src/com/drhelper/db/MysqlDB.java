@@ -31,7 +31,7 @@ public class MysqlDB implements DataBase {
 			mysql_url = prop.getProperty("mysql_url");
 			mysql_username = prop.getProperty("mysql_username");
 			mysql_password = prop.getProperty("mysql_password");
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			System.out.println("MysqlDB.openConnect(): properties catch IOException");
 			return false;
 		}
@@ -72,6 +72,9 @@ public class MysqlDB implements DataBase {
 		String sql = "select * from dr_user where user_name=? and user_passwd=?";
 
 		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
 			//prepare the statement
 			pstmt = conn.prepareStatement(sql);
 			
@@ -110,6 +113,9 @@ public class MysqlDB implements DataBase {
 		String sql = "select * from dr_table where table_empty=1";
 
 		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
 			//prepare the statement
 			pstmt = conn.prepareStatement(sql);
 			
@@ -139,5 +145,78 @@ public class MysqlDB implements DataBase {
 		}
 		
 		return tableList;
+	}
+	
+	public boolean updateTable(int tableNum) {
+		PreparedStatement pstmt;
+		String sql1 = "select table_empty from dr_table where table_num=?";
+		String sql2 = "update dr_table set table_empty=0 where table_num=?";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(false);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql1);
+			
+			//fill the param
+			pstmt.setInt(1, tableNum);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			//get the result
+			if (rs.next()) {
+				int table_empty = rs.getInt(1);
+				if (table_empty == 1) {
+					//prepare the statement
+					pstmt = conn.prepareStatement(sql2);
+					
+					//fill the param
+					pstmt.setInt(1, tableNum);
+					
+					//execute the query
+					pstmt.executeUpdate();
+				}else {
+					throw new SQLException();
+				}
+			}else {
+				throw new SQLException();
+			}
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.createTable(): sql update catch SQLException");
+			
+			try {
+				//if fail, do rollback
+				conn.rollback();
+			} catch (SQLException e2) {
+				System.out.println("MysqlDB.createTable(): sql rollback catch SQLException");
+			}
+
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean rollBack() {
+		try {
+			conn.rollback();
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.rollBack(): sql rollback catch SQLException");
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean commit() {
+		//commit the sql operation
+		try {
+			conn.commit();
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.commit(): sql commit catch SQLException");
+		}
+		return true;
 	}
 }

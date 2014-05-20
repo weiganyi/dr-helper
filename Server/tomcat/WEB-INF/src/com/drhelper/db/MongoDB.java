@@ -2,9 +2,14 @@ package com.drhelper.db;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.Properties;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
@@ -30,7 +35,7 @@ public class MongoDB implements DataBase {
 			mongodb_db = prop.getProperty("mongodb_db");
 			mongodb_username = prop.getProperty("mongodb_username");
 			mongodb_password = prop.getProperty("mongodb_password");
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			System.out.println("MongoDB.openConnect(): properties catch IOException");
 			return false;
 		}
@@ -66,5 +71,52 @@ public class MongoDB implements DataBase {
 		}
 		return true;
 	}
+	
+	public DBObject findLastOne(DBCollection coll) {
+		DBObject dbObj = null;
+		
+		DBCursor cr = coll.find();
+		while(cr.hasNext()) {
+			dbObj = cr.next();
+		}
+		
+		return dbObj;
+	}
 
+	public int createOrder(String user, int table) {
+		int order = 0;
+		String time = null;
+		boolean pay = false;
+		
+		//get or create the collection
+		DBCollection coll = db.getCollection("dr_order");
+
+		//get the maxnium order
+		DBObject dbObj = findLastOne(coll);
+		if (dbObj != null) {
+			Object obj = dbObj.get("order");
+			if (obj != null) {
+				order = Integer.valueOf(obj.toString()) + 1;
+			}else {
+				return order; 
+			}
+		}else {
+			order = 1;
+		}
+		
+		//get the current date
+		Date date = new Date();
+		time = date.toString();
+
+		DBObject doc = new BasicDBObject();
+		doc.put("order", order);
+		doc.put("table", table);
+		doc.put("user", user);
+		doc.put("time", time);
+		doc.put("pay", pay);
+		
+		coll.insert(doc);
+		
+		return order;
+	}
 }

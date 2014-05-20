@@ -1,12 +1,14 @@
 package com.drhelper.service;
 
+import javax.servlet.http.HttpSession;
+
 import com.alibaba.fastjson.JSON;
-import com.drhelper.bean.Login;
+import com.drhelper.bean.com.Login;
 import com.drhelper.db.DBManager;
 import com.drhelper.entity.User;
 
 public class LoginService extends Service {
-	public String doAction(String reqBody) {
+	public String doAction(HttpSession session, String reqBody) {
 		Login reqLogin = null;
 		Login respLogin = null;
 		String respBody = null;
@@ -32,7 +34,6 @@ public class LoginService extends Service {
 		//check the user and passwd
 		DBManager db = new DBManager();
 		User user = db.getUser(userName, userPasswd);
-		db.clear();
 		if (user == null) {
 			respBody = JSON.toJSONString(respLogin);
 			return respBody;
@@ -41,6 +42,10 @@ public class LoginService extends Service {
 		//create the resp object
 		respLogin.setUserName(user.getUser_name());
 		respLogin.setUserPasswd(user.getUser_passwd());
+		respLogin.setResult(true);
+		
+		//save the user name
+		session.setAttribute("id", user.getUser_name());
 		
 		//serialize the object
 		respBody = JSON.toJSONString(respLogin);

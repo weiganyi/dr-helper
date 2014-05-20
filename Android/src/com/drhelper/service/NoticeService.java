@@ -13,9 +13,9 @@ import com.alibaba.fastjson.JSON;
 import com.drhelper.R;
 import com.drhelper.activity.CheckTableActivity;
 import com.drhelper.activity.MainActivity;
-import com.drhelper.bean.NoticeDetail;
-import com.drhelper.bean.NoticeInfo;
-import com.drhelper.bean.NoticeLogin;
+import com.drhelper.bean.com.NoticeDetail;
+import com.drhelper.bean.com.NoticeInfo;
+import com.drhelper.bean.com.NoticeLogin;
 import com.drhelper.util.HttpEngine;
 import com.drhelper.util.PrefsManager;
 
@@ -128,7 +128,7 @@ public class NoticeService extends Service {
 		@Override
 		public void run() {
 			//create a socket
-			/*String url = PrefsManager.getServer_address();
+			String url = PrefsManager.getServer_address();
 			try {
 				socket = new Socket(url, PORT);
 			} catch (UnknownHostException e) {
@@ -153,7 +153,7 @@ public class NoticeService extends Service {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): getInputStream connect to remote failure");
 				return;
 			}
-			br = new BufferedReader(new InputStreamReader(is));*/
+			br = new BufferedReader(new InputStreamReader(is));
 
 			//do login
 			SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_READABLE);
@@ -177,9 +177,9 @@ public class NoticeService extends Service {
 			String request = JSON.toJSONString(loginReq);
 
 			//send the request and recv response
-			/*writeToServer(os, request);
-			String content = readFromServer(br);*/
-			String content = "{\"userName\":\"2\", \"userPasswd\":\"2\", \"result\":true}";
+			writeToServer(os, request);
+			String content = readFromServer(br);
+			//String content = "{\"userName\":\"2\", \"userPasswd\":\"2\", \"result\":true}";
 			if (content == null) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): login return null");
 				return;
@@ -192,7 +192,7 @@ public class NoticeService extends Service {
 			}
 			
 			//get notice info from server
-			/*while ((content = readFromServer(br)) != null) {*/
+			while ((content = readFromServer(br)) != null) {
 			content = "{\"notice\":true}";
 				NoticeInfo ni = JSON.parseObject(content, NoticeInfo.class);
 				if (ni.isNotice() == true) {
@@ -204,7 +204,7 @@ public class NoticeService extends Service {
 						respBody = "{\"emptyTable\":true, \"finishMenu\":true, \"table\":3}";
 						if (respBody == null || respBody.length() == 0) {
 							Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): respBody is null");
-							/*continue;*/
+							continue;
 						}
 						//unserialize from response string
 						NoticeDetail noticeDetailResp = JSON.parseObject(respBody, NoticeDetail.class);
@@ -252,7 +252,7 @@ public class NoticeService extends Service {
 						Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): json serialize or http post is failure");
 					}
 				}
-			/*}*/
+			}
 		}
 	}
 	

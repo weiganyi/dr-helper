@@ -1,8 +1,9 @@
-package com.drhelper.bean;
+package com.drhelper.bean.com;
 
 public class OneTableOneOrder {
 	private int tableNum;
 	private int orderNum;
+	private boolean result = false;
 
 	public int getTableNum() {
 		return tableNum;
@@ -15,6 +16,12 @@ public class OneTableOneOrder {
 	}
 	public void setOrderNum(int orderNum) {
 		this.orderNum = orderNum;
+	}
+	public boolean isResult() {
+		return result;
+	}
+	public void setResult(boolean result) {
+		this.result = result;
 	}
 
 }

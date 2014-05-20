@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CheckOrderActivity;
-import com.drhelper.bean.OneTableOneOrder;
+import com.drhelper.bean.com.OneTableOneOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -62,8 +62,9 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 				//unserialize from response string
 				OneTableOneOrder tableOrderResp = JSON.parseObject(respBody, OneTableOneOrder.class);
 				if (tableOrderResp != null && 
-						tableOrderResp.getOrderNum() == tableOrderReq.getOrderNum() || 
-						tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
+						tableOrderResp.isResult() != false && 
+						(tableOrderResp.getOrderNum() == tableOrderReq.getOrderNum() || 
+						tableOrderResp.getTableNum() == tableOrderReq.getTableNum())) {
 					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();
 					return CHECK_ORDER_TASK_SUCCESS;

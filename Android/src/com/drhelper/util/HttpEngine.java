@@ -32,9 +32,15 @@ public class HttpEngine {
 			}
 		}
 		
+		//add the cookie
+		CookieManager.addCookie(request);
+		
 		try {
 			HttpResponse response = client.execute(request);
 			if (response.getStatusLine().getStatusCode() == 200) {
+				//save the cookie
+				CookieManager.saveCookie(response);
+				
 				String respBody = EntityUtils.toString(response.getEntity());
 				return respBody;
 			}

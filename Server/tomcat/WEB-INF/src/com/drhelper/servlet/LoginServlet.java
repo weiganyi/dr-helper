@@ -8,18 +8,26 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.drhelper.service.LoginService;
 
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 	private PrintWriter out;
+	private HttpSession session;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//do some prepare
 		response.setContentType("text/html");
 		out = response.getWriter();
+		
+		//if session not exist, create one
+		session = request.getSession(false);
+		if (session == null) {
+			session = request.getSession();
+		}
 		
 		//read the request body
 		InputStreamReader input = new InputStreamReader(request.getInputStream());
@@ -37,7 +45,7 @@ public class LoginServlet extends HttpServlet {
 
 		//call the service
 		LoginService service = new LoginService();
-		String respBody = service.doAction(reqBody);
+		String respBody = service.doAction(session, reqBody);
 		if (respBody == null) {
 			response.setStatus(400);
 			System.out.println("LoginServlet.doGet(): response body is null");

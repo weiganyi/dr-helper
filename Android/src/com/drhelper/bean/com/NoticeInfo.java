@@ -1,4 +1,4 @@
-package com.drhelper.bean;
+package com.drhelper.bean.com;
 
 public class NoticeInfo {
 	private boolean notice;

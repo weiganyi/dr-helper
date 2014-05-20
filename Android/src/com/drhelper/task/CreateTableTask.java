@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CreateTableActivity;
-import com.drhelper.bean.OneTableOneOrder;
+import com.drhelper.bean.com.OneTableOneOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -45,8 +45,6 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 		OneTableOneOrder tableOrderReq = new OneTableOneOrder();
 		tableOrderReq.setTableNum(Integer.valueOf(param[0]));
 		
-		tableOrderReq.setOrderNum(2);
-		
 		try	{
 			//serialize by fastjson
 			String reqBody = JSON.toJSONString(tableOrderReq);
@@ -58,10 +56,11 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 				//unserialize from response string
 				OneTableOneOrder tableOrderResp = JSON.parseObject(respBody, OneTableOneOrder.class);
 				if (tableOrderResp != null && 
+						tableOrderResp.isResult() != false && 
 						tableOrderResp.getTableNum() == tableOrderReq.getTableNum()) {
 					//get the order num from tableResp
 					orderNum = tableOrderResp.getOrderNum();
-						
+
 					return CREATE_TABLE_TASK_SUCCESS;
 				}else {
 					return CREATE_TABLE_TASK_REMOTE_FALIURE;

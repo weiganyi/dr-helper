@@ -1,6 +1,8 @@
 package com.drhelper.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServlet;
@@ -8,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.service.CheckTableService;
+import com.drhelper.service.CreateTableService;
 
 @SuppressWarnings("serial")
-public class CheckTableServlet extends HttpServlet {
+public class CreateTableServlet extends HttpServlet {
 	private PrintWriter out;
 	private HttpSession session;
 
@@ -25,16 +27,30 @@ public class CheckTableServlet extends HttpServlet {
 		session = request.getSession(false);
 		if (session == null || session.getAttribute("id") == null) {
 			response.setStatus(401);
-			System.out.println("CheckTableServlet.doGet(): session isn't exist");
+			System.out.println("CreateTableServlet.doGet(): session isn't exist");
+			return;
+		}
+
+		//read the request body
+		InputStreamReader input = new InputStreamReader(request.getInputStream());
+		BufferedReader br = new BufferedReader(input);
+		String line = null;
+		String reqBody = br.readLine();
+		while((line = br.readLine()) != null) {
+			reqBody = reqBody+line;
+		}
+		if (reqBody.length() == 0) {
+			response.setStatus(400);
+			System.out.println("CreateTableServlet.doGet(): request body is null");
 			return;
 		}
 
 		//call the service
-		CheckTableService service = new CheckTableService();
-		String respBody = service.doAction(session, null);
+		CreateTableService service = new CreateTableService();
+		String respBody = service.doAction(session, reqBody);
 		if (respBody == null) {
 			response.setStatus(400);
-			System.out.println("CheckTableServlet.doGet(): response body is null");
+			System.out.println("CreateTableServlet.doGet(): response body is null");
 			return;
 		}
 		

@@ -66,7 +66,7 @@ public class BeforeLoginActivity extends Activity {
 	}
 	
 	public void doLogoutResult() {
-		//get the prefs manager
+		//clear the prefs manager
 		SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
 		if (prefs != null) {
 			//clear the user

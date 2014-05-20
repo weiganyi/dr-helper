@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.ChangeTableActivity;
-import com.drhelper.bean.TwoTableOneOrder;
+import com.drhelper.bean.com.TwoTableOneOrder;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -62,6 +62,7 @@ public class ChangeTableTask extends AsyncTask<String, Integer, Integer> {
 				//unserialize from response string
 				TwoTableOneOrder tableOrderResp = JSON.parseObject(respBody, TwoTableOneOrder.class);
 				if (tableOrderResp != null && 
+						tableOrderResp.isResult() != false && 
 						tableOrderResp.getOrderNum() != null && 
 						tableOrderResp.getOrderNum().equals("") != true) {
 					//get the order num from tableResp

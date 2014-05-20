@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CheckTableActivity;
-import com.drhelper.bean.EmptyTable;
+import com.drhelper.bean.com.EmptyTable;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.drhelper.R;
-import com.drhelper.bean.EmptyTable;
+import com.drhelper.bean.com.EmptyTable;
 import com.drhelper.task.CheckTableTask;
 import com.drhelper.util.DialogBox;
 

@@ -2,7 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.LoginActivity;
-import com.drhelper.bean.Login;
+import com.drhelper.bean.com.Login;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -56,6 +56,7 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 				//unserialize from response string
 				Login loginResp = JSON.parseObject(respBody, Login.class);
 				if (loginResp != null && 
+						loginResp.isResult() != false && 
 						loginResp.getUserName() != null && 
 						loginResp.getUserName().equals(loginReq.getUserName()) && 
 						loginResp.getUserPasswd() != null && 
