@@ -2,9 +2,12 @@ package com.drhelper.db;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
+import com.alibaba.fastjson.JSON;
+import com.drhelper.entity.Order;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -87,6 +90,7 @@ public class MongoDB implements DataBase {
 		int order = 0;
 		String time = null;
 		boolean pay = false;
+		ArrayList<DBObject> detail = null;  
 		
 		//get or create the collection
 		DBCollection coll = db.getCollection("dr_order");
@@ -107,6 +111,7 @@ public class MongoDB implements DataBase {
 		//get the current date
 		Date date = new Date();
 		time = date.toString();
+		detail = new ArrayList<DBObject>();  
 
 		DBObject doc = new BasicDBObject();
 		doc.put("order", order);
@@ -114,8 +119,32 @@ public class MongoDB implements DataBase {
 		doc.put("user", user);
 		doc.put("time", time);
 		doc.put("pay", pay);
+		doc.put("detail", detail);
 		
 		coll.insert(doc);
+		
+		return order;
+	}
+
+	public Order getOrder(int orderNum) {
+		Order order = null;
+		DBObject dbObj = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		DBCursor cr = coll.find(query);
+		while(cr.hasNext()) {
+			dbObj = cr.next();
+		}
+		
+		//serialize the obj to Order.class
+		if (dbObj != null) {
+			order = JSON.parseObject(dbObj.toString(), Order.class);
+		}
 		
 		return order;
 	}

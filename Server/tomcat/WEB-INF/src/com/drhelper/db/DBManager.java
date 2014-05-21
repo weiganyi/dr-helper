@@ -2,6 +2,9 @@ package com.drhelper.db;
 
 import java.util.ArrayList;
 
+import com.drhelper.entity.Menu;
+import com.drhelper.entity.MenuType;
+import com.drhelper.entity.Order;
 import com.drhelper.entity.User;
 import com.drhelper.entity.Table;
 import com.drhelper.util.LogicException;
@@ -81,11 +84,11 @@ public class DBManager {
 				throw new LogicException("DBManager.createTable(): update mysqldb failure");
 			}
 			
-			//create the connect to mysql
+			//create the connect to mongodb
 			mongodb = new MongoDB();
 			result = mongodb.openConnect();
 			if (!result) {
-				//if fail, do rollback
+				//if fail, rollback the mysql
 				mysqldb.rollBack();
 				
 				throw new LogicException("DBManager.createTable(): open mongodb failure");
@@ -94,13 +97,13 @@ public class DBManager {
 			//create a order
 			orderNum = mongodb.createOrder(user, tableNum);
 			if (orderNum == 0) {
-				//if fail, do rollback
+				//if fail, rollback the mysql
 				mysqldb.rollBack();
 				
 				throw new LogicException("DBManager.createTable(): insert mongodb failure");
 			}
 
-			//if succ, do commit
+			//if succ, commit the mysql
 			mysqldb.commit();
 
 		} catch (LogicException e) {
@@ -110,5 +113,65 @@ public class DBManager {
 			clear();
 			return orderNum;
 		}
+	}
+	
+	public Order getOrder(int orderNum) {
+		Order order = null;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrder(): open mongodb failure");
+			return order;
+		}
+		
+		//get the empty table list
+		order = mongodb.getOrder(orderNum);
+
+		//release the connect to sql
+		clear();
+		return order;
+	}
+	
+	public ArrayList<MenuType> getMenuTypeList() {
+		ArrayList<MenuType> menuTypeList = null;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getMenuTypeList(): open mysqldb failure");
+			return menuTypeList;
+		}
+		
+		//get the menu type list
+		menuTypeList = mysqldb.getMenuTypeList();
+
+		//release the connect to sql
+		clear();
+		return menuTypeList;
+	}
+	
+	public ArrayList<Menu> getMenuList() {
+		ArrayList<Menu> menuList = null;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getMenuList(): open mysqldb failure");
+			return menuList;
+		}
+		
+		//get the menu type list
+		menuList = mysqldb.getMenuList();
+
+		//release the connect to sql
+		clear();
+		return menuList;
 	}
 }

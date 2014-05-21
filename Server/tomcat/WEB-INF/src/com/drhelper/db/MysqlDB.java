@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
+import com.drhelper.entity.Menu;
+import com.drhelper.entity.MenuType;
 import com.drhelper.entity.Table;
 import com.drhelper.entity.User;
 
@@ -218,5 +220,83 @@ public class MysqlDB implements DataBase {
 			System.out.println("MysqlDB.commit(): sql commit catch SQLException");
 		}
 		return true;
+	}
+	
+	public ArrayList<MenuType> getMenuTypeList() {
+		ArrayList<MenuType> menuTypeList = null;;
+		MenuType menuType = null;
+		PreparedStatement pstmt;
+		String sql = "select * from dr_menu_type";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			menuTypeList = new ArrayList<MenuType>();
+			
+			//get the result
+			while (rs.next()) {
+				int menu_type_id = rs.getInt(1);
+				String menu_type_name = rs.getString(2);
+				
+				menuType = new MenuType();
+				menuType.setMenu_type_id(menu_type_id);
+				menuType.setMenu_type_name(menu_type_name);
+				
+				menuTypeList.add(menuType);
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getMenuTypeList(): sql query catch SQLException");
+			return menuTypeList;
+		}
+		
+		return menuTypeList;
+	}
+	
+	public ArrayList<Menu> getMenuList() {
+		ArrayList<Menu> menuList = null;;
+		Menu menu = null;
+		PreparedStatement pstmt;
+		String sql = "select * from dr_menu";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			menuList = new ArrayList<Menu>();
+			
+			//get the result
+			while (rs.next()) {
+				int menu_id = rs.getInt(1);
+				String menu_name = rs.getString(2);
+				int menu_price = rs.getInt(3);
+				int menu_type_id = rs.getInt(4);
+				
+				menu = new Menu();
+				menu.setMenu_id(menu_id);
+				menu.setMenu_name(menu_name);
+				menu.setMenu_price(menu_price);
+				menu.setMenu_type_id(menu_type_id);
+				
+				menuList.add(menu);
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getMenuList(): sql query catch SQLException");
+			return menuList;
+		}
+		
+		return menuList;
 	}
 }

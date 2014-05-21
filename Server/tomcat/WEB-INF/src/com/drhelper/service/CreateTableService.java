@@ -29,7 +29,7 @@ public class CreateTableService extends Service {
 		
 		respTable = new OneTableOneOrder();
 		
-		//check the user and passwd
+		//create a order and return the number
 		DBManager db = new DBManager();
 		String user = (String) session.getAttribute("id");
 		int orderNum = db.createTable(user, tableNum);

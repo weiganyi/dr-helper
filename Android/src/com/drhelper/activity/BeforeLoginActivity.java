@@ -3,6 +3,7 @@ package com.drhelper.activity;
 import com.drhelper.R;
 import com.drhelper.service.NoticeService;
 import com.drhelper.util.DialogBox;
+import com.drhelper.util.HttpEngine;
 import com.drhelper.util.PrefsManager;
 
 import android.annotation.SuppressLint;
@@ -66,6 +67,9 @@ public class BeforeLoginActivity extends Activity {
 	}
 	
 	public void doLogoutResult() {
+		//send logout request to the server
+		sendLogoutRequest();
+		
 		//clear the prefs manager
 		SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
 		if (prefs != null) {
@@ -91,6 +95,16 @@ public class BeforeLoginActivity extends Activity {
 		sendBroadcast(intent);
 	}
 
+	public void sendLogoutRequest() {
+		try	{
+			//send the http post
+			String specUrl = "logout.do";
+			HttpEngine.doPost(specUrl, null);
+		}catch(Exception e) {
+			Log.e(BEFORE_LOGIN_ACTIVITY_TAG, "BeforeLoginActivity.sendLogout(): send logout request failure");
+		}
+	}
+	
 	private void launchPrefsActivity() {
 		//launch to PrefsActivity
 		Intent intent = new Intent(BeforeLoginActivity.this, PrefsActivity.class);

@@ -72,14 +72,6 @@ public class MenuProvider extends ContentProvider {
 					    + MENU_PRICE + " integer not null,"
 					    + MENU_TYPE_ID + " integer not null);";
 				db.execSQL(sql);
-				
-				//test data
-				db.execSQL("insert into dr_menu_type values (0, \"÷˜ ≥\");");
-				db.execSQL("insert into dr_menu_type values (1, \"≥¥≤À\");");
-				db.execSQL("insert into dr_menu values (0, \"œ„«€œ„∏…»‚Àø\", 12, 1);");
-				db.execSQL("insert into dr_menu values (1, \"π¨±£º¶∂°\", 15, 1);");
-				db.execSQL("insert into dr_menu values (2, \"¬¯Õ∑\", 5, 0);");
-				db.execSQL("insert into dr_menu values (3, \"∆§µ∞ ›»‚÷‡\", 8, 0);");
 			}catch (SQLException e) {
 				Log.e(DB_HELPER_TAG, "DBHelper.onCreate(): "+e.getMessage());
 			}

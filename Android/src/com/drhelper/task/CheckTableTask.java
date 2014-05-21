@@ -5,6 +5,7 @@ import java.util.List;
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.CheckTableActivity;
 import com.drhelper.bean.com.EmptyTable;
+import com.drhelper.bean.com.EmptyTableList;
 import com.drhelper.util.HttpEngine;
 
 import android.app.Activity;
@@ -15,7 +16,7 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 	private static final String CHECK_TABLE_TASK_TAG = "CheckTableTask";
 
 	private Activity act;
-	private List<EmptyTable> emptyTableListResp = null;
+	private EmptyTableList emptyTableListResp = null;
 	
 	public static final int CHECK_TABLE_TASK_SUCCESS = 0;
 	public static final int CHECK_TABLE_TASK_LOCAL_FALIURE = 1;
@@ -33,7 +34,13 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((CheckTableActivity)act).doCheckTableResult(result, emptyTableListResp);
+		List<EmptyTable> emptyTableList = null;
+		
+		if (emptyTableListResp != null) {
+			emptyTableList = emptyTableListResp.getList();
+		}
+		
+		((CheckTableActivity)act).doCheckTableResult(result, emptyTableList);
 	}
 	
 	@Override
@@ -45,8 +52,8 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 			String respBody = HttpEngine.doPost(specUrl, null);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				emptyTableListResp = JSON.parseArray(respBody, EmptyTable.class);
-				if (emptyTableListResp != null && emptyTableListResp.isEmpty() != true) {
+				emptyTableListResp = JSON.parseObject(respBody, EmptyTableList.class);
+				if (emptyTableListResp != null && emptyTableListResp.isResult() == true) {
 					return CHECK_TABLE_TASK_SUCCESS;
 				}else {
 					return CHECK_TABLE_TASK_REMOTE_FALIURE;

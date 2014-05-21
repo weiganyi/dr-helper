@@ -7,15 +7,16 @@ import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.bean.com.EmptyTable;
+import com.drhelper.bean.com.EmptyTableList;
 import com.drhelper.db.DBManager;
 import com.drhelper.entity.Table;
 
 public class CheckTableService extends Service {
 	public String doAction(HttpSession session, String reqBody) {
-		ArrayList<EmptyTable> respEmptyTableList = null;
+		EmptyTableList respEmptyTableList = null;
 		String respBody = null;
 		
-		respEmptyTableList = new ArrayList<EmptyTable>();
+		respEmptyTableList = new EmptyTableList();
 		
 		//get the empty table list
 		DBManager db = new DBManager();
@@ -24,6 +25,9 @@ public class CheckTableService extends Service {
 			respBody = JSON.toJSONString(respEmptyTableList);
 			return respBody;
 		}
+		
+		respEmptyTableList.setList(new ArrayList<EmptyTable>());
+		ArrayList<EmptyTable> list = respEmptyTableList.getList();
 		
 		//create the resp object
 		Iterator<Table> iterator = tableList.listIterator();
@@ -35,8 +39,9 @@ public class CheckTableService extends Service {
 			emptyTable = new EmptyTable();
 			emptyTable.setTableNum(table.getTable_num());
 			emptyTable.setTableSeatNum(table.getTable_seat_num());
-			respEmptyTableList.add(emptyTable);
+			list.add(emptyTable);
 		}
+		respEmptyTableList.setResult(true);
 		
 		//serialize the object
 		respBody = JSON.toJSONString(respEmptyTableList);

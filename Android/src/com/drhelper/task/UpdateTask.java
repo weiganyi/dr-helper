@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.UpdateActivity;
+import com.drhelper.bean.com.MenuList;
+import com.drhelper.bean.com.MenuTypeList;
 import com.drhelper.entity.Menu;
 import com.drhelper.entity.MenuType;
 import com.drhelper.util.HttpEngine;
@@ -21,8 +23,8 @@ public class UpdateTask extends AsyncTask<String, Integer, Integer> {
 	public static final int UPDATE_TASK_LOCAL_FALIURE = 1;
 	public static final int UPDATE_TASK_REMOTE_FALIURE = 2;
 	
-	private List<MenuType> menuTypeListResp = null;
-	private List<Menu> menuListResp = null;
+	private MenuTypeList menuTypeListResp = null;
+	private MenuList menuListResp = null;
 	
 	public UpdateTask(Activity act) {
 		//save the Activity that call this AsyncTask
@@ -36,7 +38,18 @@ public class UpdateTask extends AsyncTask<String, Integer, Integer> {
 	}
 	
 	protected void onPostExecute(Integer result) {
-		((UpdateActivity)act).doUpdateResult(result, menuTypeListResp, menuListResp);
+		List<MenuType> menuTypeList = null;
+		List<Menu> menuList = null;
+		
+		if (menuTypeListResp != null) {
+			menuTypeList = menuTypeListResp.getList();
+		}
+		
+		if (menuListResp != null) {
+			menuList = menuListResp.getList();
+		}
+
+		((UpdateActivity)act).doUpdateResult(result, menuTypeList, menuList);
 	}
 	
 	@Override
@@ -49,21 +62,19 @@ public class UpdateTask extends AsyncTask<String, Integer, Integer> {
 			//send the http post and recv response
 			specUrl = "updateMenuType.do";
 			respBody = HttpEngine.doPost(specUrl, null);
-			respBody = "[{\"menu_type_id\":0, \"menu_type_name\":\"÷˜ ≥\"}, {\"menu_type_id\":1, \"menu_type_name\":\"≥¥≤À\"}, {\"menu_type_id\":2, \"menu_type_name\":\"Ãµ„\"}]";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				menuTypeListResp = JSON.parseArray(respBody, MenuType.class);
-				if (menuTypeListResp.isEmpty() != true) {
-
+				menuTypeListResp = JSON.parseObject(respBody, MenuTypeList.class);
+				if (menuTypeListResp != null && 
+						menuTypeListResp.isResult() == true) {
 					//send the http post and recv response
-					specUrl = "updateMenu";
+					specUrl = "updateMenu.do";
 					respBody = HttpEngine.doPost(specUrl, null);
-					respBody = "[{\"menu_id\":0, \"menu_name\":\"œ„«€œ„∏…»‚Àø\", \"menu_price\":12, \"menu_type_id\":1}, {\"menu_id\":1, \"menu_name\":\"π¨±£º¶∂°\", \"menu_price\":15, \"menu_type_id\":1}, {\"menu_id\":2, \"menu_name\":\"¬¯Õ∑\", \"menu_price\":5, \"menu_type_id\":0}, {\"menu_id\":3, \"menu_name\":\"∆§µ∞ ›»‚÷‡\", \"menu_price\":8, \"menu_type_id\":0}, {\"menu_id\":4, \"menu_name\":\"À´∆§ƒÃ\", \"menu_price\":6, \"menu_type_id\":2}]";
 					if (respBody != null && respBody.length() != 0) {
 						//unserialize from response string
-						menuListResp = JSON.parseArray(respBody, Menu.class);
+						menuListResp = JSON.parseObject(respBody, MenuList.class);
 						if (menuListResp != null && 
-								menuListResp.isEmpty() != true) {
+								menuListResp.isResult() == true) {
 							return UPDATE_TASK_SUCCESS;
 						}else {
 							return UPDATE_TASK_REMOTE_FALIURE;

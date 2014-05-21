@@ -2,6 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.OrderActivity;
+import com.drhelper.bean.com.OrderInfo;
 import com.drhelper.entity.Order;
 import com.drhelper.util.HttpEngine;
 
@@ -42,9 +43,11 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 			return LOAD_ORDER_TASK_LOCAL_FALIURE;
 		}
 		
-		Order orderReq = new Order();
+		OrderInfo orderReq = new OrderInfo();
 		if (param[0] != null) {
-			orderReq.setOrder(Integer.parseInt(param[0]));
+			orderReq.setOrder(new Order());
+			Order order = orderReq.getOrder();
+			order.setOrder(Integer.parseInt(param[0]));
 		}
 		
 		try	{
@@ -54,14 +57,14 @@ public class LoadOrderTask extends AsyncTask<String, Integer, Integer> {
 			//send the http post and recv response
 			String specUrl = "loadOrder.do";
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
-			respBody = "{\"id\":\"1\", \"order\":2, \"table\":2, \"user\":\"Œ§∏…“Ì\", \"time\":\"20140501 16:45\", \"pay\":true, \"detail\":[{\"menu\":\"œ„«€œ„∏…»‚Àø\", \"price\":12, \"amount\":1, \"finish\":true, \"remark\":\"Œ¢¿±\"}, {\"menu\":\"∂ÁΩ∑”„Õ∑\", \"price\":32, \"amount\":1, \"finish\":true, \"remark\":\"\"}]}";
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				Order orderResp = JSON.parseObject(respBody, Order.class);
+				OrderInfo orderResp = JSON.parseObject(respBody, OrderInfo.class);
 				if (orderResp != null && 
-						orderResp.getOrder() == orderReq.getOrder()) {
+						orderResp.isResult() == true && 
+								orderResp.getOrder().getOrder() == orderReq.getOrder().getOrder()) {
 					//store the order object
-					order = orderResp;
+					order = orderResp.getOrder();
 					return LOAD_ORDER_TASK_SUCCESS;
 				}else {
 					return LOAD_ORDER_TASK_REMOTE_FALIURE;

@@ -67,7 +67,7 @@ public class UpdateActivity extends AfterLoginActivity {
 	}
 	
 	public void doUpdateResult(Integer result, 
-			List<MenuType> menuTypeListResp, List<Menu> menuListResp) {
+			List<MenuType> menuTypeList, List<Menu> menuList) {
 		if (result == UpdateTask.UPDATE_TASK_LOCAL_FALIURE || 
 				result == UpdateTask.UPDATE_TASK_REMOTE_FALIURE) {
 			resultTV.setText(this.getString(R.string.update_activity_result_false));
@@ -76,7 +76,7 @@ public class UpdateActivity extends AfterLoginActivity {
 		}
 		
 		//save the menu type into the sqlite
-		if (menuTypeListResp.isEmpty() != true) {
+		if (menuTypeList.isEmpty() != true) {
 			String menuTypeContent = "content://" + MenuProvider.AUTHORITY + "/" + MenuProvider.MENU_TYPE_TABLE_NAME;
 			Uri menuTypeUri = Uri.parse(menuTypeContent);
 			ContentResolver menuTypeCR = getContentResolver();
@@ -86,7 +86,7 @@ public class UpdateActivity extends AfterLoginActivity {
 			//clear the table of menu type
 			menuTypeCR.delete(menuTypeUri, null, null);
 			
-			ListIterator<MenuType> iterator = menuTypeListResp.listIterator();
+			ListIterator<MenuType> iterator = menuTypeList.listIterator();
 			while (iterator.hasNext()) {
 				menuType = iterator.next();
 				
@@ -98,7 +98,7 @@ public class UpdateActivity extends AfterLoginActivity {
 		}
 		
 		//save the menu into the sqlite
-		if (menuListResp.isEmpty() != true) {
+		if (menuList.isEmpty() != true) {
 			String menuContent = "content://" + MenuProvider.AUTHORITY + "/" + MenuProvider.MENU_TABLE_NAME;
 			Uri menuUri = Uri.parse(menuContent);
 			ContentResolver menuCR = getContentResolver();
@@ -108,7 +108,7 @@ public class UpdateActivity extends AfterLoginActivity {
 			//clear the table of menu type
 			menuCR.delete(menuUri, null, null);
 			
-			ListIterator<Menu> iterator = menuListResp.listIterator();
+			ListIterator<Menu> iterator = menuList.listIterator();
 			while (iterator.hasNext()) {
 				menu = iterator.next();
 				

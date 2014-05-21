@@ -16,7 +16,14 @@
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login.do</url-pattern>
     </servlet-mapping>
-
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.LogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout.do</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>CheckTableServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.CheckTableServlet</servlet-class>
@@ -25,7 +32,6 @@
         <servlet-name>CheckTableServlet</servlet-name>
         <url-pattern>/checkTable.do</url-pattern>
     </servlet-mapping>
-
     <servlet>
         <servlet-name>CreateTableServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.CreateTableServlet</servlet-class>
@@ -33,6 +39,30 @@
     <servlet-mapping>
         <servlet-name>CreateTableServlet</servlet-name>
         <url-pattern>/createTable.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>LoadOrderServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.LoadOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoadOrderServlet</servlet-name>
+        <url-pattern>/loadOrder.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UpdateMenuTypeServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.UpdateMenuTypeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateMenuTypeServlet</servlet-name>
+        <url-pattern>/updateMenuType.do</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>UpdateMenuServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.UpdateMenuServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateMenuServlet</servlet-name>
+        <url-pattern>/updateMenu.do</url-pattern>
     </servlet-mapping>
 
 </web-app>

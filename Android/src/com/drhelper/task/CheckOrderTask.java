@@ -49,8 +49,6 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 			tableOrderReq.setTableNum(Integer.valueOf(param[1]));
 		}
 		
-		tableOrderReq.setOrderNum(2);
-		
 		try	{
 			//serialize by fastjson
 			String reqBody = JSON.toJSONString(tableOrderReq);
