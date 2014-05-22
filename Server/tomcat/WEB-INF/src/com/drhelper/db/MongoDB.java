@@ -266,4 +266,46 @@ public class MongoDB implements DataBase {
 		
 		return result;
 	}
+
+	public int changeTable(int tableNum1, int tableNum2) {
+		DBObject dbObj = null;
+		Order order = null;
+		int orderNum = 0;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		query.put("table", tableNum1);
+		dbObj = coll.findOne(query);
+		
+		if (dbObj != null) {
+			order = JSON.parseObject(dbObj.toString(), Order.class);
+			if (order != null) {
+				orderNum = order.getOrder();
+			}
+			
+			//if doc exist, update it
+			dbObj.put("table", tableNum2);
+			coll.update(query, dbObj);
+		}
+		
+		return orderNum;
+	}
+
+	public int unionTable(int tableNum1, int tableNum2) {
+		int orderNum = 0;
+		String proc = "union_table(" + String.valueOf(tableNum1) + ", " + String.valueOf(tableNum2) + ")";
+		
+		//call the prepare_call
+		BasicDBObject obj = db.doEval(proc);
+		
+		if (obj != null) {
+			String orderStr = String.valueOf(obj.toMap().get("retval"));
+			orderNum = Double.valueOf(orderStr).intValue();
+		}
+		
+		return orderNum;
+	}
 }

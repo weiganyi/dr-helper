@@ -10,10 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.service.CheckOrderService;
+import com.drhelper.service.ChangeTableService;
 
 @SuppressWarnings("serial")
-public class CheckOrderServlet extends HttpServlet {
+public class ChangeTableServlet extends HttpServlet {
 	private PrintWriter out;
 	private HttpSession session;
 
@@ -28,7 +28,7 @@ public class CheckOrderServlet extends HttpServlet {
 		session = request.getSession(false);
 		if (session == null || session.getAttribute("id") == null) {
 			response.setStatus(401);
-			System.out.println("CheckOrderServlet.doGet(): session isn't exist");
+			System.out.println("ChangeTableServlet.doGet(): session isn't exist");
 			return;
 		}
 
@@ -42,16 +42,16 @@ public class CheckOrderServlet extends HttpServlet {
 		}
 		if (reqBody.length() == 0) {
 			response.setStatus(400);
-			System.out.println("CheckOrderServlet.doGet(): request body is null");
+			System.out.println("ChangeTableServlet.doGet(): request body is null");
 			return;
 		}
 
 		//call the service
-		CheckOrderService service = new CheckOrderService();
+		ChangeTableService service = new ChangeTableService();
 		String respBody = service.doAction(session, reqBody);
 		if (respBody == null) {
 			response.setStatus(400);
-			System.out.println("CheckOrderServlet.doGet(): response body is null");
+			System.out.println("ChangeTableServlet.doGet(): response body is null");
 			return;
 		}
 		

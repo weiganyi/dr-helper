@@ -1,6 +1,7 @@
 package com.drhelper.db;
 
 import java.io.IOException;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -151,14 +152,14 @@ public class MysqlDB implements DataBase {
 	
 	public boolean updateTable(int tableNum, boolean toEmpty) {
 		PreparedStatement pstmt;
-		int table_empty_value;
+		int new_table_empty;
 		String sql1 = "select table_empty from dr_table where table_num=?";
 		String sql2 = "update dr_table set table_empty=? where table_num=?";
 
 		if (toEmpty) {
-			table_empty_value = 1;
+			new_table_empty = 1;
 		}else {
-			table_empty_value = 0;
+			new_table_empty = 0;
 		}
 		
 		try {
@@ -176,13 +177,13 @@ public class MysqlDB implements DataBase {
 			
 			//get the result
 			if (rs.next()) {
-				int table_empty = rs.getInt(1);
-				if (table_empty != table_empty_value) {
+				int old_table_empty = rs.getInt(1);
+				if (old_table_empty != new_table_empty) {
 					//prepare the statement
 					pstmt = conn.prepareStatement(sql2);
 					
 					//fill the param
-					pstmt.setInt(1, table_empty_value);
+					pstmt.setInt(1, new_table_empty);
 					pstmt.setInt(2, tableNum);
 					
 					//execute the query
@@ -306,5 +307,105 @@ public class MysqlDB implements DataBase {
 		}
 		
 		return menuList;
+	}
+	
+	public boolean changeTable(int tableNum1, int tableNum2) {
+		PreparedStatement pstmt;
+		ResultSet rs;
+		int table_empty1 = 0;
+		int table_empty2 = 0;
+		String sql1 = "select table_empty from dr_table where table_num=?";
+		String sql2 = "update dr_table set table_empty=? where table_num=?";
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(false);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql1);
+			
+			//fill the param1
+			pstmt.setInt(1, tableNum1);
+			
+			//execute the query1
+			rs = pstmt.executeQuery();
+			
+			//get the result1
+			if (rs.next()) {
+				table_empty1 = rs.getInt(1);
+			}else {
+				throw new SQLException();
+			}
+
+			//fill the param2
+			pstmt.setInt(1, tableNum2);
+			
+			//execute the query2
+			rs = pstmt.executeQuery();
+			
+			//get the result2
+			if (rs.next()) {
+				table_empty2 = rs.getInt(1);
+			}else {
+				throw new SQLException();
+			}
+
+			if (table_empty1 != 0 || table_empty2 == 0) {
+				throw new SQLException();
+			}
+			
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql2);
+
+			// fill the param1
+			pstmt.setInt(1, 1);
+			pstmt.setInt(2, tableNum1);
+
+			// execute the query1
+			pstmt.executeUpdate();
+
+			// fill the param2
+			pstmt.setInt(1, 0);
+			pstmt.setInt(2, tableNum2);
+
+			// execute the query2
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.createTable(): sql update catch SQLException");
+			
+			try {
+				//if fail, do rollback
+				conn.rollback();
+			} catch (SQLException e2) {
+				System.out.println("MysqlDB.createTable(): sql rollback catch SQLException");
+			}
+
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean unionTable(int tableNum1, int tableNum2) {
+		CallableStatement cstmt;
+		String proc = "{call union_table(?, ?)}";
+		
+		try {
+			//prepare the procedure call
+			cstmt = conn.prepareCall(proc);
+			
+			//fill the param1
+			cstmt.setInt(1, tableNum1);
+			cstmt.setInt(2, tableNum2);
+			
+			//execute the procedure call
+			cstmt.execute();
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.unionTable(): call procedure call catch SQLException");
+			return false;
+		}
+		
+		return true;
 	}
 }

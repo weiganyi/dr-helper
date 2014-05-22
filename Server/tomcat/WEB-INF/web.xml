@@ -79,6 +79,24 @@
         <servlet-name>DeleteOrderServlet</servlet-name>
         <url-pattern>/deleteOrder.do</url-pattern>
     </servlet-mapping>
+ 
+    <servlet>
+        <servlet-name>ChangeTableServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.ChangeTableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ChangeTableServlet</servlet-name>
+        <url-pattern>/changeTable.do</url-pattern>
+    </servlet-mapping>
+ 
+    <servlet>
+        <servlet-name>UnionTableServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.UnionTableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UnionTableServlet</servlet-name>
+        <url-pattern>/unionTable.do</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>UpdateMenuTypeServlet</servlet-name>

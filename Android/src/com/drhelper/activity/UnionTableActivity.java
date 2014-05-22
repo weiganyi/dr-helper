@@ -78,7 +78,7 @@ public class UnionTableActivity extends AfterLoginActivity {
 		}
 	}
 	
-	public void doChangeTableResult(Integer result, String orderNum) {
+	public void doChangeTableResult(Integer result, int orderNum) {
 		if (result == UnionTableTask.UNION_TABLE_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(UnionTableActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
@@ -95,7 +95,7 @@ public class UnionTableActivity extends AfterLoginActivity {
 		Intent intent = new Intent(UnionTableActivity.this, OrderActivity.class);
 		//append the order num as extras data
 		Bundle bundle = new Bundle();
-		bundle.putString(OrderActivity.ORDER_NUM, orderNum);
+		bundle.putString(OrderActivity.ORDER_NUM, String.valueOf(orderNum));
 		intent.putExtras(bundle);
 		startActivity(intent);
 		

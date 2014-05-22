@@ -246,7 +246,7 @@ public class DBManager {
 				throw new LogicException("DBManager.deleteOrder(): open mysqldb failure");
 			}
 			
-			//update a table to non-empty
+			//update a table to empty
 			result = mysqldb.updateTable(order.getTable(), true);
 			if (!result) {
 				throw new LogicException("DBManager.deleteOrder(): update mysqldb failure");
@@ -262,7 +262,7 @@ public class DBManager {
 				throw new LogicException("DBManager.deleteOrder(): open mongodb failure");
 			}
 			
-			//create a order
+			//delete a order
 			result = mongodb.deleteOrder(order);
 			if (!result) {
 				//if fail, rollback the mysql
@@ -280,6 +280,97 @@ public class DBManager {
 			//release the connect to sql
 			clear();
 			return result;
+		}
+	}
+	
+	@SuppressWarnings("finally")
+	public int changeTable(int tableNum1, int tableNum2) {
+		boolean result = false;
+		int orderNum = 0;
+
+		try {
+			//create the connect to mysql
+			mysqldb = new MysqlDB();
+			result = mysqldb.openConnect();
+			if (!result) {
+				throw new LogicException("DBManager.changeTable(): open mysqldb failure");
+			}
+			
+			//update tableNum1 to empty and update tableNum2 to non-empty
+			result = mysqldb.changeTable(tableNum1, tableNum2);
+			if (!result) {
+				throw new LogicException("DBManager.changeTable(): update mysqldb failure");
+			}
+			
+			//create the connect to mongodb
+			mongodb = new MongoDB();
+			result = mongodb.openConnect();
+			if (!result) {
+				//if fail, rollback the mysql
+				mysqldb.rollBack();
+				
+				throw new LogicException("DBManager.changeTable(): open mongodb failure");
+			}
+			
+			//change the table
+			orderNum = mongodb.changeTable(tableNum1, tableNum2);
+			if (orderNum == 0) {
+				//if fail, rollback the mysql
+				mysqldb.rollBack();
+				
+				throw new LogicException("DBManager.changeTable(): change mongodb failure");
+			}
+
+			//if succ, commit the mysql
+			mysqldb.commit();
+
+		} catch (LogicException e) {
+			System.out.println(e.getLog());
+		} finally {		
+			//release the connect to sql
+			clear();
+			return orderNum;
+		}
+	}
+	
+	@SuppressWarnings("finally")
+	public int unionTable(int tableNum1, int tableNum2) {
+		boolean result = false;
+		int orderNum = 0;
+
+		try {
+			// create the connect to mysql
+			mysqldb = new MysqlDB();
+			result = mysqldb.openConnect();
+			if (!result) {
+				throw new LogicException("DBManager.unionTable(): open mysqldb failure");
+			}
+
+			// update tableNum1 to empty and update tableNum2 to non-empty
+			result = mysqldb.unionTable(tableNum1, tableNum2);
+			if (!result) {
+				throw new LogicException("DBManager.unionTable(): update mysqldb failure");
+			}
+
+			// create the connect to mongodb
+			mongodb = new MongoDB();
+			result = mongodb.openConnect();
+			if (!result) {
+				throw new LogicException(
+						"DBManager.unionTable(): open mongodb failure");
+			}
+
+			// create a order
+			orderNum = mongodb.unionTable(tableNum1, tableNum2);
+			if (orderNum == 0) {
+				throw new LogicException("DBManager.unionTable(): change mongodb failure");
+			}
+		} catch (LogicException e) {
+			System.out.println(e.getLog());
+		} finally {
+			// release the connect to sql
+			clear();
+			return orderNum;
 		}
 	}
 }

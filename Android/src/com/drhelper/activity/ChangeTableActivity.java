@@ -78,7 +78,7 @@ public class ChangeTableActivity extends AfterLoginActivity {
 		}
 	}
 	
-	public void doChangeTableResult(Integer result, String orderNum) {
+	public void doChangeTableResult(Integer result, int orderNum) {
 		if (result == ChangeTableTask.CHANGE_TABLE_TASK_LOCAL_FALIURE) {
 			DialogBox.showAlertDialog(ChangeTableActivity.this, 
 					this.getString(R.string.activity_asynctask_failure), null);
@@ -95,7 +95,7 @@ public class ChangeTableActivity extends AfterLoginActivity {
 		Intent intent = new Intent(ChangeTableActivity.this, OrderActivity.class);
 		//append the order num as extras data
 		Bundle bundle = new Bundle();
-		bundle.putString(OrderActivity.ORDER_NUM, orderNum);
+		bundle.putString(OrderActivity.ORDER_NUM, String.valueOf(orderNum));
 		intent.putExtras(bundle);
 		startActivity(intent);
 		

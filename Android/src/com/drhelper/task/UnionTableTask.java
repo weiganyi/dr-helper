@@ -13,7 +13,7 @@ public class UnionTableTask extends AsyncTask<String, Integer, Integer> {
 	private static final String UNION_TABLE_TASK_TAG = "UnionTableTask";
 
 	private Activity act;
-	private String orderNum;
+	private int orderNum;
 	
 	public static final int UNION_TABLE_TASK_SUCCESS = 0;
 	public static final int UNION_TABLE_TASK_LOCAL_FALIURE = 1;
@@ -44,12 +44,11 @@ public class UnionTableTask extends AsyncTask<String, Integer, Integer> {
 		
 		TwoTableOneOrder tableOrderReq = new TwoTableOneOrder();
 		if (param[0] != null) {
-			tableOrderReq.setTable1(param[0]);
-		}else if (param[1] != null) {
-			tableOrderReq.setTable2(param[1]);
+			tableOrderReq.setTable1(Integer.valueOf(param[0]));
 		}
-		
-		tableOrderReq.setOrderNum("2");
+		if (param[1] != null) {
+			tableOrderReq.setTable2(Integer.valueOf(param[1]));
+		}
 		
 		try	{
 			//serialize by fastjson
@@ -61,12 +60,9 @@ public class UnionTableTask extends AsyncTask<String, Integer, Integer> {
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
 				TwoTableOneOrder tableOrderResp = JSON.parseObject(respBody, TwoTableOneOrder.class);
-				if (tableOrderResp != null && 
-						tableOrderResp.isResult() != false && 
-						tableOrderResp.getOrderNum() != null && 
-						tableOrderResp.getOrderNum().equals("") != true) {
+				if (tableOrderResp != null && tableOrderResp.isResult() == true) {
 					//get the order num from tableResp
-					orderNum = tableOrderResp.getOrderNum();
+					orderNum = tableOrderResp.getOrder();
 					return UNION_TABLE_TASK_SUCCESS;
 				}else {
 					return UNION_TABLE_TASK_REMOTE_FALIURE;

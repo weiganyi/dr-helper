@@ -19,6 +19,7 @@ public class CheckTableServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//do some prepare
 		response.setContentType("text/html");
+		response.setCharacterEncoding("UTF-8");
 		out = response.getWriter();
 		
 		//check the session

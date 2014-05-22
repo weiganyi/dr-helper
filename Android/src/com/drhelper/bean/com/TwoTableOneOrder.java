@@ -1,28 +1,28 @@
 package com.drhelper.bean.com;
 
 public class TwoTableOneOrder {
-	private String table1;
-	private String table2;
-	private String orderNum;
+	private int table1;
+	private int table2;
+	private int order;
 	private boolean result = false;
 
-	public String getTable1() {
+	public int getTable1() {
 		return table1;
 	}
-	public void setTable1(String table1) {
+	public void setTable1(int table1) {
 		this.table1 = table1;
 	}
-	public String getTable2() {
+	public int getTable2() {
 		return table2;
 	}
-	public void setTable2(String table2) {
+	public void setTable2(int table2) {
 		this.table2 = table2;
 	}
-	public String getOrderNum() {
-		return orderNum;
+	public int getOrder() {
+		return order;
 	}
-	public void setOrderNum(String orderNum) {
-		this.orderNum = orderNum;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 	public boolean isResult() {
 		return result;
