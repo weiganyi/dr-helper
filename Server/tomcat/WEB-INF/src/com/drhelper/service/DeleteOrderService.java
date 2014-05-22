@@ -7,7 +7,7 @@ import com.drhelper.bean.com.OrderInfo;
 import com.drhelper.db.DBManager;
 import com.drhelper.entity.Order;
 
-public class LoadOrderService extends Service {
+public class DeleteOrderService extends Service {
 	public String doAction(HttpSession session, String reqBody) {
 		OrderInfo reqOrder = null;
 		OrderInfo respOrder = null;
@@ -17,32 +17,26 @@ public class LoadOrderService extends Service {
 		try{
 			reqOrder = JSON.parseObject(reqBody, OrderInfo.class);
 		}catch (Exception e) {
-			System.out.println("LoadOrderService.doAction(): json parse body failure");
+			System.out.println("DeleteOrderService.doAction(): json parse body failure");
 			return respBody;
 		}
 
 		//check the input param
-		int orderNum = reqOrder.getOrder().getOrder();
-		if (orderNum == 0) {
-			System.out.println("LoadOrderService.doAction(): orderNum is null");
+		Order order = reqOrder.getOrder();
+		if (order == null) {
+			System.out.println("DeleteOrderService.doAction(): order is null");
 			return respBody;
 		}
 		
 		respOrder = new OrderInfo();
 		
-		//fetch the order
+		//submit the order
 		DBManager db = new DBManager();
-		Order order = db.getOrder(orderNum);
-		if (order == null) {
-			respOrder.setResult(false);
-			respBody = JSON.toJSONString(respOrder);
-			return respBody;
-		}
+		boolean result = db.deleteOrder(order);
 		
 		//create the resp object
-		respOrder.setOrder(order);
-		respOrder.setResult(true);
-		
+		respOrder.setResult(result);
+
 		//serialize the object
 		respBody = JSON.toJSONString(respOrder);
 		return respBody;

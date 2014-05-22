@@ -19,6 +19,7 @@ public class UpdateMenuService extends Service {
 		DBManager db = new DBManager();
 		ArrayList<Menu> menuList = db.getMenuList();
 		if (menuList == null) {
+			respMenuList.setResult(false);
 			respBody = JSON.toJSONString(respMenuList);
 			return respBody;
 		}

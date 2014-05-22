@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Properties;
 
 import com.alibaba.fastjson.JSON;
+import com.drhelper.entity.Detail;
 import com.drhelper.entity.Order;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -68,7 +70,6 @@ public class MongoDB implements DataBase {
 
 	@Override
 	public boolean closeConnect() {
-		// TODO Auto-generated method stub
 		if (m != null) {
 			m.close();
 		}
@@ -132,14 +133,11 @@ public class MongoDB implements DataBase {
 		
 		//get the collection
 		DBCollection coll = db.getCollection("dr_order");
-
+		
 		//get the order
 		DBObject query = new BasicDBObject();
 		query.put("order", orderNum);
-		DBCursor cr = coll.find(query);
-		while(cr.hasNext()) {
-			dbObj = cr.next();
-		}
+		dbObj = coll.findOne(query);
 		
 		//serialize the obj to Order.class
 		if (dbObj != null) {
@@ -147,5 +145,125 @@ public class MongoDB implements DataBase {
 		}
 		
 		return order;
+	}
+
+	public int getOrderFromTable(int tableNum) {
+		Order order = null;
+		DBObject dbObj = null;
+		int orderNum = 0;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("table", tableNum);
+		dbObj = coll.findOne(query);
+		
+		//serialize the obj to Order.class
+		if (dbObj != null) {
+			order = JSON.parseObject(dbObj.toString(), Order.class);
+		}
+		
+		if (order != null) {
+			orderNum = order.getOrder();
+		}
+		
+		return orderNum;
+	}
+
+	public int getOrderFromOrder(int orderNum) {
+		Order order = null;
+		DBObject dbObj = null;
+		int newOrderNum = 0;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		
+		//serialize the obj to Order.class
+		if (dbObj != null) {
+			order = JSON.parseObject(dbObj.toString(), Order.class);
+		}
+		
+		if (order != null) {
+			newOrderNum = order.getOrder();
+		}
+		
+		return newOrderNum;
+	}
+
+	public boolean submitOrder(Order order) {
+		DBObject dbObj = null;
+		boolean result = false;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		int orderNum = order.getOrder();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		
+		if (dbObj != null) {
+			//if doc exist, update it
+			ArrayList<DBObject> detail = new ArrayList<DBObject>();
+			
+			Iterator<Detail> it = order.getDetail().iterator();
+			DBObject node;
+			Detail detailItem;
+			while (it.hasNext()) {
+				detailItem = it.next();
+				
+				node = new BasicDBObject();
+				node.put("menu", detailItem.getMenu());
+				node.put("price", detailItem.getPrice());
+				node.put("amount", detailItem.getAmount());
+				node.put("finish", detailItem.isFinish());
+				node.put("remark", detailItem.getRemark());
+				detail.add(node);
+			}
+			
+			dbObj.put("detail", detail);
+			coll.update(query, dbObj);
+			
+			result = true;
+		}else {
+			//if doc not exist, there is a fault
+			result = false;
+		}
+		
+		return result;
+	}
+
+	public boolean deleteOrder(Order order) {
+		DBObject dbObj = null;
+		boolean result = false;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		int orderNum = order.getOrder();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		
+		if (dbObj != null) {
+			//if doc exist, delete it
+			coll.remove(query);
+			
+			result = true;
+		}else {
+			//if doc not exist, there is a fault
+			result = false;
+		}
+		
+		return result;
 	}
 }

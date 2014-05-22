@@ -16,14 +16,14 @@ public class CreateTableService extends Service {
 		try{
 			reqTable = JSON.parseObject(reqBody, OneTableOneOrder.class);
 		}catch (Exception e) {
-			System.out.println("CreateTableService.login(): json parse body failure");
+			System.out.println("CreateTableService.doAction(): json parse body failure");
 			return respBody;
 		}
 
 		//check the input param
 		int tableNum = reqTable.getTableNum();
 		if (tableNum == 0) {
-			System.out.println("CreateTableService.login(): tableNum is null");
+			System.out.println("CreateTableService.doAction(): tableNum is null");
 			return respBody;
 		}
 		
@@ -34,6 +34,7 @@ public class CreateTableService extends Service {
 		String user = (String) session.getAttribute("id");
 		int orderNum = db.createTable(user, tableNum);
 		if (orderNum == 0) {
+			respTable.setResult(false);
 			respBody = JSON.toJSONString(respTable);
 			return respBody;
 		}

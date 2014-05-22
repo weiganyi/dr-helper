@@ -19,6 +19,7 @@ public class UpdateMenuTypeService extends Service {
 		DBManager db = new DBManager();
 		ArrayList<MenuType> menuTypeList = db.getMenuTypeList();
 		if (menuTypeList == null) {
+			respMenuTypeList.setResult(false);
 			respBody = JSON.toJSONString(respMenuTypeList);
 			return respBody;
 		}

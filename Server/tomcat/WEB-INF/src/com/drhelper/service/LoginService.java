@@ -17,7 +17,7 @@ public class LoginService extends Service {
 		try{
 			reqLogin = JSON.parseObject(reqBody, Login.class);
 		}catch (Exception e) {
-			System.out.println("LoginService.login(): json parse body failure");
+			System.out.println("LoginService.doAction(): json parse body failure");
 			return respBody;
 		}
 
@@ -25,7 +25,7 @@ public class LoginService extends Service {
 		String userName = reqLogin.getUserName();
 		String userPasswd = reqLogin.getUserPasswd();
 		if (userName.length() == 0 || userPasswd.length() == 0) {
-			System.out.println("LoginService.login(): userName or userPasswd is null");
+			System.out.println("LoginService.doAction(): userName or userPasswd is null");
 			return respBody;
 		}
 		
@@ -35,6 +35,7 @@ public class LoginService extends Service {
 		DBManager db = new DBManager();
 		User user = db.getUser(userName, userPasswd);
 		if (user == null) {
+			respLogin.setResult(false);
 			respBody = JSON.toJSONString(respLogin);
 			return respBody;
 		}

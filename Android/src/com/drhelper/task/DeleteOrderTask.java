@@ -2,6 +2,7 @@ package com.drhelper.task;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.activity.OrderActivity;
+import com.drhelper.bean.com.OrderInfo;
 import com.drhelper.entity.Order;
 import com.drhelper.util.HttpEngine;
 
@@ -41,7 +42,10 @@ public class DeleteOrderTask extends AsyncTask<Order, Integer, Integer> {
 			return DELETE_ORDER_TASK_LOCAL_FALIURE;
 		}
 		
-		Order orderReq = param[0];
+		OrderInfo orderReq = new OrderInfo();
+		if (param[0] != null) {
+			orderReq.setOrder(param[0]);
+		}
 		
 		try	{
 			//serialize by fastjson
@@ -52,10 +56,8 @@ public class DeleteOrderTask extends AsyncTask<Order, Integer, Integer> {
 			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody != null && respBody.length() != 0) {
 				//unserialize from response string
-				Order orderResp = JSON.parseObject(respBody, Order.class);
-				if (orderResp != null && 
-						orderResp.getOrder() == orderReq.getOrder() && 
-						orderResp.getTable() == orderReq.getTable()) {
+				OrderInfo orderResp = JSON.parseObject(respBody, OrderInfo.class);
+				if (orderResp != null && orderResp.isResult() == true) {
 					return DELETE_ORDER_TASK_SUCCESS;
 				}else {
 					return DELETE_ORDER_TASK_REMOTE_FALIURE;

@@ -149,11 +149,18 @@ public class MysqlDB implements DataBase {
 		return tableList;
 	}
 	
-	public boolean updateTable(int tableNum) {
+	public boolean updateTable(int tableNum, boolean toEmpty) {
 		PreparedStatement pstmt;
+		int table_empty_value;
 		String sql1 = "select table_empty from dr_table where table_num=?";
-		String sql2 = "update dr_table set table_empty=0 where table_num=?";
+		String sql2 = "update dr_table set table_empty=? where table_num=?";
 
+		if (toEmpty) {
+			table_empty_value = 1;
+		}else {
+			table_empty_value = 0;
+		}
+		
 		try {
 			//set autocommit mode
 			conn.setAutoCommit(false);
@@ -170,12 +177,13 @@ public class MysqlDB implements DataBase {
 			//get the result
 			if (rs.next()) {
 				int table_empty = rs.getInt(1);
-				if (table_empty == 1) {
+				if (table_empty != table_empty_value) {
 					//prepare the statement
 					pstmt = conn.prepareStatement(sql2);
 					
 					//fill the param
-					pstmt.setInt(1, tableNum);
+					pstmt.setInt(1, table_empty_value);
+					pstmt.setInt(2, tableNum);
 					
 					//execute the query
 					pstmt.executeUpdate();

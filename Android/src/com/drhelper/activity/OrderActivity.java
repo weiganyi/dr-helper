@@ -254,7 +254,7 @@ public class OrderActivity extends AfterLoginActivity {
 		String amount;
 		String remark;
 		HashMap<String, String> map;
-
+		
 		if (resCode == RESULT_OK && data != null) {
 			Bundle bundle = data.getExtras();
 			if (bundle != null) {

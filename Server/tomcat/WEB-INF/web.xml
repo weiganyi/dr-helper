@@ -16,6 +16,7 @@
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/login.do</url-pattern>
     </servlet-mapping>
+ 
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.LogoutServlet</servlet-class>
@@ -24,6 +25,7 @@
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/logout.do</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>CheckTableServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.CheckTableServlet</servlet-class>
@@ -32,6 +34,7 @@
         <servlet-name>CheckTableServlet</servlet-name>
         <url-pattern>/checkTable.do</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>CreateTableServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.CreateTableServlet</servlet-class>
@@ -40,6 +43,7 @@
         <servlet-name>CreateTableServlet</servlet-name>
         <url-pattern>/createTable.do</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>LoadOrderServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.LoadOrderServlet</servlet-class>
@@ -48,6 +52,34 @@
         <servlet-name>LoadOrderServlet</servlet-name>
         <url-pattern>/loadOrder.do</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CheckOrderServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.CheckOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckOrderServlet</servlet-name>
+        <url-pattern>/checkOrder.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SubmitOrderServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.SubmitOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SubmitOrderServlet</servlet-name>
+        <url-pattern>/submitOrder.do</url-pattern>
+    </servlet-mapping>
+ 
+    <servlet>
+        <servlet-name>DeleteOrderServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.DeleteOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DeleteOrderServlet</servlet-name>
+        <url-pattern>/deleteOrder.do</url-pattern>
+    </servlet-mapping>
+
     <servlet>
         <servlet-name>UpdateMenuTypeServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.UpdateMenuTypeServlet</servlet-class>
@@ -56,6 +88,7 @@
         <servlet-name>UpdateMenuTypeServlet</servlet-name>
         <url-pattern>/updateMenuType.do</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>UpdateMenuServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.UpdateMenuServlet</servlet-class>

@@ -22,6 +22,7 @@ public class CheckTableService extends Service {
 		DBManager db = new DBManager();
 		ArrayList<Table> tableList = db.getEmptyTableList();
 		if (tableList == null) {
+			respEmptyTableList.setResult(false);
 			respBody = JSON.toJSONString(respEmptyTableList);
 			return respBody;
 		}

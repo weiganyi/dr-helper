@@ -79,7 +79,7 @@ public class DBManager {
 			}
 			
 			//update a table to non-empty
-			result = mysqldb.updateTable(tableNum);
+			result = mysqldb.updateTable(tableNum, false);
 			if (!result) {
 				throw new LogicException("DBManager.createTable(): update mysqldb failure");
 			}
@@ -173,5 +173,113 @@ public class DBManager {
 		//release the connect to sql
 		clear();
 		return menuList;
+	}
+	
+	public int getOrderFromTable(int tableNum) {
+		int orderNum = 0;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderFromTable(): open mongodb failure");
+			return orderNum;
+		}
+		
+		//get the order number
+		orderNum = mongodb.getOrderFromTable(tableNum);
+		
+		//release the connect to sql
+		clear();
+		return orderNum;
+	}
+	
+	public int getOrderFromOrder(int orderNum) {
+		int newOrderNum = 0;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderFromOrder(): open mongodb failure");
+			return orderNum;
+		}
+		
+		//get the order number
+		newOrderNum = mongodb.getOrderFromOrder(orderNum);
+		
+		//release the connect to sql
+		clear();
+		return newOrderNum;
+	}
+	
+	public boolean submitOrder(Order order) {
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.submitOrder(): open mongodb failure");
+			return result;
+		}
+		
+		//submit the order
+		result = mongodb.submitOrder(order);
+		
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	@SuppressWarnings("finally")
+	public boolean deleteOrder(Order order) {
+		boolean result = false;
+
+		try {
+			//create the connect to mysql
+			mysqldb = new MysqlDB();
+			result = mysqldb.openConnect();
+			if (!result) {
+				throw new LogicException("DBManager.deleteOrder(): open mysqldb failure");
+			}
+			
+			//update a table to non-empty
+			result = mysqldb.updateTable(order.getTable(), true);
+			if (!result) {
+				throw new LogicException("DBManager.deleteOrder(): update mysqldb failure");
+			}
+			
+			//create the connect to mongodb
+			mongodb = new MongoDB();
+			result = mongodb.openConnect();
+			if (!result) {
+				//if fail, rollback the mysql
+				mysqldb.rollBack();
+				
+				throw new LogicException("DBManager.deleteOrder(): open mongodb failure");
+			}
+			
+			//create a order
+			result = mongodb.deleteOrder(order);
+			if (!result) {
+				//if fail, rollback the mysql
+				mysqldb.rollBack();
+				
+				throw new LogicException("DBManager.deleteOrder(): delete mongodb failure");
+			}
+
+			//if succ, commit the mysql
+			mysqldb.commit();
+
+		} catch (LogicException e) {
+			System.out.println(e.getLog());
+		} finally {		
+			//release the connect to sql
+			clear();
+			return result;
+		}
 	}
 }

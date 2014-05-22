@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class HttpEngine {
 	private static final String HTTP_ENGINE_TAG = "HttpEngine";
-
+	
 	public static String doPost(String url, String reqBody) {
 		HttpClient client = new DefaultHttpClient();
 
@@ -22,10 +22,10 @@ public class HttpEngine {
 		
 		String fullUrl = "http://" + PrefsManager.getServer_address() + "/drhelper/" + url;
 		HttpPost request = new HttpPost(fullUrl);
-
+		
 		if (reqBody != null && reqBody.length() != 0) {
 			try	{
-				StringEntity entity = new StringEntity(reqBody);
+				StringEntity entity = new StringEntity(reqBody, "UTF-8");
 				request.setEntity(entity);
 			}catch(Exception e)	{
 				Log.e(HTTP_ENGINE_TAG, "HttpEngine.doPost(): construct entity failure");
