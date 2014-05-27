@@ -1,8 +1,8 @@
 package com.drhelper.bean.com;
 
 public class NoticeLogin {
-	private String userName;
-	private String userPasswd;
+	private String loginUserName;
+	private String loginUserPasswd;
 	private boolean result;
 
 	public boolean isResult() {
@@ -11,16 +11,16 @@ public class NoticeLogin {
 	public void setResult(boolean result) {
 		this.result = result;
 	}
-	public String getUserName() {
-		return userName;
+	public String getLoginUserName() {
+		return loginUserName;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setLoginUserName(String loginUserName) {
+		this.loginUserName = loginUserName;
 	}
-	public String getUserPasswd() {
-		return userPasswd;
+	public String getLoginUserPasswd() {
+		return loginUserPasswd;
 	}
-	public void setUserPasswd(String userPasswd) {
-		this.userPasswd = userPasswd;
+	public void setLoginUserPasswd(String loginUserPasswd) {
+		this.loginUserPasswd = loginUserPasswd;
 	}
 }

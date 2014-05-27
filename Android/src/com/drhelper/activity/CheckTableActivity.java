@@ -51,7 +51,6 @@ public class CheckTableActivity extends AfterLoginActivity {
 		//set listen handler for check button
 		checkBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				doCheckTable();
 			}
 		});

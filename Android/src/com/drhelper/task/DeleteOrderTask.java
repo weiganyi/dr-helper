@@ -36,7 +36,6 @@ public class DeleteOrderTask extends AsyncTask<Order, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(Order... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 1) {
 			Log.e(DELETE_ORDER_TASK_TAG, "DeleteOrderTask.doInBackground(): there isn't one input param");
 			return DELETE_ORDER_TASK_LOCAL_FALIURE;

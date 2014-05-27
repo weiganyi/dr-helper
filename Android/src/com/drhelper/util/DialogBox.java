@@ -26,7 +26,6 @@ public class DialogBox {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 					if (result != null && result.length() != 0) {
 						try {
 							Class<? extends Activity> cls = act.getClass();
@@ -65,7 +64,6 @@ public class DialogBox {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
 					if (result != null && result.length() != 0) {
 						try {
 							Class<? extends Activity> cls = act.getClass();
@@ -90,8 +88,6 @@ public class DialogBox {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					// TODO Auto-generated method stub
-					
 				}
 			});
 

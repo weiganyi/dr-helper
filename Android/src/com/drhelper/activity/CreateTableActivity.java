@@ -41,7 +41,6 @@ public class CreateTableActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				tableNum = tableText.getText().toString();
 				
 				if (checkInput(tableNum)) {

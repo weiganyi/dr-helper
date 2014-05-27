@@ -48,7 +48,6 @@ public class UpdateActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				doUpdate();
 			}
 		});

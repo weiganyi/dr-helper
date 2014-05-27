@@ -93,7 +93,6 @@ public class OrderActivity extends AfterLoginActivity {
 		//set listen handler for order button
 		orderBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				doOrderMenu();
 			}
 		});
@@ -101,7 +100,6 @@ public class OrderActivity extends AfterLoginActivity {
 		//set listen handler for submit button
 		submitBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				doSubmitOrder();
 			}
 		});
@@ -109,7 +107,6 @@ public class OrderActivity extends AfterLoginActivity {
 		//set listen handler for return button
 		returnBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				doReturnMainActivity();
 			}
 		});
@@ -117,7 +114,6 @@ public class OrderActivity extends AfterLoginActivity {
 		//set listen handler for delete button
 		deleteBtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				doDeleteOrder();
 			}
 		});
@@ -163,7 +159,6 @@ public class OrderActivity extends AfterLoginActivity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				if (position > 0) {
 					deletePos = position-1;
 					DialogBox.showConfirmDialog(OrderActivity.this, 

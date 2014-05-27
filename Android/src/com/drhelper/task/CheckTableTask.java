@@ -45,7 +45,6 @@ public class CheckTableTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		try	{
 			//send the http post and recv response
 			String specUrl = "checkTable.do";

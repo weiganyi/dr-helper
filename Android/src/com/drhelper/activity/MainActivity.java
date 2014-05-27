@@ -47,25 +47,21 @@ public class MainActivity extends AfterLoginActivity {
 		
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			return picId.length;
 		}
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
 			ImageView imgView;
 
 			if (convertView == null) {
@@ -135,7 +131,6 @@ public class MainActivity extends AfterLoginActivity {
 						
 						@Override
 						public void onClick(View v) {
-							// TODO Auto-generated method stub
 							//launch to UnionTableActivity
 							Intent intent = new Intent(MainActivity.this, UnionTableActivity.class);
 							startActivity(intent);

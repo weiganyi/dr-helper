@@ -66,7 +66,6 @@ public class MenuActivity extends AfterLoginActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				if (position > 0) {
 					selectPos = position-1;
 

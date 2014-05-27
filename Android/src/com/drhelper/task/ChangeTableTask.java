@@ -36,7 +36,6 @@ public class ChangeTableTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 2) {
 			Log.e(CHANGE_TABLE_TASK_TAG, "ChangeTableTask.doInBackground(): there isn't two input param");
 			return CHANGE_TABLE_TASK_LOCAL_FALIURE;

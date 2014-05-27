@@ -36,7 +36,6 @@ public class UnionTableTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 2) {
 			Log.e(UNION_TABLE_TASK_TAG, "UnionTableTask.doInBackground(): there isn't two input param");
 			return UNION_TABLE_TASK_LOCAL_FALIURE;

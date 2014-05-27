@@ -36,7 +36,6 @@ public class CreateTableTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 1) {
 			Log.e(CREATE_TABLE_TASK_TAG, "CreateTableTask.doInBackground(): there isn't one input param");
 			return CREATE_TABLE_TASK_LOCAL_FALIURE;

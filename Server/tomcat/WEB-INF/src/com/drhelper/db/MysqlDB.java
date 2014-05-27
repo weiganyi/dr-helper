@@ -143,7 +143,7 @@ public class MysqlDB implements DataBase {
 				tableList.add(table);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getEmptyTable(): sql query catch SQLException");
+			System.out.println("MysqlDB.getEmptyTableList(): sql query catch SQLException");
 			return tableList;
 		}
 		
@@ -407,5 +407,42 @@ public class MysqlDB implements DataBase {
 		}
 		
 		return true;
+	}
+	
+	public Table getEmptyTable() {
+		Table table = null;
+		PreparedStatement pstmt;
+		String sql = "select * from dr_table where table_empty=1";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			//get the result
+			while (rs.next()) {
+				int table_id = rs.getInt(1);
+				int table_num = rs.getInt(2);
+				int table_seat_num = rs.getInt(3);
+				int table_empty = rs.getInt(4);
+				
+				table = new Table();
+				table.setTable_id(table_id);
+				table.setTable_num(table_num);
+				table.setTable_seat_num(table_seat_num);
+				table.setTable_empty(table_empty);
+				
+				return table;
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getEmptyTable(): sql query catch SQLException");
+		}
+
+		return table;
 	}
 }

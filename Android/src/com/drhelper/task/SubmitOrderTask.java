@@ -36,7 +36,6 @@ public class SubmitOrderTask extends AsyncTask<Order, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(Order... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 1) {
 			Log.e(SUBMIT_ORDER_TASK_TAG, "SubmitOrderTask.doInBackground(): there isn't one input param");
 			return SUBMIT_ORDER_TASK_LOCAL_FALIURE;

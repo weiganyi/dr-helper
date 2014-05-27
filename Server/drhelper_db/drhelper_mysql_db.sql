@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: drhelper
 -- ------------------------------------------------------
--- Server version	5.5.33
+-- Server version	5.5.33-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -116,6 +116,38 @@ LOCK TABLES `dr_user` WRITE;
 INSERT INTO `dr_user` VALUES (1,'weigy','123456','waiter');
 /*!40000 ALTER TABLE `dr_user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'drhelper'
+--
+/*!50003 DROP PROCEDURE IF EXISTS `union_table` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+CREATE DEFINER=`drhelper`@`localhost` PROCEDURE `union_table`(in table1 int, in table2 int)
+begin
+    declare table_empty1, table_empty2 int;
+
+    select table_empty from dr_table where table_num=table1 into table_empty1;
+    select table_empty from dr_table where table_num=table2 into table_empty2;
+
+    if table_empty1=0 then
+        if table_empty2=0 then
+            update dr_table set table_empty=1 where table_num=table1;
+        end if;
+    end if;
+end ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -126,4 +158,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-15 17:18:06
+-- Dump completed on 2014-05-23 10:30:10

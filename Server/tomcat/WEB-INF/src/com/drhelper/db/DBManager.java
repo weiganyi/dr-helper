@@ -373,4 +373,44 @@ public class DBManager {
 			return orderNum;
 		}
 	}
+	
+	public Table getEmptyTable() {
+		Table table = null;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getEmptyTable(): open mysqldb failure");
+			return table;
+		}
+		
+		//get the empty table
+		table = mysqldb.getEmptyTable();
+
+		//release the connect to sql
+		clear();
+		return table;
+	}
+	
+	public int getFinishMenu(String user) {
+		int num = 0;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getFinishMenu(): open mongodb failure");
+			return num;
+		}
+		
+		//get the finish menu
+		num = mongodb.getFinishMenu(user);
+
+		//release the connect to sql
+		clear();
+		return num;
+	}
 }

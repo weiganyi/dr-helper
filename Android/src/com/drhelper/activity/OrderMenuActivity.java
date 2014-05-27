@@ -64,7 +64,6 @@ public class OrderMenuActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				amount = amountET.getText().toString();
 				remark = remarkET.getText().toString();
 				
@@ -92,7 +91,6 @@ public class OrderMenuActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				//construct a Intent
 				Intent intent = new Intent();
 				setResult(RESULT_CANCELED, intent);

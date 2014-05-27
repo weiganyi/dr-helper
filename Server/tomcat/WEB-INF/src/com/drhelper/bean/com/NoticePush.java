@@ -1,6 +1,6 @@
 package com.drhelper.bean.com;
 
-public class NoticeInfo {
+public class NoticePush {
 	private boolean notice;
 
 	public boolean isNotice() {

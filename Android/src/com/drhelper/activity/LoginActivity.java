@@ -123,6 +123,8 @@ public class LoginActivity extends BeforeLoginActivity {
 				(PrefsManager.isEmpty_table_notice() == true || 
 				PrefsManager.isFinish_menu_notice() == true)) {
 			Intent intent1 = new Intent(LoginActivity.this, NoticeService.class);
+			intent1.putExtra("empty_table", PrefsManager.isEmpty_table_notice());
+			intent1.putExtra("finish_menu", PrefsManager.isFinish_menu_notice());
 			startService(intent1);
 			PrefsManager.setNotice_service_start(true);
 		}

@@ -8,6 +8,19 @@
 		<session-timeout>60</session-timeout>
 	</session-config>
 
+	<listener>
+		<listener-class>com.drhelper.listener.NoticeServerListener</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>CompRespFilter</filter-name>
+		<filter-class>com.drhelper.filter.CompRespFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CompRespFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
         <servlet-class>com.drhelper.servlet.LoginServlet</servlet-class>
@@ -114,6 +127,15 @@
     <servlet-mapping>
         <servlet-name>UpdateMenuServlet</servlet-name>
         <url-pattern>/updateMenu.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>GetNoticeServlet</servlet-name>
+        <servlet-class>com.drhelper.servlet.GetNoticeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetNoticeServlet</servlet-name>
+        <url-pattern>/getNotice.do</url-pattern>
     </servlet-mapping>
 
 </web-app>

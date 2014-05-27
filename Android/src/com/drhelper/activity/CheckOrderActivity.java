@@ -46,7 +46,6 @@ public class CheckOrderActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				tableNum = tableText.getText().toString();
 				
 				if (checkInputTableNum(tableNum)) {
@@ -60,7 +59,6 @@ public class CheckOrderActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				orderNum = orderText.getText().toString();
 				
 				if (checkInputOrderNum(orderNum)) {

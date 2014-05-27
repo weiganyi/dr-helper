@@ -67,12 +67,14 @@ public class BeforeLoginActivity extends Activity {
 	}
 	
 	public void doLogoutResult() {
-		//send logout request to the server
-		sendLogoutRequest();
+		String userName = null;
 		
 		//clear the prefs manager
 		SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
 		if (prefs != null) {
+			//save the user
+			userName = prefs.getString("user_name", "");
+			
 			//clear the user
 			Editor editor = prefs.edit();
 			editor.putString("user_name", "");
@@ -81,10 +83,14 @@ public class BeforeLoginActivity extends Activity {
 			Log.e(BEFORE_LOGIN_ACTIVITY_TAG, "BeforeLoginActivity.doLogoutResult(): login_user prefs isn't exist");
 		}
 
+		//send logout request to the server
+		sendLogoutRequest();
+
 		//send the service exit broadcast
 		if (PrefsManager.isNotice_service_start() == true) {
 			String action = "com.drhelper.service.intent.action.EXIT";
 			Intent intent = new Intent(action);
+			intent.putExtra("logout_user", userName);
 			sendBroadcast(intent);
 			PrefsManager.setNotice_service_start(false);
 		}
@@ -112,31 +118,47 @@ public class BeforeLoginActivity extends Activity {
 	}
 	
 	public void onActivityResult(int reqCode, int resCode, Intent data) {
+		boolean isChange = false;
+		String action;
+		Intent intent;
+		
 		super.onActivityResult(reqCode, resCode, data);
 		
 		//save the shared prefs
-		saveSharedPref();
+		isChange = saveSharedPref();
 		
-		//start or stop the NoticeService base on prefs
 		if (PrefsManager.isNotice_service_start() == true) {
+			//if not event need to listen, stop the NoticeService
 			if (PrefsManager.isEmpty_table_notice() == false && 
 					PrefsManager.isFinish_menu_notice() == false) {
-				String action = "com.drhelper.service.intent.action.EXIT";
-				Intent intent = new Intent(action);
+				action = "com.drhelper.service.intent.action.EXIT";
+				intent = new Intent(action);
 				sendBroadcast(intent);
 				PrefsManager.setNotice_service_start(false);
+			//if listen event had changed, notice the service
+			}else if (isChange) {
+				action = "com.drhelper.service.intent.action.SUBSCRIBE";
+				intent = new Intent(action);
+				intent.putExtra("empty_table", PrefsManager.isEmpty_table_notice());
+				intent.putExtra("finish_menu", PrefsManager.isFinish_menu_notice());
+				sendBroadcast(intent);
 			}
 		}else {
+			//if service hasn't start, start it
 			if (PrefsManager.isEmpty_table_notice() == true || 
 					PrefsManager.isFinish_menu_notice() == true) {
-				Intent intent1 = new Intent(BeforeLoginActivity.this, NoticeService.class);
-				startService(intent1);
+				intent = new Intent(BeforeLoginActivity.this, NoticeService.class);
+				intent.putExtra("empty_table", PrefsManager.isEmpty_table_notice());
+				intent.putExtra("finish_menu", PrefsManager.isFinish_menu_notice());
+				startService(intent);
 				PrefsManager.setNotice_service_start(true);
 			}
 		}
 	}
 
-	protected void saveSharedPref() {
+	protected boolean saveSharedPref() {
+		boolean isChange = false;
+		
 		//get the saved prefs item
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -150,15 +172,22 @@ public class BeforeLoginActivity extends Activity {
 		}
 
 		boolean empty_table_notice = prefs.getBoolean("empty_table_notice", false);
+		if (PrefsManager.isEmpty_table_notice() != empty_table_notice) {
+			isChange = true;
+		}
 		PrefsManager.setEmpty_table_notice(empty_table_notice);
 
 		boolean finish_menu_notice = prefs.getBoolean("finish_menu_notice", false);
+		if (PrefsManager.isFinish_menu_notice() != finish_menu_notice) {
+			isChange = true;
+		}
 		PrefsManager.setFinish_menu_notice(finish_menu_notice);
+		
+		return isChange;
 	}
 	
 	private class ExitReceiver extends BroadcastReceiver {
 		public void onReceive(Context context, Intent intent) {
-		    // TODO Auto-generated method stub
 			if (intent.getAction().equals("com.drhelper.activity.intent.action.EXIT")) {
 				//exit this activity
 				finish();

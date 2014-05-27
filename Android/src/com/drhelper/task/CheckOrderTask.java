@@ -36,7 +36,6 @@ public class CheckOrderTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 2) {
 			Log.e(CHECK_ORDER_TASK_TAG, "CheckOrderTask.doInBackground(): there isn't two input param");
 			return CHECK_ORDER_TASK_LOCAL_FALIURE;

@@ -308,4 +308,38 @@ public class MongoDB implements DataBase {
 		
 		return orderNum;
 	}
+
+	public int getFinishMenu(String user) {
+		Order order = null;
+		DBObject dbObj = null;
+		ArrayList<Detail> detailList = null;
+		int num = 0;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("user", user);
+		DBCursor cr = coll.find(query);
+		if (cr.hasNext()) {
+			dbObj = cr.next();
+
+			//find the finish menu
+			if (dbObj != null) {
+				order = JSON.parseObject(dbObj.toString(), Order.class);
+				if (order != null) {
+					detailList = order.getDetail();
+					for (Detail detail : detailList) {
+						if (detail.isFinish() == true) {
+							num = order.getTable();
+							return num;
+						}
+					}
+				}
+			}
+		}
+		
+		return num;
+	}
 }

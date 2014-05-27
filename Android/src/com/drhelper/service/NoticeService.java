@@ -1,21 +1,23 @@
 package com.drhelper.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.fastjson.JSON;
 import com.drhelper.R;
 import com.drhelper.activity.CheckTableActivity;
 import com.drhelper.activity.MainActivity;
 import com.drhelper.bean.com.NoticeDetail;
-import com.drhelper.bean.com.NoticeInfo;
+import com.drhelper.bean.com.NoticeHeartBeat;
 import com.drhelper.bean.com.NoticeLogin;
+import com.drhelper.bean.com.NoticeLogout;
+import com.drhelper.bean.com.NoticePush;
+import com.drhelper.bean.com.NoticeSubscribe;
 import com.drhelper.util.HttpEngine;
 import com.drhelper.util.PrefsManager;
 
@@ -37,7 +39,8 @@ public class NoticeService extends Service {
 	
 	private static final int PORT = 30000;
 	
-	private ExitReceiver receiver;
+	private ExitReceiver exitReceiver;
+	private SubReceiver subReceiver;
 
 	private NotificationManager noticeMgr;
 	private int noticeNum = 0;
@@ -48,52 +51,79 @@ public class NoticeService extends Service {
 	private String userName;
 	private String userPasswd;
 	
-	private BufferedReader br = null;;
-	private OutputStream os = null;
-	private InputStream is = null;
+	private OutputStream out = null;
+	private InputStream in = null;
+	
+	private static final String heartBeatEvent = "heartbeat";
+	
+	private boolean is_empty_table = false;
+	private boolean is_finish_menu = false;
+	
+	private ServiceWorker worker;
+	
+	private String logoutUserName = null;
+	
+	private ReentrantLock lock;
 	
 	@Override
 	public void onCreate() {
 		//register the exit receiver
-		receiver = new ExitReceiver();
+		exitReceiver = new ExitReceiver();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("com.drhelper.service.intent.action.EXIT");
-		registerReceiver(receiver, filter);
-		
+		registerReceiver(exitReceiver, filter);
+
+		//register the subscribe receiver
+		subReceiver = new SubReceiver();
+		IntentFilter filter2 = new IntentFilter();
+		filter2.addAction("com.drhelper.service.intent.action.SUBSCRIBE");
+		registerReceiver(subReceiver, filter2);
+
 		//get the notice manager
 		noticeMgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		
 		//start the notice recv thread
 		createNoticeThread();
 		
+		//create a lock
+		lock = new ReentrantLock();
+		
 		super.onCreate();
 	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		is_empty_table = intent.getExtras().getBoolean("empty_table");
+		is_finish_menu = intent.getExtras().getBoolean("finish_menu");
+		
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
 	public void onDestroy() {
+		//do logout
+		if (logoutUserName != null && logoutUserName.equals("") != true) {
+			worker.doLogout();
+		}
+		
 		//stop the notice recv thread
 		destoryNoticeThread();
 		
-		//unregister the exit receiver
-		unregisterReceiver(receiver);
+		//unregister the eceiver
+		unregisterReceiver(exitReceiver);
+		unregisterReceiver(subReceiver);
 		
 		super.onDestroy();
 	}
 	
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@SuppressLint("WorldReadableFiles")
 	private void createNoticeThread() {
 		//create a thread to detect notice from background
-		ServiceWorker worker = new ServiceWorker();
+		worker = new ServiceWorker();
 		if (worker != null) {
 			threadId = new Thread(worker, "NoticeService");
 			if (threadId != null) {
@@ -112,7 +142,6 @@ public class NoticeService extends Service {
 				socket.close();
 				socket = null;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.DestoryNoticeThread(): close the socket failure");
 			}
 		}
@@ -124,173 +153,309 @@ public class NoticeService extends Service {
 		}
 	}
 	
+	@SuppressLint("WorldReadableFiles")
 	private class ServiceWorker implements Runnable {
 		@Override
 		public void run() {
+			boolean result = false;
+			String content = null;
+
+			// do login first
+			result = doLogin();
+			if (!result) {
+				return;
+			}
+
+			// get message from server
+			while (true) {
+				try {
+					lock.lock();
+					
+					if ((content = readFromServer(in)) == null) {
+						lock.unlock();
+						continue;
+					}
+
+					// check if is NoticeHeartBeat
+					NoticeHeartBeat nhb = JSON.parseObject(content, NoticeHeartBeat.class);
+					if (nhb != null && 
+							nhb.getMsg() != null &&
+							nhb.getMsg().equals(heartBeatEvent) == true) {
+						// create NoticeHeartBeat object
+						NoticeHeartBeat nhbResp = new NoticeHeartBeat();
+						nhbResp.setMsg(heartBeatEvent);
+						nhbResp.setResult(true);
+
+						// serialize by fastjson
+						String response = JSON.toJSONString(nhbResp);
+
+						// send the response
+						writeToServer(out, response);
+						
+						lock.unlock();
+						continue;
+					}
+
+					// check if is NoticePush
+					NoticePush np = JSON.parseObject(content, NoticePush.class);
+					if (np != null && np.isNotice() == true) {
+						// if has notice, then get the notice detail from server
+						// send the http post and recv response
+						String specUrl = "getNotice.do";
+						String respBody = HttpEngine.doPost(specUrl, null);
+						if (respBody == null || respBody.length() == 0) {
+							Log.e(NOTICE_SERVICE_TAG,
+									"NoticeService.ServiceWorker.run(): respBody is null");
+							lock.unlock();
+							continue;
+						}
+						// unserialize from response string
+						NoticeDetail noticeDetailResp = JSON.parseObject(
+								respBody, NoticeDetail.class);
+
+						// send the empty table notice
+						if (noticeDetailResp.isEmptyTable() == true) {
+							int emptyTableIcon = R.drawable.empty_table;
+							String emptyTableInfo = getString(R.string.notice_service_empty_table);
+							long emptyTableWhen = System.currentTimeMillis();
+							Notification emptyTableNotice = new Notification(
+									emptyTableIcon, emptyTableInfo,
+									emptyTableWhen);
+
+							// emptyTableNotice.flags = Notification.FLAG_NO_CLEAR;
+
+							Intent intent1 = new Intent(NoticeService.this,
+									CheckTableActivity.class);
+							PendingIntent emptyTableIntent = PendingIntent
+									.getActivity(NoticeService.this, 0,
+											intent1, 0);
+							emptyTableNotice.setLatestEventInfo(
+									NoticeService.this, null, emptyTableInfo,
+									emptyTableIntent);
+
+							noticeMgr.notify(noticeNum++, emptyTableNotice);
+						}
+
+						// send the finish menu notice
+						if (noticeDetailResp.isFinishMenu() == true) {
+							int finishMenuTable = noticeDetailResp.getTable();
+							int finishMenuIcon = R.drawable.finish_menu;
+							String finishMenuInfo = String
+									.valueOf(finishMenuTable)
+									+ getString(R.string.notice_service_finish_menu);
+							long finishMenuWhen = System.currentTimeMillis();
+							Notification finishMenuNotice = new Notification(
+									finishMenuIcon, finishMenuInfo,
+									finishMenuWhen);
+
+							// finishMenuNotice.flags = Notification.FLAG_NO_CLEAR;
+
+							Intent intent2 = new Intent(NoticeService.this,
+									MainActivity.class);
+							PendingIntent finishMenuIntent = PendingIntent
+									.getActivity(NoticeService.this, 0,
+											intent2, 0);
+							finishMenuNotice.setLatestEventInfo(
+									NoticeService.this, null, finishMenuInfo,
+									finishMenuIntent);
+
+							noticeMgr.notify(noticeNum++, finishMenuNotice);
+						}
+					}
+					
+					lock.unlock();
+				} catch (Exception e) {
+					Log.e(NOTICE_SERVICE_TAG,
+							"NoticeService.ServiceWorker.run(): json serialize or http post is failure");
+					lock.unlock();
+				}
+			}
+		}
+		
+		private boolean doLogin() {
 			//create a socket
 			String url = PrefsManager.getServer_address();
 			try {
 				socket = new Socket(url, PORT);
+				//set the noblock timeout to 10s 
+				socket.setSoTimeout(20000);
 			} catch (UnknownHostException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): create the socket parse host failure ");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): create the socket parse host failure ");
+				return false;
 			} catch (IOException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): create the socket failure");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): create the socket failure");
+				return false;
 			}
 
 			//construct InputStream and OutputStream
 			try {
-				os = socket.getOutputStream();
+				out = socket.getOutputStream();
 			} catch (IOException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): getOutputStream connect to remote failure");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): getOutputStream connect to remote failure");
+				return false;
 			}
 
 			try {
-				is = socket.getInputStream();
+				in = socket.getInputStream();
 			} catch (IOException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): getInputStream connect to remote failure");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): getInputStream connect to remote failure");
+				return false;
 			}
-			br = new BufferedReader(new InputStreamReader(is));
 
 			//do login
 			SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_READABLE);
 			if (prefs == null) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): getSharedPreferences failure");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): getSharedPreferences failure");
+				return false;
 			}
 			//get the name and passwd from shared prefs
 			userName = prefs.getString("user_name", "");
 			userPasswd = prefs.getString("user_passwd", "");
 			if (userName.equals("") || userPasswd.equals("")) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): userName or userPasswd is null");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): userName or userPasswd is null");
+				return false;
 			}
 
+			//create NoticeLogin object
 			NoticeLogin loginReq = new NoticeLogin();
-			loginReq.setUserName(userName);
-			loginReq.setUserPasswd(userPasswd);
+			loginReq.setLoginUserName(userName);
+			loginReq.setLoginUserPasswd(userPasswd);
 
 			//serialize by fastjson
 			String request = JSON.toJSONString(loginReq);
 
 			//send the request and recv response
-			writeToServer(os, request);
-			String content = readFromServer(br);
-			//String content = "{\"userName\":\"2\", \"userPasswd\":\"2\", \"result\":true}";
+			lock.lock();
+			writeToServer(out, request);
+			String content = readFromServer(in);
+			lock.unlock();
 			if (content == null) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): login return null");
-				return;
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): login return null");
+				return false;
 			}
 			NoticeLogin loginResp = JSON.parseObject(content, NoticeLogin.class);
 			if (loginResp.isResult() != true || 
-					loginResp.getUserName().equals(userName) == false) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): login result is failure");
-				return;
+					loginResp.getLoginUserName().equals(userName) == false) {
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): login result is failure");
+				return false;
 			}
 			
-			//get notice info from server
-			while ((content = readFromServer(br)) != null) {
-			content = "{\"notice\":true}";
-				NoticeInfo ni = JSON.parseObject(content, NoticeInfo.class);
-				if (ni.isNotice() == true) {
-					//if has notice, then get the notice detail from server
-					try	{
-						//send the http post and recv response
-						String specUrl = "getNotice";
-						String respBody = HttpEngine.doPost(specUrl, null);
-						respBody = "{\"emptyTable\":true, \"finishMenu\":true, \"table\":3}";
-						if (respBody == null || respBody.length() == 0) {
-							Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): respBody is null");
-							continue;
-						}
-						//unserialize from response string
-						NoticeDetail noticeDetailResp = JSON.parseObject(respBody, NoticeDetail.class);
-
-						//send the empty table notice
-						if (noticeDetailResp.isEmptyTable() == true) {
-							int emptyTableIcon = R.drawable.empty_table;
-							String emptyTableInfo = getString(R.string.notice_service_empty_table);
-							long emptyTableWhen = System.currentTimeMillis();
-							Notification emptyTableNotice = 
-									new Notification(emptyTableIcon, emptyTableInfo, emptyTableWhen);
-								
-							//emptyTableNotice.flags = Notification.FLAG_NO_CLEAR;
-								
-							Intent intent1 = new Intent(NoticeService.this, CheckTableActivity.class);
-							PendingIntent emptyTableIntent = 
-									PendingIntent.getActivity(NoticeService.this, 0, intent1, 0);
-							emptyTableNotice.setLatestEventInfo(NoticeService.this, 
-									null, emptyTableInfo, emptyTableIntent);
-								
-							noticeMgr.notify(noticeNum++, emptyTableNotice);
-						}
-
-						//send the finish menu notice
-						if (noticeDetailResp.isFinishMenu() == true) {
-							int finishMenuTable = noticeDetailResp.getTable();
-							int finishMenuIcon = R.drawable.finish_menu;
-							String finishMenuInfo = String.valueOf(finishMenuTable) + 
-									getString(R.string.notice_service_finish_menu);
-							long finishMenuWhen = System.currentTimeMillis();
-							Notification finishMenuNotice = 
-									new Notification(finishMenuIcon, finishMenuInfo, finishMenuWhen);
-								
-							//finishMenuNotice.flags = Notification.FLAG_NO_CLEAR;
-								
-							Intent intent2 = new Intent(NoticeService.this, MainActivity.class);
-							PendingIntent finishMenuIntent = 
-									PendingIntent.getActivity(NoticeService.this, 0, intent2, 0);
-							finishMenuNotice.setLatestEventInfo(NoticeService.this, 
-									null, finishMenuInfo, finishMenuIntent);
-
-							noticeMgr.notify(noticeNum++, finishMenuNotice);
-						}
-					}catch(Exception e) {
-						Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): json serialize or http post is failure");
-					}
-				}
+			//subscribe the notice
+			if (is_empty_table || is_finish_menu) {
+				doSubscribe(is_empty_table, is_finish_menu);
 			}
+			return true;
+		}
+		
+		public boolean doLogout() {
+			//create NoticeLogout object
+			NoticeLogout logoutReq = new NoticeLogout();
+			logoutReq.setLogoutUserName(logoutUserName);
+			
+			//serialize by fastjson
+			String request = JSON.toJSONString(logoutReq);
+			
+			//send the request and recv response
+			lock.lock();
+			writeToServer(out, request);
+			String content = readFromServer(in);
+			lock.unlock();
+			if (content == null) {
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogout(): logout return null");
+				return false;
+			}
+			NoticeLogout logoutResp = JSON.parseObject(content, NoticeLogout.class);
+			if (logoutResp.isResult() != true || 
+					logoutResp.getLogoutUserName().equals(userName) == false) {
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogout(): logout result is failure");
+				return false;
+			}
+			
+			return true;
+		}
+		
+		public boolean doSubscribe(boolean emptyTable, boolean finishMenu) {
+			//create NoticeLogout object
+			NoticeSubscribe subReq = new NoticeSubscribe();
+			subReq.setEmptyTable(emptyTable);
+			subReq.setFinishMenu(finishMenu);
+
+			//serialize by fastjson
+			String request = JSON.toJSONString(subReq);
+
+			//send the request and recv response
+			lock.lock();
+			writeToServer(out, request);
+			String content = readFromServer(in);
+			lock.unlock();
+			if (content == null) {
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doSubscribe(): subscribe return null");
+				return false;
+			}
+			NoticeSubscribe subResp = JSON.parseObject(content, NoticeSubscribe.class);
+			if (subResp.isResult() != true) {
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doSubscribe(): subscribe result is failure");
+				return false;
+			}
+			
+			return true;
 		}
 	}
 	
-	public boolean writeToServer(OutputStream os, String request) {
-		if (os != null) {
+	public boolean writeToServer(OutputStream out, String request) {
+		if (out != null) {
 			try {
-				os.write(request.getBytes("utf-8"));
+				out.write(request.getBytes("utf-8"));
 				return true;
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.writeToServer(): message encode failure");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.writeToServer(): write data failure");
 			}
 		}
 		return false;
 	}
 	
-	public String readFromServer(BufferedReader br) {
-		if (br != null) {
+	public String readFromServer(InputStream in) {
+		if (in != null) {
+			byte[] receiveBuf = new byte[128];
+			int recvMsgSize = 0;
+			String content;
+			
 			try {
-				return br.readLine();
+				while((recvMsgSize = in.read(receiveBuf))!=-1) {
+					if (recvMsgSize != 0) {
+						content = new String(receiveBuf, 0, recvMsgSize);
+						return content;
+					}
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.readFromServer(): read data failure");
 			}
 		}
 		return null;
 	}
-
+	
 	private class ExitReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-		    // TODO Auto-generated method stub
 			if (intent.getAction().equals("com.drhelper.service.intent.action.EXIT")) {
+				logoutUserName = intent.getExtras().getString("logout_user");
 				//exit this service
 				stopSelf();
+			}
+		}
+	}
+	
+	private class SubReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.drhelper.service.intent.action.SUBSCRIBE")) {
+				is_empty_table = intent.getExtras().getBoolean("empty_table");
+				is_finish_menu = intent.getExtras().getBoolean("finish_menu");
+				
+				//do subscribe
+				worker.doSubscribe(is_empty_table, is_finish_menu);
 			}
 		}
 	}

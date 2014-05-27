@@ -54,7 +54,6 @@ public class UpdateTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		String specUrl;
 		String respBody;
 		

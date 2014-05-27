@@ -35,7 +35,6 @@ public class LoginTask extends AsyncTask<String, Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground(String... param) {
-		// TODO Auto-generated method stub
 		if (param.length != 2) {
 			Log.e(LOGIN_TASK_TAG, "LoginTask.doInBackground(): there isn't two input param");
 			return LOGIN_TASK_LOCAL_FALIURE;

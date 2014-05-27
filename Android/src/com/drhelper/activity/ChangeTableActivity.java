@@ -44,7 +44,6 @@ public class ChangeTableActivity extends AfterLoginActivity {
 			
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				tableNum1 = table1Text.getText().toString();
 				tableNum2 = table2Text.getText().toString();
 				
