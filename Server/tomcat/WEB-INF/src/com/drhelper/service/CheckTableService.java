@@ -10,6 +10,8 @@ import com.drhelper.bean.com.EmptyTable;
 import com.drhelper.bean.com.EmptyTableList;
 import com.drhelper.db.DBManager;
 import com.drhelper.entity.Table;
+import com.drhelper.listener.NoticeServerListener;
+import com.drhelper.server.NoticeServer;
 
 public class CheckTableService extends Service {
 	public String doAction(HttpSession session, String reqBody) {
@@ -43,6 +45,13 @@ public class CheckTableService extends Service {
 			list.add(emptyTable);
 		}
 		respEmptyTableList.setResult(true);
+		
+		//test notice push
+		if (NoticeServerListener.worker != null) {
+			NoticeServerListener.worker.publishEvent(
+					NoticeServer.emptyTableEvent, 
+					(String)session.getAttribute("id"));
+		}
 		
 		//serialize the object
 		respBody = JSON.toJSONString(respEmptyTableList);

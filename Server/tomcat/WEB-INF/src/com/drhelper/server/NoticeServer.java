@@ -63,7 +63,8 @@ public class NoticeServer implements Runnable {
 			return;
 		}
 
-		while (true) {
+		//check if thread had been interrupted
+		while (!Thread.interrupted()) {
 			try {
 				// select any event
 				selector.select();
@@ -75,14 +76,14 @@ public class NoticeServer implements Runnable {
 					SelectionKey key = it.next();
 
 					// client connect event
-					if (key.isAcceptable()) {
+					if (key.isValid() && key.isAcceptable()) {
 						// accept a connect
 						ServerSocketChannel srvChan = (ServerSocketChannel) key.channel();
 						SocketChannel channel = srvChan.accept();
 						channel.configureBlocking(false);
 						channel.register(selector, SelectionKey.OP_READ);
 						// client message event
-					} else if (key.isReadable()) {
+					} else if (key.isValid() && key.isReadable()) {
 						SelectableChannel channel = key.channel();
 
 						// channel to the client
@@ -109,7 +110,7 @@ public class NoticeServer implements Runnable {
 								if (loginReq != null
 										&& loginReq.getLoginUserName() != null
 										&& loginReq.getLoginUserPasswd() != null) {
-									doLogin(loginReq, socketChannel);
+									doLogin(loginReq, socketChannel, key);
 									continue;
 								}
 
@@ -124,7 +125,7 @@ public class NoticeServer implements Runnable {
 								// check if is subscribe request
 								NoticeSubscribe subReq = JSON.parseObject(buffer, NoticeSubscribe.class);
 								if (subReq != null) {
-									doSubscribe(subReq, socketChannel);
+									doSubscribe(subReq, socketChannel, key);
 									continue;
 								}
 							}
@@ -133,7 +134,7 @@ public class NoticeServer implements Runnable {
 							DatagramChannel datagramChannel = (DatagramChannel) channel;
 
 							// receive the event
-							ByteBuffer rBuf = ByteBuffer.allocate(32);
+							ByteBuffer rBuf = ByteBuffer.allocate(256);
 							datagramChannel.receive(rBuf);
 
 							String buffer = TypeConvert.getStringFromByteBuffer(rBuf);
@@ -164,10 +165,13 @@ public class NoticeServer implements Runnable {
 					// delete the finished event
 					it.remove();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				System.out.println("NoticeServer.run(): while catch Exception");
 			}
 		}
+		
+		System.out.println("NoticeServer.run(): thread exit");
+		return;
 	}
 	
 	public void initServer() throws IOException {
@@ -199,7 +203,7 @@ public class NoticeServer implements Runnable {
 		timer.schedule(task, 5000, 30000);	//after 5s to start, loop 30s timeout
 	}
 	
-	public void doLogin(NoticeLogin loginReq, SocketChannel channel) {
+	public void doLogin(NoticeLogin loginReq, SocketChannel channel, SelectionKey key) {
 		String userName = loginReq.getLoginUserName();
 		String userPasswd = loginReq.getLoginUserPasswd();
 		boolean result = true;
@@ -217,7 +221,7 @@ public class NoticeServer implements Runnable {
 			if (user != null) {
 				// add the login channel into the loginChanList
 				if (findChannel(loginChanList, channel) == null) {
-					addChannel(loginChanList, userName, channel);
+					addChannel(loginChanList, userName, channel, key);
 				}
 			}
 		} catch (LogicException e) {
@@ -250,17 +254,13 @@ public class NoticeServer implements Runnable {
 				throw new LogicException();
 			}
 	
-			// check the client if had already logined
-			if (findChannel(loginChanList, channel) != null) {
+			//remove channel if exist
+			UserSocketChannel item = findChannel(loginChanList, channel);
+			if (item != null) {
+				item.getKey().cancel();
 				removeChannel(loginChanList, channel);
-			}
-			if (findChannel(emptyTableChanList, channel) != null) {
 				removeChannel(emptyTableChanList, channel);
-			}
-			if (findChannel(finishMenuChanList, channel) != null) {
 				removeChannel(finishMenuChanList, channel);
-			}
-			if (findChannel(waitRespChanList, channel) != null) {
 				removeChannel(waitRespChanList, channel);
 			}
 		}catch (LogicException e) {
@@ -285,7 +285,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 	
-	public void doSubscribe(NoticeSubscribe subReq, SocketChannel channel) {
+	public void doSubscribe(NoticeSubscribe subReq, SocketChannel channel, SelectionKey key) {
 		boolean isEmptyTable = subReq.isEmptyTable();
 		boolean isFinishMenu = subReq.isFinishMenu();
 		boolean result = true;
@@ -299,7 +299,7 @@ public class NoticeServer implements Runnable {
 				//update the empty table list
 				UserSocketChannel etChan = findChannel(emptyTableChanList, channel);
 				if (isEmptyTable && etChan == null) {
-					addChannel(emptyTableChanList, userName, channel);
+					addChannel(emptyTableChanList, userName, channel, key);
 				}else if (!isEmptyTable && etChan != null) {
 					removeChannel(emptyTableChanList, channel);
 				}
@@ -307,7 +307,7 @@ public class NoticeServer implements Runnable {
 				//update the finish menu list
 				UserSocketChannel fmChan = findChannel(finishMenuChanList, channel);
 				if (isFinishMenu && fmChan == null) {
-					addChannel(finishMenuChanList, userName, channel);
+					addChannel(finishMenuChanList, userName, channel, key);
 				}else if (!isFinishMenu && fmChan != null) {
 					removeChannel(finishMenuChanList, channel);
 				}
@@ -338,23 +338,19 @@ public class NoticeServer implements Runnable {
 		UserSocketChannel prevItem = null;
 		SocketChannel channel = null;
 		String userName = null;
+		SelectionKey key = null;
 		
-		//close all connect in waitRespChanList
+		//close all connect in waitRespChanList, because it means the remote connect had lost.
 		for (UserSocketChannel item : waitRespChanList) {
 			//first to process the prev item
 			if (prevItem != null) {
 				channel = prevItem.getChannel();
 
+				prevItem.getKey().cancel();
 				removeChannel(waitRespChanList, channel);
-				if (findChannel(loginChanList, channel) != null) {
-					removeChannel(loginChanList, channel);
-				}
-				if (findChannel(emptyTableChanList, channel) != null) {
-					removeChannel(emptyTableChanList, channel);
-				}
-				if (findChannel(finishMenuChanList, channel) != null) {
-					removeChannel(finishMenuChanList, channel);
-				}
+				removeChannel(loginChanList, channel);
+				removeChannel(emptyTableChanList, channel);
+				removeChannel(finishMenuChanList, channel);
 
 				try {
 					channel.close();
@@ -373,16 +369,11 @@ public class NoticeServer implements Runnable {
 		if (prevItem != null) {
 			channel = prevItem.getChannel();
 
+			prevItem.getKey().cancel();
 			removeChannel(waitRespChanList, channel);
-			if (findChannel(loginChanList, channel) != null) {
-				removeChannel(loginChanList, channel);
-			}
-			if (findChannel(emptyTableChanList, channel) != null) {
-				removeChannel(emptyTableChanList, channel);
-			}
-			if (findChannel(finishMenuChanList, channel) != null) {
-				removeChannel(finishMenuChanList, channel);
-			}
+			removeChannel(loginChanList, channel);
+			removeChannel(emptyTableChanList, channel);
+			removeChannel(finishMenuChanList, channel);
 
 			try {
 				channel.close();
@@ -398,6 +389,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel = item.getChannel();
 				userName = item.getUserName();
+				key = item.getKey();
 				
 				NoticeHeartBeat hbReq = new NoticeHeartBeat();
 				hbReq.setMsg(heartBeatEvent);
@@ -409,21 +401,19 @@ public class NoticeServer implements Runnable {
 				channel.write(sBuf);
 				
 				//add it into waitRespChanList
-				addChannel(waitRespChanList, userName, channel);
+				addChannel(waitRespChanList, userName, channel, key);
 			} catch (IOException e) {
 				System.out.println("NoticeServer.doHeartBeat(): catch IOException");
 
 				//add it into waitRespChanList
-				addChannel(waitRespChanList, userName, channel);
+				addChannel(waitRespChanList, userName, channel, key);
 			}
 		}
 	}
 	
 	public void doHeartBeatResp(NoticeHeartBeat hbResp, SocketChannel channel) {
 		if (hbResp.isResult() == true) {
-			if (findChannel(waitRespChanList, channel) != null) {
-				removeChannel(waitRespChanList, channel);
-			}
+			removeChannel(waitRespChanList, channel);
 		}
 	}
 
@@ -504,10 +494,19 @@ public class NoticeServer implements Runnable {
 	
 	public UserSocketChannel addChannel(LinkedList<UserSocketChannel> list, 
 			String userName, 
-			SocketChannel channel) {
+			SocketChannel channel, 
+			SelectionKey key) {
 		UserSocketChannel item = new UserSocketChannel();
 		item.setChannel(channel);
 		item.setUserName(userName);
+		item.setKey(key);
+		list.add(item);
+		
+		return item;
+	}
+	
+	public UserSocketChannel addChannel(LinkedList<UserSocketChannel> list, 
+			UserSocketChannel item) {
 		list.add(item);
 		
 		return item;

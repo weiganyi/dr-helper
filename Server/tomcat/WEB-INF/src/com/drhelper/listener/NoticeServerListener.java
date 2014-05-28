@@ -7,12 +7,13 @@ import com.drhelper.server.NoticeServer;
 
 public class NoticeServerListener implements ServletContextListener {
 	private Thread threadId = null;
+	public static NoticeServer worker = null;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 		System.out.println("NoticeServerListener.contextInitialized(): start");
 		
-		NoticeServer worker = new NoticeServer();
+		worker = new NoticeServer();
 
 		threadId = new Thread(worker, "NoticeServer");
 		if (threadId != null) {

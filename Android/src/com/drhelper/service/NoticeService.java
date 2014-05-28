@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
+@SuppressLint("WorldReadableFiles")
 public class NoticeService extends Service {
 	private static final String NOTICE_SERVICE_TAG = "NoticeService";
 	
@@ -65,6 +66,8 @@ public class NoticeService extends Service {
 	
 	private ReentrantLock lock;
 	
+	private static final String connectLostEvent = "connlost";
+	
 	@Override
 	public void onCreate() {
 		//register the exit receiver
@@ -82,8 +85,14 @@ public class NoticeService extends Service {
 		//get the notice manager
 		noticeMgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		
-		//start the notice recv thread
-		createNoticeThread();
+		//create a thread to detect notice from background
+		worker = new ServiceWorker();
+		if (worker != null) {
+			threadId = new Thread(worker, "NoticeService");
+			if (threadId != null) {
+				threadId.start();
+			}
+		}
 		
 		//create a lock
 		lock = new ReentrantLock();
@@ -99,19 +108,34 @@ public class NoticeService extends Service {
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
+	@Override
 	public void onDestroy() {
+		//stop the notice recv thread
+		if (threadId != null) {
+			threadId.interrupt();
+		}
+
 		//do logout
 		if (logoutUserName != null && logoutUserName.equals("") != true) {
 			worker.doLogout();
 		}
 		
-		//stop the notice recv thread
-		destoryNoticeThread();
-		
 		//unregister the eceiver
 		unregisterReceiver(exitReceiver);
 		unregisterReceiver(subReceiver);
 		
+		//close the socket;
+		if (socket != null) {
+			try {
+				socket.close();
+			} catch (IOException e) {
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.destoryNoticeThread(): close the socket failure");
+			}
+		}
+
+		//cancel all notice
+		noticeMgr.cancelAll();
+
 		super.onDestroy();
 	}
 	
@@ -119,41 +143,7 @@ public class NoticeService extends Service {
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
-
-	@SuppressLint("WorldReadableFiles")
-	private void createNoticeThread() {
-		//create a thread to detect notice from background
-		worker = new ServiceWorker();
-		if (worker != null) {
-			threadId = new Thread(worker, "NoticeService");
-			if (threadId != null) {
-				threadId.start();
-			}
-		}
-	}
 	
-	private void destoryNoticeThread() {
-		//cancel all notice
-		noticeMgr.cancelAll();
-		
-		//close the socket;
-		if (socket != null) {
-			try {
-				socket.close();
-				socket = null;
-			} catch (IOException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.DestoryNoticeThread(): close the socket failure");
-			}
-		}
-		
-		//stop the thread
-		if (threadId != null) {
-			threadId.interrupt();
-			threadId = null;
-		}
-	}
-	
-	@SuppressLint("WorldReadableFiles")
 	private class ServiceWorker implements Runnable {
 		@Override
 		public void run() {
@@ -166,32 +156,31 @@ public class NoticeService extends Service {
 				return;
 			}
 
-			// get message from server
-			while (true) {
+			//check if thread had been interrupted
+			while (!Thread.interrupted()) {
 				try {
 					lock.lock();
 					
+					// get message from server
 					if ((content = readFromServer(in)) == null) {
 						lock.unlock();
 						continue;
 					}
 
+					//check if is connectLostEvent
+					if (content.equals(connectLostEvent) == true) {
+						//because it means the remote connect had lost, reconnect again
+						doLogin();
+						lock.unlock();
+						continue;
+					}
+					
 					// check if is NoticeHeartBeat
 					NoticeHeartBeat nhb = JSON.parseObject(content, NoticeHeartBeat.class);
 					if (nhb != null && 
 							nhb.getMsg() != null &&
 							nhb.getMsg().equals(heartBeatEvent) == true) {
-						// create NoticeHeartBeat object
-						NoticeHeartBeat nhbResp = new NoticeHeartBeat();
-						nhbResp.setMsg(heartBeatEvent);
-						nhbResp.setResult(true);
-
-						// serialize by fastjson
-						String response = JSON.toJSONString(nhbResp);
-
-						// send the response
-						writeToServer(out, response);
-						
+						doHeartBeatResp();
 						lock.unlock();
 						continue;
 					}
@@ -199,76 +188,94 @@ public class NoticeService extends Service {
 					// check if is NoticePush
 					NoticePush np = JSON.parseObject(content, NoticePush.class);
 					if (np != null && np.isNotice() == true) {
-						// if has notice, then get the notice detail from server
-						// send the http post and recv response
-						String specUrl = "getNotice.do";
-						String respBody = HttpEngine.doPost(specUrl, null);
-						if (respBody == null || respBody.length() == 0) {
-							Log.e(NOTICE_SERVICE_TAG,
-									"NoticeService.ServiceWorker.run(): respBody is null");
-							lock.unlock();
-							continue;
-						}
-						// unserialize from response string
-						NoticeDetail noticeDetailResp = JSON.parseObject(
-								respBody, NoticeDetail.class);
-
-						// send the empty table notice
-						if (noticeDetailResp.isEmptyTable() == true) {
-							int emptyTableIcon = R.drawable.empty_table;
-							String emptyTableInfo = getString(R.string.notice_service_empty_table);
-							long emptyTableWhen = System.currentTimeMillis();
-							Notification emptyTableNotice = new Notification(
-									emptyTableIcon, emptyTableInfo,
-									emptyTableWhen);
-
-							// emptyTableNotice.flags = Notification.FLAG_NO_CLEAR;
-
-							Intent intent1 = new Intent(NoticeService.this,
-									CheckTableActivity.class);
-							PendingIntent emptyTableIntent = PendingIntent
-									.getActivity(NoticeService.this, 0,
-											intent1, 0);
-							emptyTableNotice.setLatestEventInfo(
-									NoticeService.this, null, emptyTableInfo,
-									emptyTableIntent);
-
-							noticeMgr.notify(noticeNum++, emptyTableNotice);
-						}
-
-						// send the finish menu notice
-						if (noticeDetailResp.isFinishMenu() == true) {
-							int finishMenuTable = noticeDetailResp.getTable();
-							int finishMenuIcon = R.drawable.finish_menu;
-							String finishMenuInfo = String
-									.valueOf(finishMenuTable)
-									+ getString(R.string.notice_service_finish_menu);
-							long finishMenuWhen = System.currentTimeMillis();
-							Notification finishMenuNotice = new Notification(
-									finishMenuIcon, finishMenuInfo,
-									finishMenuWhen);
-
-							// finishMenuNotice.flags = Notification.FLAG_NO_CLEAR;
-
-							Intent intent2 = new Intent(NoticeService.this,
-									MainActivity.class);
-							PendingIntent finishMenuIntent = PendingIntent
-									.getActivity(NoticeService.this, 0,
-											intent2, 0);
-							finishMenuNotice.setLatestEventInfo(
-									NoticeService.this, null, finishMenuInfo,
-									finishMenuIntent);
-
-							noticeMgr.notify(noticeNum++, finishMenuNotice);
-						}
+						doNoticeDetailPull();
 					}
 					
 					lock.unlock();
-				} catch (Exception e) {
-					Log.e(NOTICE_SERVICE_TAG,
-							"NoticeService.ServiceWorker.run(): json serialize or http post is failure");
+				}catch (Exception e) {
+					Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.run(): catch Exception");
 					lock.unlock();
 				}
+			}
+			
+			System.out.println("ServiceWorker.run(): thread exit");
+			return;
+		}
+
+		private void doHeartBeatResp() {
+			// create NoticeHeartBeat object
+			NoticeHeartBeat nhbResp = new NoticeHeartBeat();
+			nhbResp.setMsg(heartBeatEvent);
+			nhbResp.setResult(true);
+	
+			// serialize by fastjson
+			String response = JSON.toJSONString(nhbResp);
+	
+			// send the response
+			writeToServer(out, response);
+		}
+		
+		private void doNoticeDetailPull() {
+			// if has notice, then get the notice detail from server
+			// send the http post and recv response
+			String specUrl = "getNotice.do";
+			String respBody = HttpEngine.doPost(specUrl, null);
+			if (respBody == null || respBody.length() == 0) {
+				Log.e(NOTICE_SERVICE_TAG,
+						"NoticeService.ServiceWorker.doNoticeDetailPull(): respBody is null");
+				return;
+			}
+			// unserialize from response string
+			NoticeDetail noticeDetailResp = JSON.parseObject(
+					respBody, NoticeDetail.class);
+
+			// send the empty table notice
+			if (noticeDetailResp.isEmptyTable() == true) {
+				int emptyTableIcon = R.drawable.empty_table;
+				String emptyTableInfo = getString(R.string.notice_service_empty_table);
+				long emptyTableWhen = System.currentTimeMillis();
+				Notification emptyTableNotice = new Notification(
+						emptyTableIcon, emptyTableInfo,
+						emptyTableWhen);
+
+				// emptyTableNotice.flags = Notification.FLAG_NO_CLEAR;
+
+				Intent intent1 = new Intent(NoticeService.this,
+						CheckTableActivity.class);
+				PendingIntent emptyTableIntent = PendingIntent
+						.getActivity(NoticeService.this, 0,
+								intent1, 0);
+				emptyTableNotice.setLatestEventInfo(
+						NoticeService.this, null, emptyTableInfo,
+						emptyTableIntent);
+
+				noticeMgr.notify(noticeNum++, emptyTableNotice);
+			}
+
+			// send the finish menu notice
+			if (noticeDetailResp.isFinishMenu() == true) {
+				int finishMenuTable = noticeDetailResp.getTable();
+				int finishMenuIcon = R.drawable.finish_menu;
+				String finishMenuInfo = String
+						.valueOf(finishMenuTable)
+						+ getString(R.string.notice_service_finish_menu);
+				long finishMenuWhen = System.currentTimeMillis();
+				Notification finishMenuNotice = new Notification(
+						finishMenuIcon, finishMenuInfo,
+						finishMenuWhen);
+
+				// finishMenuNotice.flags = Notification.FLAG_NO_CLEAR;
+
+				Intent intent2 = new Intent(NoticeService.this,
+						MainActivity.class);
+				PendingIntent finishMenuIntent = PendingIntent
+						.getActivity(NoticeService.this, 0,
+								intent2, 0);
+				finishMenuNotice.setLatestEventInfo(
+						NoticeService.this, null, finishMenuInfo,
+						finishMenuIntent);
+
+				noticeMgr.notify(noticeNum++, finishMenuNotice);
 			}
 		}
 		
@@ -278,7 +285,7 @@ public class NoticeService extends Service {
 			try {
 				socket = new Socket(url, PORT);
 				//set the noblock timeout to 10s 
-				socket.setSoTimeout(20000);
+				socket.setSoTimeout(10000);
 			} catch (UnknownHostException e) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): create the socket parse host failure ");
 				return false;
@@ -410,7 +417,7 @@ public class NoticeService extends Service {
 			} catch (UnsupportedEncodingException e) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.writeToServer(): message encode failure");
 			} catch (IOException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.writeToServer(): write data failure");
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.writeToServer(): write data catch IOException");
 			}
 		}
 		return false;
@@ -420,19 +427,24 @@ public class NoticeService extends Service {
 		if (in != null) {
 			byte[] receiveBuf = new byte[128];
 			int recvMsgSize = 0;
-			String content;
+			String content = null;
 			
 			try {
-				while((recvMsgSize = in.read(receiveBuf))!=-1) {
+				recvMsgSize = in.read(receiveBuf);
+				if (recvMsgSize != -1) {
 					if (recvMsgSize != 0) {
 						content = new String(receiveBuf, 0, recvMsgSize);
 						return content;
 					}
+				}else {
+					content = new String(connectLostEvent);
+					return content;
 				}
 			} catch (IOException e) {
-				Log.e(NOTICE_SERVICE_TAG, "NoticeService.readFromServer(): read data failure");
+				Log.e(NOTICE_SERVICE_TAG, "NoticeService.readFromServer(): read data catch IOException");
 			}
 		}
+
 		return null;
 	}
 	
