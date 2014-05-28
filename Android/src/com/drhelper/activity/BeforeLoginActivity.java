@@ -119,8 +119,9 @@ public class BeforeLoginActivity extends Activity {
 	
 	public void onActivityResult(int reqCode, int resCode, Intent data) {
 		boolean isChange = false;
-		String action;
-		Intent intent;
+		String action = null;
+		Intent intent = null;
+		String userName = null;
 		
 		super.onActivityResult(reqCode, resCode, data);
 		
@@ -131,8 +132,14 @@ public class BeforeLoginActivity extends Activity {
 			//if not event need to listen, stop the NoticeService
 			if (PrefsManager.isEmpty_table_notice() == false && 
 					PrefsManager.isFinish_menu_notice() == false) {
+				SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
+				if (prefs != null) {
+					//get the user
+					userName = prefs.getString("user_name", "");
+				}
 				action = "com.drhelper.service.intent.action.EXIT";
 				intent = new Intent(action);
+				intent.putExtra("logout_user", userName);
 				sendBroadcast(intent);
 				PrefsManager.setNotice_service_start(false);
 			//if listen event had changed, notice the service

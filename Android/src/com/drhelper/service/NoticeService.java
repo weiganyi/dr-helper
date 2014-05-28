@@ -111,6 +111,7 @@ public class NoticeService extends Service {
 	@Override
 	public void onDestroy() {
 		//stop the notice recv thread
+		//after do it, the thread will detect the interrupt flag, then exit
 		if (threadId != null) {
 			threadId.interrupt();
 		}
@@ -284,8 +285,8 @@ public class NoticeService extends Service {
 			String url = PrefsManager.getServer_address();
 			try {
 				socket = new Socket(url, PORT);
-				//set the noblock timeout to 10s 
-				socket.setSoTimeout(10000);
+				//set the noblock timeout to 1s 
+				socket.setSoTimeout(1000);
 			} catch (UnknownHostException e) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): create the socket parse host failure ");
 				return false;
@@ -373,7 +374,7 @@ public class NoticeService extends Service {
 			}
 			NoticeLogout logoutResp = JSON.parseObject(content, NoticeLogout.class);
 			if (logoutResp.isResult() != true || 
-					logoutResp.getLogoutUserName().equals(userName) == false) {
+					logoutResp.getLogoutUserName().equals(logoutUserName) == false) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogout(): logout result is failure");
 				return false;
 			}
@@ -437,6 +438,7 @@ public class NoticeService extends Service {
 						return content;
 					}
 				}else {
+					//if remote disconnect, come here
 					content = new String(connectLostEvent);
 					return content;
 				}
@@ -452,7 +454,9 @@ public class NoticeService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.drhelper.service.intent.action.EXIT")) {
-				logoutUserName = intent.getExtras().getString("logout_user");
+				if (intent.getExtras() != null) {
+					logoutUserName = intent.getExtras().getString("logout_user");
+				}
 				//exit this service
 				stopSelf();
 			}
