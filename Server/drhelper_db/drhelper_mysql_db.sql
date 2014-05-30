@@ -66,6 +66,31 @@ INSERT INTO `dr_menu_type` VALUES (1,'主食'),(2,'炒菜'),(3,'凉菜'),(4,'甜
 UNLOCK TABLES;
 
 --
+-- Table structure for table `dr_option`
+--
+
+DROP TABLE IF EXISTS `dr_option`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dr_option` (
+  `option_id` int(4) NOT NULL AUTO_INCREMENT,
+  `option_name` char(255) NOT NULL,
+  `option_value` char(255) NOT NULL,
+  PRIMARY KEY (`option_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dr_option`
+--
+
+LOCK TABLES `dr_option` WRITE;
+/*!40000 ALTER TABLE `dr_option` DISABLE KEYS */;
+INSERT INTO `dr_option` VALUES (1,'web_name','餐厅助手');
+/*!40000 ALTER TABLE `dr_option` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `dr_table`
 --
 
@@ -158,4 +183,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-23 10:30:10
+-- Dump completed on 2014-05-30 16:47:57

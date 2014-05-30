@@ -8,22 +8,22 @@
 		<session-timeout>60</session-timeout>
 	</session-config>
 
-	<listener>
-		<listener-class>com.drhelper.listener.NoticeServerListener</listener-class>
-	</listener>
-
 	<filter>
 		<filter-name>CompRespFilter</filter-name>
-		<filter-class>com.drhelper.filter.CompRespFilter</filter-class>
+		<filter-class>com.drhelper.common.filter.CompRespFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>CompRespFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 
+	<listener>
+		<listener-class>com.drhelper.android.listener.NoticeServerListener</listener-class>
+	</listener>
+
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.LoginServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.LoginServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -32,7 +32,7 @@
  
     <servlet>
         <servlet-name>LogoutServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.LogoutServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.LogoutServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
@@ -41,7 +41,7 @@
 
     <servlet>
         <servlet-name>CheckTableServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.CheckTableServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.CheckTableServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CheckTableServlet</servlet-name>
@@ -50,7 +50,7 @@
 
     <servlet>
         <servlet-name>CreateTableServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.CreateTableServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.CreateTableServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CreateTableServlet</servlet-name>
@@ -59,7 +59,7 @@
 
     <servlet>
         <servlet-name>LoadOrderServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.LoadOrderServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.LoadOrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoadOrderServlet</servlet-name>
@@ -68,7 +68,7 @@
 
     <servlet>
         <servlet-name>CheckOrderServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.CheckOrderServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.CheckOrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CheckOrderServlet</servlet-name>
@@ -77,7 +77,7 @@
 
     <servlet>
         <servlet-name>SubmitOrderServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.SubmitOrderServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.SubmitOrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>SubmitOrderServlet</servlet-name>
@@ -86,7 +86,7 @@
  
     <servlet>
         <servlet-name>DeleteOrderServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.DeleteOrderServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.DeleteOrderServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>DeleteOrderServlet</servlet-name>
@@ -95,7 +95,7 @@
  
     <servlet>
         <servlet-name>ChangeTableServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.ChangeTableServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.ChangeTableServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ChangeTableServlet</servlet-name>
@@ -104,7 +104,7 @@
  
     <servlet>
         <servlet-name>UnionTableServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.UnionTableServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.UnionTableServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UnionTableServlet</servlet-name>
@@ -113,7 +113,7 @@
 
     <servlet>
         <servlet-name>UpdateMenuTypeServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.UpdateMenuTypeServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.UpdateMenuTypeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UpdateMenuTypeServlet</servlet-name>
@@ -122,7 +122,7 @@
 
     <servlet>
         <servlet-name>UpdateMenuServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.UpdateMenuServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.UpdateMenuServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UpdateMenuServlet</servlet-name>
@@ -131,11 +131,29 @@
 
     <servlet>
         <servlet-name>GetNoticeServlet</servlet-name>
-        <servlet-class>com.drhelper.servlet.GetNoticeServlet</servlet-class>
+        <servlet-class>com.drhelper.android.servlet.GetNoticeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>GetNoticeServlet</servlet-name>
         <url-pattern>/getNotice.do</url-pattern>
+    </servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.do</welcome-file>
+	</welcome-file-list>
+
+	<context-param>
+		<param-name>jspPath</param-name>
+		<param-value>jsp/</param-value>
+	</context-param>
+
+    <servlet>
+        <servlet-name>IndexServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.IndexServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>IndexServlet</servlet-name>
+        <url-pattern>/index.do</url-pattern>
     </servlet-mapping>
 
 </web-app>
