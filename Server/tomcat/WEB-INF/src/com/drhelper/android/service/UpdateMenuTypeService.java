@@ -7,7 +7,6 @@ import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.MenuTypeList;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.MenuType;
-import com.drhelper.common.service.Service;
 
 public class UpdateMenuTypeService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

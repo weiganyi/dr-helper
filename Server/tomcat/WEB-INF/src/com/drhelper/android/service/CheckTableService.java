@@ -12,7 +12,6 @@ import com.drhelper.android.listener.NoticeServerListener;
 import com.drhelper.android.server.NoticeServer;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Table;
-import com.drhelper.common.service.Service;
 
 public class CheckTableService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

@@ -1,3 +1,95 @@
+/*
+	create by weigy on 20140530
+*/
+
+/* index.jsp style */
+html {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	background-image: url(bg.jpg);
+	background-repeat: no-repeat;
+	
+	height: 98%;
+	width: 98%;
+}
+
 #login_div {
-	float: right
+	float: right;
+}
+
+#login_user_input, #login_passwd_input {
+	width: 80px;
+}
+
+#login_fail_notice {
+	position: absolute;
+	
+	color: red;
+	font-size: 10px;
+}
+
+#title_div {
+	clear: both;
+
+	text-align: center;
+	font-weight: bold;
+    font-size:300%;
+    
+    margin-bottom: 50px;
+}
+
+#menu_div {
+	min-height: 30px;
+	margin-left: 5%;
+}
+
+.menu_item_a {
+	margin-left: 20px;
+	margin-right: 20px;
+	
+	font-weight: bold;
+}
+
+.menu_item_a:link
+{
+	color: black;
+	text-decoration: none;
+}
+
+.menu_item_a:visited
+{
+	color: black;
+	text-decoration: none;
+}
+
+.menu_item_a:hover
+{
+	color: black;
+	text-decoration: none;
+}
+
+.menu_item_a:active
+{
+	color: black;
+	text-decoration: none;
+}
+
+#divide_hr {
+	width: 90%;
+	height: 5px;
+	border-width: 0;
+	color: gray;
+	background-color: gray;
+}
+
+#content_div {
+	min-height: 70%;
+}
+
+#footer_div {
+	text-align: center;
+	font-size: 80%;
 }

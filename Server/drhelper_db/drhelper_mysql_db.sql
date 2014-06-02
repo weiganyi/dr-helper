@@ -129,7 +129,7 @@ CREATE TABLE `dr_user` (
   `user_passwd` char(255) NOT NULL,
   `user_auth` enum('waiter','chef','admin') NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `dr_user` (
 
 LOCK TABLES `dr_user` WRITE;
 /*!40000 ALTER TABLE `dr_user` DISABLE KEYS */;
-INSERT INTO `dr_user` VALUES (1,'weigy','123456','waiter');
+INSERT INTO `dr_user` VALUES (1,'weigy','123456','waiter'),(2,'hongj','123456','chef'),(3,'admin','123456','admin');
 /*!40000 ALTER TABLE `dr_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,4 +183,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-30 16:47:57
+-- Dump completed on 2014-06-02 21:12:48

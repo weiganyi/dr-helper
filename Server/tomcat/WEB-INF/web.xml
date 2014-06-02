@@ -9,11 +9,11 @@
 	</session-config>
 
 	<filter>
-		<filter-name>CompRespFilter</filter-name>
-		<filter-class>com.drhelper.common.filter.CompRespFilter</filter-class>
+		<filter-name>ServletFilter</filter-name>
+		<filter-class>com.drhelper.common.filter.ServletFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>CompRespFilter</filter-name>
+		<filter-name>ServletFilter</filter-name>
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 
@@ -154,6 +154,24 @@
     <servlet-mapping>
         <servlet-name>IndexServlet</servlet-name>
         <url-pattern>/index.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AjaxLoginServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxLoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxLoginServlet</servlet-name>
+        <url-pattern>/ajaxLogin.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AjaxLogoutServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxLogoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxLogoutServlet</servlet-name>
+        <url-pattern>/ajaxLogout.do</url-pattern>
     </servlet-mapping>
 
 </web-app>

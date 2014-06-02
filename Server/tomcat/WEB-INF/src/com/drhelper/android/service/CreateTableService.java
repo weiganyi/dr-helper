@@ -5,7 +5,6 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.OneTableOneOrder;
 import com.drhelper.common.db.DBManager;
-import com.drhelper.common.service.Service;
 
 public class CreateTableService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

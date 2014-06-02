@@ -11,22 +11,21 @@ import javax.servlet.http.HttpSession;
 import com.drhelper.web.service.IndexService;
 
 @SuppressWarnings("serial")
-public class IndexServlet extends HttpServlet {
+public class AjaxLogoutServlet extends HttpServlet {
 	private HttpSession session;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
-		//if session not exist, create one
+		//if session not exist, it may be a fault
 		session = request.getSession(false);
 		if (session == null) {
-			session = request.getSession();
+			response.setStatus(400);
+			System.out.println("AjaxLogoutServlet.doGet(): request params is incorrect");
+			return;
 		}else {
-			if (session.getAttribute("auth") != null && 
-					session.getAttribute("auth").equals("") != true) {
-				//set the attribute into the request
-				request.setAttribute("auth", session.getAttribute("auth"));
-			}
+			//clear the session
+			session.invalidate();
 		}
 
 		//call the service
@@ -34,7 +33,7 @@ public class IndexServlet extends HttpServlet {
 		String webName = service.getWebName();
 		if (webName == null) {
 			response.setStatus(400);
-			System.out.println("IndexServlet.doGet(): response body is null");
+			System.out.println("AjaxLogoutServlet.doGet(): response body is null");
 			return;
 		}
 
@@ -42,7 +41,7 @@ public class IndexServlet extends HttpServlet {
 		request.setAttribute("webName", webName);
 		
 		//dispatch the request
-		String JspFileBaseName = "index.jsp";
+		String JspFileBaseName = "ajaxLogout.jsp";
 		String JspPath = getServletContext().getInitParameter("jspPath");
 		String JspFile = JspPath + JspFileBaseName;
 		RequestDispatcher view = request.getRequestDispatcher(JspFile);

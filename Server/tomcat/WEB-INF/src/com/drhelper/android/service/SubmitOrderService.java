@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.OrderInfo;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Order;
-import com.drhelper.common.service.Service;
 
 public class SubmitOrderService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

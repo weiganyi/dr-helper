@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.NoticeDetail;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Table;
-import com.drhelper.common.service.Service;
 
 public class GetNoticeService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

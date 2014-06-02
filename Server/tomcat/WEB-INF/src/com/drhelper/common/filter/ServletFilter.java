@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-public class CompRespFilter implements Filter {
+public class ServletFilter implements Filter {
 
 	@Override
 	public void destroy() {
@@ -19,11 +19,11 @@ public class CompRespFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest arg0, ServletResponse arg1,
 			FilterChain arg2) throws IOException, ServletException {
-		System.out.println("CompRespFilter.doFilter(): before do filter");
+		//set the encoding type for request and response
+		arg0.setCharacterEncoding("UTF-8");
+		arg1.setContentType("text/html;charset=UTF-8");
 		
 		arg2.doFilter(arg0, arg1);
-		
-		System.out.println("CompRespFilter.doFilter(): after do filter");
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.Login;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.User;
-import com.drhelper.common.service.Service;
 
 public class LoginService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

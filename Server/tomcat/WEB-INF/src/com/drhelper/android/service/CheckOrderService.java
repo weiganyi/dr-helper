@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.OneTableOneOrder;
 import com.drhelper.android.util.LogicException;
 import com.drhelper.common.db.DBManager;
-import com.drhelper.common.service.Service;
 
 public class CheckOrderService extends Service {
 	public String doAction(HttpSession session, String reqBody) {

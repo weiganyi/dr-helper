@@ -1,4 +1,4 @@
-package com.drhelper.common.service;
+package com.drhelper.android.service;
 
 import javax.servlet.http.HttpSession;
 
