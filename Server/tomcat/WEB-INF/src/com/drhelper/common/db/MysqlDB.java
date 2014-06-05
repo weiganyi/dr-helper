@@ -446,10 +446,10 @@ public class MysqlDB implements DataBase {
 		return table;
 	}
 	
-	public String getWebName() {
-		String name = null;
+	public String getOptionString(String name) {
+		String value = null;
 		PreparedStatement pstmt;
-		String sql = "select * from dr_option where option_name='web_name'";
+		String sql = "select * from dr_option where option_name=?";
 
 		try {
 			//set autocommit mode
@@ -458,20 +458,55 @@ public class MysqlDB implements DataBase {
 			//prepare the statement
 			pstmt = conn.prepareStatement(sql);
 			
+			//fill the param1
+			pstmt.setString(1, name);
+			
 			//execute the query
 			ResultSet rs = pstmt.executeQuery();
 			
 			//get the result
 			while (rs.next()) {
 				//3 is the option_value
-				name = rs.getString(3);
+				value = rs.getString(3);
 				
-				return name;
+				return value;
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getWebName(): sql query catch SQLException");
+			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException");
 		}
 
-		return name;
+		return value;
+	}
+	
+	public int getOptionInt(String name) {
+		int value = 0;
+		PreparedStatement pstmt;
+		String sql = "select * from dr_option where option_name=?";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//fill the param1
+			pstmt.setString(1, name);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			//get the result
+			while (rs.next()) {
+				//3 is the option_value
+				value = rs.getInt(3);
+				
+				return value;
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException");
+		}
+
+		return value;
 	}
 }

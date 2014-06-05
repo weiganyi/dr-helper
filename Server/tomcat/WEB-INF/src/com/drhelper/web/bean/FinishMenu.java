@@ -1,16 +1,14 @@
-package com.drhelper.common.entity;
+package com.drhelper.web.bean;
 
-import java.util.ArrayList;
-
-public class Order {
+public class FinishMenu {
 	private int order;
 	private int table;
 	private String waiter;
 	private String time;
-	private String admin;
-	private boolean pay;
-	private ArrayList<Detail> detail;
-	
+	private String menu;
+	private int amount;
+	private String remark;
+
 	public int getOrder() {
 		return order;
 	}
@@ -35,22 +33,22 @@ public class Order {
 	public void setTime(String time) {
 		this.time = time;
 	}
-	public String getAdmin() {
-		return admin;
+	public String getMenu() {
+		return menu;
 	}
-	public void setAdmin(String admin) {
-		this.admin = admin;
+	public void setMenu(String menu) {
+		this.menu = menu;
 	}
-	public boolean isPay() {
-		return pay;
+	public int getAmount() {
+		return amount;
 	}
-	public void setPay(boolean pay) {
-		this.pay = pay;
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
-	public ArrayList<Detail> getDetail() {
-		return detail;
+	public String getRemark() {
+		return remark;
 	}
-	public void setDetail(ArrayList<Detail> detail) {
-		this.detail = detail;
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 }

@@ -1,3 +1,5 @@
+<%-- this jsp with the script --%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%-- include the language array --%>
@@ -28,8 +30,8 @@
 	<div id="menu_div">
 	<% String auth = (String)request.getAttribute("auth");
 		if(auth.equals("chef") == true) { %>
-		<a href="#" class="menu_item_a" onclick="onAlreadyOrderClick();"><%= menuAlreadyOrder %></a>
-		<a href="#" class="menu_item_a" onclick="onAlreadyFinishClick();"><%= menuAlreadyFinish %></a>
+		<a href="#" class="menu_item_a" onclick="onOrderMenuClick();"><%= menuOrderMenu %></a>
+		<a href="#" class="menu_item_a" onclick="onFinishMenuClick();"><%= menuFinishMenu %></a>
 	<% }else if(auth.equals("admin") == true) { %>
 		<a href="#" class="menu_item_a" onclick="onAdminOrderClick();"><%= menuAdminOrder %></a>
 		<a href="#" class="menu_item_a" onclick="onAdminUserClick();"><%= menuAdminUser %></a>

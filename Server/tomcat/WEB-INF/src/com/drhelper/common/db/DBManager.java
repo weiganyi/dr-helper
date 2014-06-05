@@ -414,23 +414,101 @@ public class DBManager {
 		return num;
 	}
 	
-	public String getWebName() {
-		String name = null;
+	public String getOptionString(String name) {
+		String value = null;
 		boolean result;
 		
 		//create the connect to mysql
 		mysqldb = new MysqlDB();
 		result = mysqldb.openConnect();
 		if (!result) {
-			System.out.println("DBManager.getWebName(): open mysqldb failure");
-			return name;
+			System.out.println("DBManager.getOptionString(): open mysqldb failure");
+			return value;
 		}
 		
-		//get the web name
-		name = mysqldb.getWebName();
+		//get the option record typeof string
+		value = mysqldb.getOptionString(name);
 
 		//release the connect to sql
 		clear();
-		return name;
+		return value;
+	}
+	
+	public int getOptionInt(String name) {
+		int value = 0;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOptionInt(): open mysqldb failure");
+			return value;
+		}
+		
+		//get the option record typeof string
+		value = mysqldb.getOptionInt(name);
+
+		//release the connect to sql
+		clear();
+		return value;
+	}
+	
+	public boolean updateOrderMenuFetch(int orderNum, String menu, String user) {
+		boolean result = false;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.updateOrderMenuFetch(): open mongodb failure");
+			return result;
+		}
+		
+		//update the chef status into the order
+		result = mongodb.updateOrderMenuFetch(orderNum, menu, user);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean updateOrderMenuFinish(int orderNum, String menu) {
+		boolean result = false;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.updateOrderMenuFinish(): open mongodb failure");
+			return result;
+		}
+		
+		//update the finish status into the order
+		result = mongodb.updateOrderMenuFinish(orderNum, menu);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+
+	public ArrayList<Order> getOrderNotPay() {
+		ArrayList<Order> orderList = null;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderNotPay(): open mongodb failure");
+			return orderList;
+		}
+		
+		//get the order not pay
+		orderList = mongodb.getOrderNotPay();
+
+		//release the connect to sql
+		clear();
+		return orderList;
 	}
 }

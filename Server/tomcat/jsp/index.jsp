@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%-- this jsp with the script --%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -7,7 +7,6 @@
 	<title><%= request.getAttribute("webName") %></title>
 	<link type="text/css" rel="stylesheet" href="../res/drhelper.css"/>
 	<script type="text/javascript" src="../res/jquery-1.10.1.js"></script>
-	<script type="text/javascript" src="../res/drhelper.js"></script>
 </head>
 <body>
 	<%-- include the language array --%>
@@ -38,8 +37,8 @@
 		<div id="menu_div">
 		<% String auth = (String)request.getAttribute("auth");
 			if(auth.equals("chef") == true) { %>
-			<a href="#" class="menu_item_a" onclick="onAlreadyOrderClick();"><%= menuAlreadyOrder %></a>
-			<a href="#" class="menu_item_a" onclick="onAlreadyFinishClick();"><%= menuAlreadyFinish %></a>
+			<a href="#" class="menu_item_a" onclick="onOrderMenuClick();"><%= menuOrderMenu %></a>
+			<a href="#" class="menu_item_a" onclick="onFinishMenuClick();"><%= menuFinishMenu %></a>
 		<% }else if(auth.equals("admin") == true) { %>
 			<a href="#" class="menu_item_a" onclick="onAdminOrderClick();"><%= menuAdminOrder %></a>
 			<a href="#" class="menu_item_a" onclick="onAdminUserClick();"><%= menuAdminUser %></a>
@@ -75,11 +74,12 @@
 			}
 			
 			//start ajax to login
-			var ajaxUrl = "ajaxLogin.do" + "?" + "loginUser=" + loginUser +  "&" + "loginPasswd=" + loginPasswd;
+			var ajaxUrl = "ajaxLogin.do";
+			var ajaxData = "loginUser=" + loginUser +  "&" + "loginPasswd=" + loginPasswd;
 			jQuery.ajax({
-				type: "GET",
+				type: "POST",
 				url: ajaxUrl,
-				data: null,
+				data: ajaxData,
 				dataType: "html",
 				success: fnLoginSuccess
 			});
@@ -103,11 +103,123 @@
 				success: fnLoginSuccess
 			});
 		}
-
-		function onAlreadyOrderClick() {
+		
+		function fnOrderMenuClickSuccess(data, code, request) {
+			if (code == "success") {
+				var content = $(content_div);
+				content.html(data);
+			}
 		}
 
-		function onAlreadyFinishClick() {
+		function onOrderMenuClick() {
+			//start ajax to fetch the order menu list
+			var ajaxUrl = "ajaxOrderMenu.do";
+			jQuery.ajax({
+				type: "GET",
+				url: ajaxUrl,
+				data: null,
+				dataType: "html",
+				success: fnOrderMenuClickSuccess
+			});
+		}
+
+		function onFetchButtonClick(node) {
+			var button = $(node);
+			if (button) {
+				var button_td = button.parent();
+				if (button_td) {
+					var order_td = button_td.next();
+					if (order_td) {
+						var order = order_td.text();
+					}
+					
+					var menu_td = button_td.next().next().next().next().next();
+					if (menu_td) {
+						var menu = menu_td.text();
+					}
+				}
+			}
+			
+			//start ajax to update the order menu
+			var ajaxUrl = "ajaxOrderMenu.do";
+			var ajaxData = "op=fetch" + "&" + "order=" + order + "&" + "menu=" + menu;
+			jQuery.ajax({
+				type: "POST",
+				url: ajaxUrl,
+				data: ajaxData,
+				dataType: "html",
+				success: fnOrderMenuClickSuccess
+			});
+		}
+
+		function onFinishButtonClick(node) {
+			var button = $(node);
+			if (button) {
+				var button_td = button.parent();
+				if (button_td) {
+					var order_td = button_td.prev().prev().prev().prev().prev().prev().prev();
+					if (order_td) {
+						var order = order_td.text();
+					}
+					
+					var menu_td = button_td.prev().prev().prev();
+					if (menu_td) {
+						var menu = menu_td.text();
+					}
+				}
+			}
+			
+			//start ajax to update the order menu
+			var ajaxUrl = "ajaxOrderMenu.do";
+			var ajaxData = "op=finish" + "&" + "order=" + order + "&" + "menu=" + menu;
+			jQuery.ajax({
+				type: "POST",
+				url: ajaxUrl,
+				data: ajaxData,
+				dataType: "html",
+				success: fnOrderMenuClickSuccess
+			});
+		}
+
+		function onFinishMenuClick() {
+			//start ajax to fetch the order menu list
+			var ajaxUrl = "ajaxFinishMenu.do";
+			jQuery.ajax({
+				type: "GET",
+				url: ajaxUrl,
+				data: null,
+				dataType: "html",
+				success: fnOrderMenuClickSuccess
+			});
+		}
+
+		function onCancelButtonClick(node) {
+			var button = $(node);
+			if (button) {
+				var button_td = button.parent();
+				if (button_td) {
+					var order_td = button_td.prev().prev().prev().prev().prev().prev().prev();
+					if (order_td) {
+						var order = order_td.text();
+					}
+					
+					var menu_td = button_td.prev().prev().prev();
+					if (menu_td) {
+						var menu = menu_td.text();
+					}
+				}
+			}
+			
+			//start ajax to update the finish menu
+			var ajaxUrl = "ajaxFinishMenu.do";
+			var ajaxData = "op=cancel" + "&" + "order=" + order + "&" + "menu=" + menu;
+			jQuery.ajax({
+				type: "POST",
+				url: ajaxUrl,
+				data: ajaxData,
+				dataType: "html",
+				success: fnOrderMenuClickSuccess
+			});
 		}
 
 		function onAdminOrderClick() {

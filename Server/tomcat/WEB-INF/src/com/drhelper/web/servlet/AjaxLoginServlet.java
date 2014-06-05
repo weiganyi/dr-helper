@@ -43,7 +43,7 @@ public class AjaxLoginServlet extends HttpServlet {
 		String webName = service2.getWebName();
 		if (webName == null) {
 			response.setStatus(400);
-			System.out.println("AjaxLoginServlet.doGet(): response body is null");
+			System.out.println("AjaxLoginServlet.doGet(): Service return fail");
 			return;
 		}
 

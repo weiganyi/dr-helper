@@ -4,6 +4,7 @@ public class Detail {
 	private String menu;
 	private int price;
 	private int amount;
+	private String chef;
 	private boolean finish;
 	private String remark;
 
@@ -24,6 +25,12 @@ public class Detail {
 	}
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+	public String getChef() {
+		return chef;
+	}
+	public void setChef(String chef) {
+		this.chef = chef;
 	}
 	public boolean isFinish() {
 		return finish;

@@ -4,10 +4,10 @@ import com.drhelper.common.db.DBManager;
 
 public class IndexService{
 	public String getWebName() {
-		//get web name
+		//get web_name
 		DBManager db = new DBManager();
-		String name = db.getWebName();
+		String webName = db.getOptionString("web_name");
 
-		return name;
+		return webName;
 	}
 }

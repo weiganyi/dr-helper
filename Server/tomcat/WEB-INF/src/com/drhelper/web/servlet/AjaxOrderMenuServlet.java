@@ -8,41 +8,53 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.web.service.IndexService;
+import com.drhelper.web.bean.OrderMenu;
+import com.drhelper.web.service.AjaxOrderMenuService;
 
 @SuppressWarnings("serial")
-public class IndexServlet extends HttpServlet {
+public class AjaxOrderMenuServlet extends HttpServlet {
 	private HttpSession session;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
-		//if session not exist, create one
+		String order;
+		String menu;
+		
+		//if session not exist, it may be a fault
 		session = request.getSession(false);
 		if (session == null) {
-			session = request.getSession();
-		}else {
-			if (session.getAttribute("auth") != null && 
-					session.getAttribute("auth").equals("") != true) {
-				//set the attribute into the request
-				request.setAttribute("auth", session.getAttribute("auth"));
-			}
-		}
-
-		//call the service
-		IndexService service = new IndexService();
-		String webName = service.getWebName();
-		if (webName == null) {
 			response.setStatus(400);
-			System.out.println("IndexServlet.doGet(): Service return fail");
+			System.out.println("AjaxOrderMenuServlet.doGet(): session isn't exist");
 			return;
 		}
 
+		//get the request params
+		String op = request.getParameter("op");
+		
+		//call the service
+		AjaxOrderMenuService service = new AjaxOrderMenuService();
+		if (op != null) {
+			order = request.getParameter("order");
+			menu = request.getParameter("menu");
+			if (op.equals("fetch") == true) { 
+				service.updateOrderMenuFetch(session, order, menu);
+			}else if (op.equals("finish") == true) {
+				service.updateOrderMenuFinish(session, order, menu);
+			}
+		}
+		OrderMenu[] orderMenuArray = service.getOrderMenuArray(session);
+		if (orderMenuArray == null) {
+			response.setStatus(400);
+			System.out.println("AjaxOrderMenuServlet.doGet(): Service return fail");
+			return;
+		}
+		
 		//set the attribute into the request
-		request.setAttribute("webName", webName);
+		request.setAttribute("orderMenu", orderMenuArray);
 		
 		//dispatch the request
-		String JspFileBaseName = "index.jsp";
+		String JspFileBaseName = "ajaxOrderMenu.jsp";
 		String JspPath = getServletContext().getInitParameter("jspPath");
 		String JspFile = JspPath + JspFileBaseName;
 		RequestDispatcher view = request.getRequestDispatcher(JspFile);

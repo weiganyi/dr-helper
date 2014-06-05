@@ -21,7 +21,7 @@ public class AjaxLogoutServlet extends HttpServlet {
 		session = request.getSession(false);
 		if (session == null) {
 			response.setStatus(400);
-			System.out.println("AjaxLogoutServlet.doGet(): request params is incorrect");
+			System.out.println("AjaxLogoutServlet.doGet(): session isn't exist");
 			return;
 		}else {
 			//clear the session
@@ -33,7 +33,7 @@ public class AjaxLogoutServlet extends HttpServlet {
 		String webName = service.getWebName();
 		if (webName == null) {
 			response.setStatus(400);
-			System.out.println("AjaxLogoutServlet.doGet(): response body is null");
+			System.out.println("AjaxLogoutServlet.doGet(): Service return fail");
 			return;
 		}
 

@@ -5,7 +5,6 @@
 /* index.jsp style */
 html {
 	height: 100%;
-	width: 100%;
 }
 
 body {
@@ -13,11 +12,15 @@ body {
 	background-repeat: no-repeat;
 	
 	height: 98%;
-	width: 98%;
+}
+
+#header_div {
+	height: 20%;
 }
 
 #login_div {
 	float: right;
+	min-height: 20%;
 }
 
 #login_user_input, #login_passwd_input {
@@ -38,11 +41,11 @@ body {
 	font-weight: bold;
     font-size:300%;
     
-    margin-bottom: 50px;
+	min-height: 60%;
 }
 
 #menu_div {
-	min-height: 30px;
+	min-height: 20%;
 	margin-left: 5%;
 }
 
@@ -86,10 +89,41 @@ body {
 }
 
 #content_div {
-	min-height: 70%;
+	height: 75%;
 }
 
 #footer_div {
 	text-align: center;
 	font-size: 80%;
 }
+
+/* ajaxOrderMenu.jsp style */
+#order_menu_table {
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+}
+
+#order_menu_table th, #order_menu_table td {
+	border-style: dashed;
+	border-width: 1px;
+	border-collapse: collapse;
+	
+	padding: 0px 10px;
+}
+
+/* ajaxFinishMenu.jsp style */
+#finish_menu_table {
+	border-style: solid;
+	border-width: 1px;
+	border-collapse: collapse;
+}
+
+#finish_menu_table th, #finish_menu_table td {
+	border-style: dashed;
+	border-width: 1px;
+	border-collapse: collapse;
+	
+	padding: 0px 10px;
+}
+

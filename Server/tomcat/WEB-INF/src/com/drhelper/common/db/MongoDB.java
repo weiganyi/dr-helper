@@ -10,6 +10,7 @@ import java.util.Properties;
 import com.alibaba.fastjson.JSON;
 import com.drhelper.common.entity.Detail;
 import com.drhelper.common.entity.Order;
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -89,7 +90,6 @@ public class MongoDB implements DataBase {
 
 	public int createOrder(String user, int table) {
 		int order = 0;
-		String time = null;
 		boolean pay = false;
 		ArrayList<DBObject> detail = null;  
 		
@@ -111,14 +111,13 @@ public class MongoDB implements DataBase {
 		
 		//get the current date
 		Date date = new Date();
-		time = date.toString();
 		detail = new ArrayList<DBObject>();  
 
 		DBObject doc = new BasicDBObject();
 		doc.put("order", order);
 		doc.put("table", table);
 		doc.put("user", user);
-		doc.put("time", time);
+		doc.put("time", date);
 		doc.put("pay", pay);
 		doc.put("detail", detail);
 		
@@ -341,5 +340,131 @@ public class MongoDB implements DataBase {
 		}
 		
 		return num;
+	}
+
+	public boolean updateOrderMenuFetch(int orderNum, String menu, String user) {
+		DBObject dbObj = null;
+		DBObject detail = null;
+		String menu2 = null;
+		String chef = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		if (dbObj == null) {
+			return false;
+		}
+		
+		//get detail list
+		BasicDBList detailList = (BasicDBList)dbObj.get("detail");
+		if (detailList == null) {
+			return false;
+		}
+		
+		//iterator the detail list to get the menu
+		Iterator<Object> it = detailList.iterator();
+		while (it.hasNext()) {
+			detail = (DBObject)it.next();
+			
+			menu2 = (String)detail.get("menu");
+			if (menu2.equals(menu) == true) {
+				chef = (String)detail.get("chef");
+				//if chef isn't exist, set it
+				if (chef.equals("") == true) {
+					detail.put("chef", user);
+				//otherwise, clear it
+				}else {
+					detail.put("chef", "");
+				}
+			}
+		}
+
+		coll.update(query, dbObj);
+		return true;
+	}
+
+	public boolean updateOrderMenuFinish(int orderNum, String menu) {
+		DBObject dbObj = null;
+		DBObject detail = null;
+		String menu2 = null;
+		Boolean finish;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		if (dbObj == null) {
+			return false;
+		}
+		
+		//get detail list
+		BasicDBList detailList = (BasicDBList)dbObj.get("detail");
+		if (detailList == null) {
+			return false;
+		}
+		
+		//iterator the detail list to get the menu
+		Iterator<Object> it = detailList.iterator();
+		while (it.hasNext()) {
+			detail = (DBObject)it.next();
+			
+			menu2 = (String)detail.get("menu");
+			if (menu2.equals(menu) == true) {
+				finish = (Boolean)detail.get("finish");
+				//if finish isn't set, set it
+				if (finish == false) {
+					detail.put("finish", true);
+				//otherwise, clear it
+				}else {
+					detail.put("finish", false);
+				}
+			}
+		}
+
+		coll.update(query, dbObj);
+		return true;
+	}
+
+	public ArrayList<Order> getOrderNotPay() {
+		Order order = null;
+		DBObject dbObj = null;
+		ArrayList<Order> orderList = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("pay", false);
+		DBObject index = new BasicDBObject();
+		index.put("order", 1);
+		DBCursor cr = coll.find(query).sort(index);
+		
+		if (cr.hasNext()) {
+			orderList = new ArrayList<Order>();
+		}else {
+			return orderList;
+		}
+		
+		//construct the order list
+		while (cr.hasNext()) {
+			dbObj = cr.next();
+
+			if (dbObj != null) {
+				order = JSON.parseObject(dbObj.toString(), Order.class);
+				if (order != null) {
+					orderList.add(order);
+				}
+			}
+		}
+		
+		return orderList;
 	}
 }

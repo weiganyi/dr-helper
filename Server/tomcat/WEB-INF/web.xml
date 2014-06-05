@@ -174,4 +174,22 @@
         <url-pattern>/ajaxLogout.do</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AjaxOrderMenuServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxOrderMenuServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxOrderMenuServlet</servlet-name>
+        <url-pattern>/ajaxOrderMenu.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AjaxFinishMenuServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxFinishMenuServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxFinishMenuServlet</servlet-name>
+        <url-pattern>/ajaxFinishMenu.do</url-pattern>
+    </servlet-mapping>
+
 </web-app>
