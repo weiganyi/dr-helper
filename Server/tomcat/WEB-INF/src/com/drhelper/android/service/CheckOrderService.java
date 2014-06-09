@@ -35,12 +35,12 @@ public class CheckOrderService extends Service {
 		try {
 			//check if order is exist
 			if (tableNum != 0) {
-				orderNum = db.getOrderFromTable(tableNum);
+				orderNum = db.getOrderByTable(tableNum);
 				if (orderNum == 0) {
 					throw new LogicException();
 				}
 			}else if (orderNum != 0) {
-				orderNum = db.getOrderFromOrder(orderNum);
+				orderNum = db.getOrderByOrder(orderNum);
 				if (orderNum == 0) {
 					throw new LogicException();
 				}

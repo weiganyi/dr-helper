@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.web.service.IndexService;
+import com.drhelper.web.bean.LogoutObject;
+import com.drhelper.web.service.AjaxLogoutService;
+import com.drhelper.web.util.ServletUtil;
 
 @SuppressWarnings("serial")
 public class AjaxLogoutServlet extends HttpServlet {
@@ -17,28 +19,20 @@ public class AjaxLogoutServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
-		//if session not exist, it may be a fault
+		//get the request params
 		session = request.getSession(false);
-		if (session == null) {
-			response.setStatus(400);
-			System.out.println("AjaxLogoutServlet.doGet(): session isn't exist");
-			return;
-		}else {
-			//clear the session
-			session.invalidate();
-		}
 
 		//call the service
-		IndexService service = new IndexService();
-		String webName = service.getWebName();
-		if (webName == null) {
+		AjaxLogoutService service = new AjaxLogoutService();
+		LogoutObject resultObj = service.doAction(session);
+		if (resultObj == null) {
 			response.setStatus(400);
 			System.out.println("AjaxLogoutServlet.doGet(): Service return fail");
 			return;
 		}
 
 		//set the attribute into the request
-		request.setAttribute("webName", webName);
+		ServletUtil.setRequestAttr(request, resultObj);
 		
 		//dispatch the request
 		String JspFileBaseName = "ajaxLogout.jsp";

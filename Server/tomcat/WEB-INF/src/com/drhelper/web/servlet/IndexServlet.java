@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.drhelper.web.bean.IndexObject;
 import com.drhelper.web.service.IndexService;
+import com.drhelper.web.util.ServletUtil;
 
 @SuppressWarnings("serial")
 public class IndexServlet extends HttpServlet {
@@ -31,15 +33,15 @@ public class IndexServlet extends HttpServlet {
 
 		//call the service
 		IndexService service = new IndexService();
-		String webName = service.getWebName();
-		if (webName == null) {
+		IndexObject resultObj = service.doAction(session);
+		if (resultObj == null) {
 			response.setStatus(400);
 			System.out.println("IndexServlet.doGet(): Service return fail");
 			return;
 		}
 
 		//set the attribute into the request
-		request.setAttribute("webName", webName);
+		ServletUtil.setRequestAttr(request, resultObj);
 		
 		//dispatch the request
 		String JspFileBaseName = "index.jsp";

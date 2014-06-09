@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.drhelper.web.bean.LoginObject;
 import com.drhelper.web.service.AjaxLoginService;
-import com.drhelper.web.service.IndexService;
+import com.drhelper.web.util.ServletUtil;
 
 @SuppressWarnings("serial")
 public class AjaxLoginServlet extends HttpServlet {
@@ -18,6 +19,9 @@ public class AjaxLoginServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
+		String user;
+		String passwd;
+		
 		//if session not exist, create one
 		session = request.getSession(false);
 		if (session == null) {
@@ -25,38 +29,20 @@ public class AjaxLoginServlet extends HttpServlet {
 		}
 
 		//get the request params
-		String loginUser = request.getParameter("loginUser");
-		String loginPasswd = request.getParameter("loginPasswd");
-		if (loginUser == null || loginUser.equals("") == true ||
-				loginPasswd == null || loginPasswd.equals("") == true) {
-			response.setStatus(400);
-			System.out.println("AjaxLoginServlet.doGet(): request params is incorrect");
-			return;
-		}
+		user = request.getParameter("loginUser");
+		passwd = request.getParameter("loginPasswd");
 		
 		//call the service
 		AjaxLoginService service = new AjaxLoginService();
-		boolean result = service.doLogin(session, loginUser, loginPasswd);
-
-		//call the service
-		IndexService service2 = new IndexService();
-		String webName = service2.getWebName();
-		if (webName == null) {
+		LoginObject resultObj = service.doAction(session, user, passwd);
+		if (resultObj == null) {
 			response.setStatus(400);
 			System.out.println("AjaxLoginServlet.doGet(): Service return fail");
 			return;
 		}
 
 		//set the attribute into the request
-		request.setAttribute("webName", webName);
-		request.setAttribute("loginResult", Boolean.valueOf(result));
-		request.setAttribute("loginUser", loginUser);
-		request.setAttribute("loginPasswd", loginPasswd);
-		if (session.getAttribute("auth") != null && 
-				session.getAttribute("auth").equals("") != true) {
-			//set the attribute into the request
-			request.setAttribute("auth", session.getAttribute("auth"));
-		}
+		ServletUtil.setRequestAttr(request, resultObj);
 		
 		//dispatch the request
 		String JspFileBaseName = "ajaxLogin.jsp";

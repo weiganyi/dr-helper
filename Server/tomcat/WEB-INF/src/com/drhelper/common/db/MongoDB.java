@@ -126,7 +126,7 @@ public class MongoDB implements DataBase {
 		return order;
 	}
 
-	public Order getOrder(int orderNum) {
+	public Order getOrderObjByOrder(int orderNum) {
 		Order order = null;
 		DBObject dbObj = null;
 		
@@ -146,7 +146,7 @@ public class MongoDB implements DataBase {
 		return order;
 	}
 
-	public int getOrderFromTable(int tableNum) {
+	public int getOrderByTable(int tableNum) {
 		Order order = null;
 		DBObject dbObj = null;
 		int orderNum = 0;
@@ -171,7 +171,7 @@ public class MongoDB implements DataBase {
 		return orderNum;
 	}
 
-	public int getOrderFromOrder(int orderNum) {
+	public int getOrderByOrder(int orderNum) {
 		Order order = null;
 		DBObject dbObj = null;
 		int newOrderNum = 0;
@@ -432,7 +432,7 @@ public class MongoDB implements DataBase {
 		return true;
 	}
 
-	public ArrayList<Order> getOrderNotPay() {
+	public ArrayList<Order> getOrderListNotPay() {
 		Order order = null;
 		DBObject dbObj = null;
 		ArrayList<Order> orderList = null;
@@ -443,9 +443,171 @@ public class MongoDB implements DataBase {
 		//get the order
 		DBObject query = new BasicDBObject();
 		query.put("pay", false);
-		DBObject index = new BasicDBObject();
-		index.put("order", 1);
-		DBCursor cr = coll.find(query).sort(index);
+		DBCursor cr = coll.find(query);
+		
+		if (cr.hasNext()) {
+			orderList = new ArrayList<Order>();
+		}else {
+			return orderList;
+		}
+		
+		//construct the order list
+		while (cr.hasNext()) {
+			dbObj = cr.next();
+
+			if (dbObj != null) {
+				order = JSON.parseObject(dbObj.toString(), Order.class);
+				if (order != null) {
+					orderList.add(order);
+				}
+			}
+		}
+		
+		return orderList;
+	}
+
+	public boolean updateAdminOrderPay(int orderNum, String user) {
+		DBObject dbObj = null;
+		Boolean pay;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		if (dbObj == null) {
+			return false;
+		}
+
+		pay = (Boolean)dbObj.get("pay");
+		//if pay isn't set, set it
+		if (pay == false) {
+			dbObj.put("pay", true);
+			dbObj.put("admin", user);
+		//otherwise, clear it
+		}else {
+			dbObj.put("pay", false);
+			dbObj.put("admin", "");
+		}
+
+		coll.update(query, dbObj);
+		return true;
+	}
+
+	public ArrayList<Order> getOrderListByOrder(int orderNum) {
+		Order order = null;
+		DBObject dbObj = null;
+		ArrayList<Order> orderList = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		DBCursor cr = coll.find(query);
+		
+		if (cr.hasNext()) {
+			orderList = new ArrayList<Order>();
+		}else {
+			return orderList;
+		}
+		
+		//construct the order list
+		while (cr.hasNext()) {
+			dbObj = cr.next();
+
+			if (dbObj != null) {
+				order = JSON.parseObject(dbObj.toString(), Order.class);
+				if (order != null) {
+					orderList.add(order);
+				}
+			}
+		}
+		
+		return orderList;
+	}
+
+	public ArrayList<Order> getOrderListByOrderRange(int startOrderNum, int endOrderNum) {
+		Order order = null;
+		DBObject dbObj = null;
+		ArrayList<Order> orderList = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("order", new BasicDBObject("$gte", startOrderNum).append("$lte", endOrderNum));
+		DBCursor cr = coll.find(query);
+		
+		if (cr.hasNext()) {
+			orderList = new ArrayList<Order>();
+		}else {
+			return orderList;
+		}
+		
+		//construct the order list
+		while (cr.hasNext()) {
+			dbObj = cr.next();
+
+			if (dbObj != null) {
+				order = JSON.parseObject(dbObj.toString(), Order.class);
+				if (order != null) {
+					orderList.add(order);
+				}
+			}
+		}
+		
+		return orderList;
+	}
+
+	public ArrayList<Order> getOrderListByTable(int tableNum) {
+		Order order = null;
+		DBObject dbObj = null;
+		ArrayList<Order> orderList = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBObject query = new BasicDBObject();
+		query.put("table", tableNum);
+		DBCursor cr = coll.find(query);
+		
+		if (cr.hasNext()) {
+			orderList = new ArrayList<Order>();
+		}else {
+			return orderList;
+		}
+		
+		//construct the order list
+		while (cr.hasNext()) {
+			dbObj = cr.next();
+
+			if (dbObj != null) {
+				order = JSON.parseObject(dbObj.toString(), Order.class);
+				if (order != null) {
+					orderList.add(order);
+				}
+			}
+		}
+		
+		return orderList;
+	}
+
+	public ArrayList<Order> getOrderList() {
+		Order order = null;
+		DBObject dbObj = null;
+		ArrayList<Order> orderList = null;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//get the order
+		DBCursor cr = coll.find();
 		
 		if (cr.hasNext()) {
 			orderList = new ArrayList<Order>();

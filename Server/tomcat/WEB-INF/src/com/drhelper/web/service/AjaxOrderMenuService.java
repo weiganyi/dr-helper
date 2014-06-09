@@ -8,19 +8,73 @@ import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Detail;
 import com.drhelper.common.entity.Order;
 import com.drhelper.web.bean.OrderMenu;
+import com.drhelper.web.bean.OrderMenuObject;
+import com.drhelper.web.bean.PageInfo;
+import com.drhelper.web.util.ServiceUtil;
 
-public class AjaxOrderMenuService{
-	public boolean updateOrderMenuFetch(HttpSession session, String order, String menu) {
-		boolean result = false;
-		int orderNum = 0;
+public class AjaxOrderMenuService implements Service<HttpSession, String, OrderMenuObject> {
+	public OrderMenuObject doAction(HttpSession session, String... param) {
+		OrderMenuObject resultObj = null;
+		String op = null;
+		String order = null;
+		String menu = null;
+		String page = null;
 		
-		//get the chef
-		String user = (String) session.getAttribute("id");
-		String auth = (String) session.getAttribute("auth");
-		if (auth == null || auth.equals("chef") != true) {
-			return result;
+		if (checkAuth(session) != true) {
+			return resultObj;
+		}
+		
+		//parse the params
+		if (param[0] != null) {
+			op = param[0];
+		}
+		if (param[1] != null) {
+			order = param[1];
+		}
+		if (param[2] != null) {
+			menu = param[2];
+		}
+		if (param[3] != null) {
+			page = param[3];
 		}
 
+		if (op != null) {
+			if (op.equals("fetch") == true) { 
+				updateOrderMenuFetch(session, order, menu);
+			}else if (op.equals("finish") == true) {
+				updateOrderMenuFinish(session, order, menu);
+			}
+		}
+
+		resultObj = getOrderMenuObject(session, page);
+	
+		return resultObj;
+	}
+	
+	public boolean checkAuth(HttpSession session) {
+		String auth;
+
+		//if session not exist, it may be a fault
+		if (session == null) {
+			System.out.println("AjaxOrderMenuService.checkAuth(): session isn't exist");
+			return false;
+		}
+		
+		//check the chef
+		auth = (String) session.getAttribute("auth");
+		if (auth == null || auth.equals("chef") != true) {
+			System.out.println("AjaxOrderMenuService.checkAuth(): auth isn't chef");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean updateOrderMenuFetch(HttpSession session, String order, String menu) {
+		boolean result = false;
+		String user;
+		int orderNum = 0;
+		
 		//convert String to Integer
 		if (order != null && order.equals("") != true) {
 			orderNum = Integer.valueOf(order);
@@ -28,6 +82,9 @@ public class AjaxOrderMenuService{
 			return result;
 		}
 
+		//get the user
+		user = (String) session.getAttribute("id");
+		
 		//update the chef status into the order
 		DBManager db = new DBManager();
 		result = db.updateOrderMenuFetch(orderNum, menu, user);
@@ -38,12 +95,6 @@ public class AjaxOrderMenuService{
 	public boolean updateOrderMenuFinish(HttpSession session, String order, String menu) {
 		boolean result = false;
 		int orderNum = 0;
-		
-		//get the chef
-		String auth = (String) session.getAttribute("auth");
-		if (auth == null || auth.equals("chef") != true) {
-			return result;
-		}
 
 		//convert String to Integer
 		if (order != null && order.equals("") != true) {
@@ -59,71 +110,88 @@ public class AjaxOrderMenuService{
 		return result;
 	}
 
-	public OrderMenu[] getOrderMenuArray(HttpSession session) {
-		OrderMenu[] orderMenuArray = null;
+	public OrderMenuObject getOrderMenuObject(HttpSession session, String page) {
+		String user;
 		ArrayList<OrderMenu> orderMenuList = null;
-		int num = 0;
+		int itemNum = 0;
+		int currPage = 0;
 		
-		//get the chef
-		String user = (String) session.getAttribute("id");
-		String auth = (String) session.getAttribute("auth");
-		if (auth == null || auth.equals("chef") != true) {
-			return null;
+		//save the page number
+		if (page != null && page.equals("") != true) {
+			currPage = Integer.valueOf(page);
+		}else {
+			currPage = 1;
 		}
 
+		//get the user
+		user = (String) session.getAttribute("id");
+		
 		//get the order not pay
 		DBManager db = new DBManager();
-		ArrayList<Order> orderList = db.getOrderNotPay();
+		ArrayList<Order> orderList = db.getOrderListNotPay();
 		if (orderList == null) {
 			return null;
 		}
 		
-		//get max_detail_num
-		int maxNum = db.getOptionInt("max_detail_num");
+		//get the item_per_page
+		int itemPerPage = db.getOptionInt("item_per_page");
+		
+		//calculate the start and end
+		int start = (currPage-1)*itemPerPage;
+		int end = start+itemPerPage;
 		
 		//construct the orderMenuList
 		orderMenuList = new ArrayList<OrderMenu>();
-		for (Order order : orderList) {
-			int orderNum = order.getOrder();
-			int tableNum = order.getTable();
-			String waiter = order.getWaiter();
-			String time = order.getTime();
+		for (Order obj : orderList) {
+			int orderNum = obj.getOrder();
+			int tableNum = obj.getTable();
+			String waiter = obj.getWaiter();
+			String time = obj.getTime();
 			
-			ArrayList<Detail> detailList = order.getDetail();
+			ArrayList<Detail> detailList = obj.getDetail();
 			for (Detail detail : detailList) {
 				if (detail.isFinish() == false &&
 						(detail.getChef().equals("") == true || 
 						detail.getChef().equals(user) == true)) {
-					OrderMenu orderMenu = new OrderMenu();
-					
-					orderMenu.setOrder(orderNum);
-					orderMenu.setTable(tableNum);
-					orderMenu.setWaiter(waiter);
-					orderMenu.setTime(time);
-					orderMenu.setMenu(detail.getMenu());
-					orderMenu.setAmount(detail.getAmount());
-					orderMenu.setRemark(detail.getRemark());
-					if (detail.getChef().equals("") == true) {
-						orderMenu.setFetch(false);
-					}else if (detail.getChef().equals(user) == true) {
-						orderMenu.setFetch(true);
-						orderMenu.setChef(detail.getChef());
+					if (itemNum >= start && itemNum < end) {
+						OrderMenu orderMenu = new OrderMenu();
+						
+						orderMenu.setOrder(orderNum);
+						orderMenu.setTable(tableNum);
+						orderMenu.setWaiter(waiter);
+						orderMenu.setTime(time);
+						orderMenu.setMenu(detail.getMenu());
+						orderMenu.setAmount(detail.getAmount());
+						orderMenu.setRemark(detail.getRemark());
+						if (detail.getChef().equals("") == true) {
+							orderMenu.setFetch(false);
+						}else if (detail.getChef().equals(user) == true) {
+							orderMenu.setFetch(true);
+							orderMenu.setChef(detail.getChef());
+						}
+						
+						orderMenuList.add(orderMenu);
 					}
 					
-					orderMenuList.add(orderMenu);
-					
-					num++;
-					if (num >= maxNum) {
-						orderMenuArray = new OrderMenu[orderMenuList.size()];
-						orderMenuList.toArray(orderMenuArray);
-						return orderMenuArray;
-					}
+					itemNum++;
 				}
 			}
 		}
 		
-		orderMenuArray = new OrderMenu[orderMenuList.size()];
+		//calculate the start page and end page
+		PageInfo pgInfo = ServiceUtil.makePageInfo(currPage, itemNum, itemPerPage);
+
+		//construct the OrderMenuObject
+		OrderMenu[] orderMenuArray = new OrderMenu[orderMenuList.size()];
 		orderMenuList.toArray(orderMenuArray);
-		return orderMenuArray;
+
+		OrderMenuObject obj = new OrderMenuObject();
+		obj.setOrderMenu(orderMenuArray);
+		obj.setCurrPage(currPage);
+		obj.setStartPage(pgInfo.getStartPage());
+		obj.setEndPage(pgInfo.getEndPage());
+		obj.setTotalPage(pgInfo.getPageNum());
+		
+		return obj;
 	}
 }

@@ -32,7 +32,7 @@ public class LoadOrderService extends Service {
 		
 		//fetch the order
 		DBManager db = new DBManager();
-		Order order = db.getOrder(orderNum);
+		Order order = db.getOrderObjByOrder(orderNum);
 		if (order == null) {
 			respOrder.setResult(false);
 			respBody = JSON.toJSONString(respOrder);

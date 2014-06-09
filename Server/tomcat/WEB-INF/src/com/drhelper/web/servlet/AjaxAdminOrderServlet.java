@@ -8,35 +8,42 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.web.bean.OrderMenuObject;
-import com.drhelper.web.service.AjaxOrderMenuService;
+import com.drhelper.web.bean.AdminOrderObject;
+import com.drhelper.web.service.AjaxAdminOrderService;
 import com.drhelper.web.util.ServletUtil;
 
 @SuppressWarnings("serial")
-public class AjaxOrderMenuServlet extends HttpServlet {
+public class AjaxAdminOrderServlet extends HttpServlet {
 	private HttpSession session;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
 		String op;
-		String order;
-		String menu;
+		String payOrder;
 		String page;
+		String order;
+		String startOrder;
+		String endOrder;
+		String table;
 		
 		//get the request params
 		session = request.getSession(false);
 		op = request.getParameter("op");
-		order = request.getParameter("order");
-		menu = request.getParameter("menu");
+		payOrder = request.getParameter("payOrder");
 		page = request.getParameter("page");
+		order = request.getParameter("order");
+		startOrder = request.getParameter("startOrder");
+		endOrder = request.getParameter("endOrder");
+		table= request.getParameter("table");
 
 		//call the service
-		AjaxOrderMenuService service = new AjaxOrderMenuService();
-		OrderMenuObject resultObj = service.doAction(session, op, order, menu, page);
+		AjaxAdminOrderService service = new AjaxAdminOrderService();
+		AdminOrderObject resultObj = service.doAction(
+				session, op, payOrder, page, order, startOrder, endOrder, table);
 		if (resultObj == null) {
 			response.setStatus(400);
-			System.out.println("AjaxOrderMenuServlet.doGet(): Service return fail");
+			System.out.println("AjaxAdminOrderServlet.doGet(): Service return fail");
 			return;
 		}
 		
@@ -44,7 +51,7 @@ public class AjaxOrderMenuServlet extends HttpServlet {
 		ServletUtil.setRequestAttr(request, resultObj);
 		
 		//dispatch the request
-		String JspFileBaseName = "ajaxOrderMenu.jsp";
+		String JspFileBaseName = "ajaxAdminOrder.jsp";
 		String JspPath = getServletContext().getInitParameter("jspPath");
 		String JspFile = JspPath + JspFileBaseName;
 		RequestDispatcher view = request.getRequestDispatcher(JspFile);

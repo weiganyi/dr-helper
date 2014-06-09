@@ -8,8 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.web.bean.FinishMenu;
+import com.drhelper.web.bean.FinishMenuObject;
 import com.drhelper.web.service.AjaxFinishMenuService;
+import com.drhelper.web.util.ServletUtil;
 
 @SuppressWarnings("serial")
 public class AjaxFinishMenuServlet extends HttpServlet {
@@ -18,38 +19,29 @@ public class AjaxFinishMenuServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
+		String op;
 		String order;
 		String menu;
-		
-		//if session not exist, it may be a fault
-		session = request.getSession(false);
-		if (session == null) {
-			response.setStatus(400);
-			System.out.println("AjaxFinishMenuServlet.doGet(): session isn't exist");
-			return;
-		}
+		String page;
 
 		//get the request params
-		String op = request.getParameter("op");
+		session = request.getSession(false);
+		op = request.getParameter("op");
+		order = request.getParameter("order");
+		menu = request.getParameter("menu");
+		page = request.getParameter("page");
 		
 		//call the service
 		AjaxFinishMenuService service = new AjaxFinishMenuService();
-		if (op != null) {
-			order = request.getParameter("order");
-			menu = request.getParameter("menu");
-			if (op.equals("cancel") == true) { 
-				service.updateFinishMenuCancel(session, order, menu);
-			}
-		}
-		FinishMenu[] finishMenuArray = service.getFinishMenuArray(session);
-		if (finishMenuArray == null) {
+		FinishMenuObject resultObj = service.doAction(session, op, order, menu, page);
+		if (resultObj == null) {
 			response.setStatus(400);
 			System.out.println("AjaxFinishMenuServlet.doGet(): Service return fail");
 			return;
 		}
 		
 		//set the attribute into the request
-		request.setAttribute("finishMenu", finishMenuArray);
+		ServletUtil.setRequestAttr(request, resultObj);
 		
 		//dispatch the request
 		String JspFileBaseName = "ajaxFinishMenu.jsp";

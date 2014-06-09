@@ -192,4 +192,13 @@
         <url-pattern>/ajaxFinishMenu.do</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AjaxAdminOrderServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxAdminOrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxAdminOrderServlet</servlet-name>
+        <url-pattern>/ajaxAdminOrder.do</url-pattern>
+    </servlet-mapping>
+
 </web-app>

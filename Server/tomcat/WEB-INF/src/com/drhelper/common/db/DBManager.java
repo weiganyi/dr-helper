@@ -115,7 +115,7 @@ public class DBManager {
 		}
 	}
 	
-	public Order getOrder(int orderNum) {
+	public Order getOrderObjByOrder(int orderNum) {
 		Order order = null;
 		boolean result;
 		
@@ -123,12 +123,12 @@ public class DBManager {
 		mongodb = new MongoDB();
 		result = mongodb.openConnect();
 		if (!result) {
-			System.out.println("DBManager.getOrder(): open mongodb failure");
+			System.out.println("DBManager.getOrderObjByOrder(): open mongodb failure");
 			return order;
 		}
 		
 		//get the empty table list
-		order = mongodb.getOrder(orderNum);
+		order = mongodb.getOrderObjByOrder(orderNum);
 
 		//release the connect to sql
 		clear();
@@ -175,7 +175,7 @@ public class DBManager {
 		return menuList;
 	}
 	
-	public int getOrderFromTable(int tableNum) {
+	public int getOrderByTable(int tableNum) {
 		int orderNum = 0;
 		boolean result;
 		
@@ -183,19 +183,19 @@ public class DBManager {
 		mongodb = new MongoDB();
 		result = mongodb.openConnect();
 		if (!result) {
-			System.out.println("DBManager.getOrderFromTable(): open mongodb failure");
+			System.out.println("DBManager.getOrderByTable(): open mongodb failure");
 			return orderNum;
 		}
 		
 		//get the order number
-		orderNum = mongodb.getOrderFromTable(tableNum);
+		orderNum = mongodb.getOrderByTable(tableNum);
 		
 		//release the connect to sql
 		clear();
 		return orderNum;
 	}
 	
-	public int getOrderFromOrder(int orderNum) {
+	public int getOrderByOrder(int orderNum) {
 		int newOrderNum = 0;
 		boolean result;
 		
@@ -203,12 +203,12 @@ public class DBManager {
 		mongodb = new MongoDB();
 		result = mongodb.openConnect();
 		if (!result) {
-			System.out.println("DBManager.getOrderFromOrder(): open mongodb failure");
+			System.out.println("DBManager.getOrderByOrder(): open mongodb failure");
 			return orderNum;
 		}
 		
 		//get the order number
-		newOrderNum = mongodb.getOrderFromOrder(orderNum);
+		newOrderNum = mongodb.getOrderByOrder(orderNum);
 		
 		//release the connect to sql
 		clear();
@@ -492,7 +492,7 @@ public class DBManager {
 		return result;
 	}
 
-	public ArrayList<Order> getOrderNotPay() {
+	public ArrayList<Order> getOrderListNotPay() {
 		ArrayList<Order> orderList = null;
 		boolean result;
 		
@@ -500,12 +500,111 @@ public class DBManager {
 		mongodb = new MongoDB();
 		result = mongodb.openConnect();
 		if (!result) {
-			System.out.println("DBManager.getOrderNotPay(): open mongodb failure");
+			System.out.println("DBManager.getOrderListNotPay(): open mongodb failure");
 			return orderList;
 		}
 		
 		//get the order not pay
-		orderList = mongodb.getOrderNotPay();
+		orderList = mongodb.getOrderListNotPay();
+
+		//release the connect to sql
+		clear();
+		return orderList;
+	}
+	
+	public boolean updateAdminOrderPay(int orderNum, String user) {
+		boolean result = false;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.updateAdminOrderPay(): open mongodb failure");
+			return result;
+		}
+		
+		//update the pay status into the order
+		result = mongodb.updateAdminOrderPay(orderNum, user);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+
+	public ArrayList<Order> getOrderListByOrder(int orderNum) {
+		ArrayList<Order> orderList = null;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderListByOrder(): open mongodb failure");
+			return orderList;
+		}
+		
+		//get the order list
+		orderList = mongodb.getOrderListByOrder(orderNum);
+
+		//release the connect to sql
+		clear();
+		return orderList;
+	}
+
+	public ArrayList<Order> getOrderListByOrderRange(int startOrderNum, int endOrderNum) {
+		ArrayList<Order> orderList = null;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderListByOrderRange(): open mongodb failure");
+			return orderList;
+		}
+		
+		//get the order list
+		orderList = mongodb.getOrderListByOrderRange(startOrderNum, endOrderNum);
+
+		//release the connect to sql
+		clear();
+		return orderList;
+	}
+
+	public ArrayList<Order> getOrderListByTable(int tableNum) {
+		ArrayList<Order> orderList = null;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderListByTable(): open mongodb failure");
+			return orderList;
+		}
+		
+		//get the order list
+		orderList = mongodb.getOrderListByTable(tableNum);
+
+		//release the connect to sql
+		clear();
+		return orderList;
+	}
+
+	public ArrayList<Order> getOrderList() {
+		ArrayList<Order> orderList = null;
+		boolean result;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderListByTable(): open mongodb failure");
+			return orderList;
+		}
+		
+		//get the order list
+		orderList = mongodb.getOrderList();
 
 		//release the connect to sql
 		clear();

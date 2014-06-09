@@ -9,17 +9,69 @@ import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Detail;
 import com.drhelper.common.entity.Order;
 import com.drhelper.web.bean.FinishMenu;
+import com.drhelper.web.bean.FinishMenuObject;
+import com.drhelper.web.bean.PageInfo;
+import com.drhelper.web.util.ServiceUtil;
 
-public class AjaxFinishMenuService{
+public class AjaxFinishMenuService implements Service<HttpSession, String, FinishMenuObject>{
+	public FinishMenuObject doAction(HttpSession session, String... param) {
+		FinishMenuObject resultObj = null;
+		String op = null;
+		String order = null;
+		String menu = null;
+		String page = null;
+		
+		if (checkAuth(session) != true) {
+			return resultObj;
+		}
+		
+		//parse the params
+		if (param[0] != null) {
+			op = param[0];
+		}
+		if (param[1] != null) {
+			order = param[1];
+		}
+		if (param[2] != null) {
+			menu = param[2];
+		}
+		if (param[3] != null) {
+			page = param[3];
+		}
+
+		if (op != null) {
+			if (op.equals("cancel") == true) { 
+				updateFinishMenuCancel(session, order, menu);
+			}
+		}
+
+		resultObj = getFinishMenuObject(session, page);
+	
+		return resultObj;
+	}
+	
+	public boolean checkAuth(HttpSession session) {
+		String auth;
+
+		//if session not exist, it may be a fault
+		if (session == null) {
+			System.out.println("AjaxFinishMenuService.checkAuth(): session isn't exist");
+			return false;
+		}
+		
+		//check the chef
+		auth = (String) session.getAttribute("auth");
+		if (auth == null || auth.equals("chef") != true) {
+			System.out.println("AjaxFinishMenuService.checkAuth(): auth isn't chef");
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public boolean updateFinishMenuCancel(HttpSession session, String order, String menu) {
 		boolean result = false;
 		int orderNum = 0;
-		
-		//get the chef
-		String auth = (String) session.getAttribute("auth");
-		if (auth == null || auth.equals("chef") != true) {
-			return result;
-		}
 
 		//convert String to Integer
 		if (order != null && order.equals("") != true) {
@@ -35,41 +87,48 @@ public class AjaxFinishMenuService{
 		return result;
 	}
 
-	public FinishMenu[] getFinishMenuArray(HttpSession session) {
-		FinishMenu[] finishMenuArray = null;
+	public FinishMenuObject getFinishMenuObject(HttpSession session, String page) {
 		ArrayList<FinishMenu> finishMenuList = null;
-		int num = 0;
+		int itemNum = 0;
+		int currPage = 0;
 		
-		//get the chef
-		String user = (String) session.getAttribute("id");
-		String auth = (String) session.getAttribute("auth");
-		if (auth == null || auth.equals("chef") != true) {
-			return null;
+		//save the page number
+		if (page != null && page.equals("") != true) {
+			currPage = Integer.valueOf(page);
+		}else {
+			currPage = 1;
 		}
+		
+		//get the user
+		String user = (String) session.getAttribute("id");
 
 		//get the order not pay
 		DBManager db = new DBManager();
-		ArrayList<Order> orderList = db.getOrderNotPay();
+		ArrayList<Order> orderList = db.getOrderListNotPay();
 		if (orderList == null) {
 			return null;
 		}
 		
-		//get max_detail_num
-		int maxNum = db.getOptionInt("max_detail_num");
+		//get the item_per_page
+		int itemPerPage = db.getOptionInt("item_per_page");
+		
+		//calculate the start and end
+		int start = (currPage-1)*itemPerPage;
+		int end = start+itemPerPage;
 		
 		//construct the finishMenuList
 		finishMenuList = new ArrayList<FinishMenu>();
 		int size = orderList.size();
 		ListIterator<Order> it = orderList.listIterator(size);
 		while (it.hasPrevious()) {
-			Order order = it.previous();
+			Order obj = it.previous();
 			
-			int orderNum = order.getOrder();
-			int tableNum = order.getTable();
-			String waiter = order.getWaiter();
-			String time = order.getTime();
+			int orderNum = obj.getOrder();
+			int tableNum = obj.getTable();
+			String waiter = obj.getWaiter();
+			String time = obj.getTime();
 			
-			ArrayList<Detail> detailList = order.getDetail();
+			ArrayList<Detail> detailList = obj.getDetail();
 			int size2 = detailList.size();
 			ListIterator<Detail> it2 = detailList.listIterator(size2);
 			while (it2.hasPrevious()) {
@@ -77,30 +136,38 @@ public class AjaxFinishMenuService{
 				
 				if (detail.isFinish() == true && 
 						detail.getChef().equals(user) == true) {
-					FinishMenu finishMenu = new FinishMenu();
-					
-					finishMenu.setOrder(orderNum);
-					finishMenu.setTable(tableNum);
-					finishMenu.setWaiter(waiter);
-					finishMenu.setTime(time);
-					finishMenu.setMenu(detail.getMenu());
-					finishMenu.setAmount(detail.getAmount());
-					finishMenu.setRemark(detail.getRemark());
-					
-					finishMenuList.add(finishMenu);
-					
-					num++;
-					if (num >= maxNum) {
-						finishMenuArray = new FinishMenu[finishMenuList.size()];
-						finishMenuList.toArray(finishMenuArray);
-						return finishMenuArray;
+					if (itemNum >= start && itemNum < end) {
+						FinishMenu finishMenu = new FinishMenu();
+						
+						finishMenu.setOrder(orderNum);
+						finishMenu.setTable(tableNum);
+						finishMenu.setWaiter(waiter);
+						finishMenu.setTime(time);
+						finishMenu.setMenu(detail.getMenu());
+						finishMenu.setAmount(detail.getAmount());
+						finishMenu.setRemark(detail.getRemark());
+						
+						finishMenuList.add(finishMenu);
 					}
+					
+					itemNum++;
 				}
 			}
 		}
 		
-		finishMenuArray = new FinishMenu[finishMenuList.size()];
+		//calculate the start page and end page
+		PageInfo pgInfo = ServiceUtil.makePageInfo(currPage, itemNum, itemPerPage);
+
+		FinishMenu[] finishMenuArray = new FinishMenu[finishMenuList.size()];
 		finishMenuList.toArray(finishMenuArray);
-		return finishMenuArray;
+
+		FinishMenuObject obj = new FinishMenuObject();
+		obj.setFinishMenu(finishMenuArray);
+		obj.setCurrPage(currPage);
+		obj.setStartPage(pgInfo.getStartPage());
+		obj.setEndPage(pgInfo.getEndPage());
+		obj.setTotalPage(pgInfo.getPageNum());
+		
+		return obj;
 	}
 }

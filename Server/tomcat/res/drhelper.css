@@ -98,13 +98,13 @@ body {
 }
 
 /* ajaxOrderMenu.jsp style */
-#order_menu_table {
+#menu_table {
 	border-style: solid;
 	border-width: 1px;
 	border-collapse: collapse;
 }
 
-#order_menu_table th, #order_menu_table td {
+#menu_table th, #menu_table td {
 	border-style: dashed;
 	border-width: 1px;
 	border-collapse: collapse;
@@ -112,18 +112,32 @@ body {
 	padding: 0px 10px;
 }
 
-/* ajaxFinishMenu.jsp style */
-#finish_menu_table {
-	border-style: solid;
-	border-width: 1px;
-	border-collapse: collapse;
+#page_link_div {
+	text-align: center;
 }
 
-#finish_menu_table th, #finish_menu_table td {
-	border-style: dashed;
-	border-width: 1px;
-	border-collapse: collapse;
-	
-	padding: 0px 10px;
+#page_link_div a:link {
+	color: black;
+	text-decoration: none;
 }
 
+#page_link_div a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+#page_link_div a:hover {
+	color: black;
+	text-decoration: underline;
+}
+
+#page_link_div a:active {
+	color: black;
+	text-decoration: none;
+}
+
+/* ajaxAdminOrder.jsp style */
+#search_order_div {
+	width: 80%;
+	margin: 0 auto;
+}
