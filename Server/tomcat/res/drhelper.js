@@ -90,6 +90,15 @@ function onMenuAdminOrderClick() {
 }
 
 function onMenuAdminUserClick() {
+	//start ajax to fetch the user list
+	var ajaxUrl = "ajaxAdminUser.do";
+	jQuery.ajax({
+		type : "GET",
+		url : ajaxUrl,
+		data : null,
+		dataType : "html",
+		success : fnContentFill
+	});
 }
 
 function onMenuAdminTableClick() {
@@ -236,7 +245,7 @@ function onBtnOrderClearClick() {
 	$(end_order_input).val("");
 	$(table_num_input).val("");
 
-	$(menu_table).html("");
+	$(page_content_table).html("");
 	$(page_link_div).html("");
 }
 
@@ -249,4 +258,79 @@ function onBtnPayClick(param) {
 function onAdminOrderPageClick(page) {
 	//start ajax to get the admin order
 	fnBtnOrderSearch(page);
+}
+
+/* ajaxAdminUser.jsp */
+function onBtnUserCommitClick(log) {
+	var id = $(user_id_input).val();
+	var name = $(user_name_input).val();
+	var passwd = $(user_passwd_input).val();
+	var auth = $(user_auth_select).val();
+
+	//check the input
+	if (name == "" || passwd == "" || auth == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to add user
+	var ajaxUrl = "ajaxAdminUser.do";
+	var ajaxData = "op=commit" + "&" + "id=" + id + "&" + "name=" + name + "&" + "passwd=" + passwd + "&" + "auth=" + auth;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : ajaxData,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+function onBtnUserDeleteClick(log) {
+	var id = $(user_id_input).val();
+
+	//check the input
+	if (id == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to delete user
+	var ajaxUrl = "ajaxAdminUser.do";
+	var ajaxData = "op=delete" + "&" + "id=" + id;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : ajaxData,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+function onBtnUserClearClick() {
+	$(user_id_input).val("");
+	$(user_name_input).val("");
+	$(user_passwd_input).val("");
+	$(user_auth_select).val("waiter");
+
+	$(page_content_table).html("");
+	$(page_link_div).html("");
+}
+
+function onAdminUserEditClick(user_id, user_name, user_passwd, user_auth) {
+	$(user_id_input).val(user_id);
+	$(user_name_input).val(user_name);
+	$(user_passwd_input).val(user_passwd);
+	$(user_auth_select).val(user_auth);
+}
+
+function onAdminUserPageClick(page) {
+	//start ajax to fetch the user list
+	var ajaxUrl = "ajaxAdminUser.do" + "?" + page;
+	jQuery.ajax({
+		type : "GET",
+		url : ajaxUrl,
+		data : null,
+		dataType : "html",
+		success : fnContentFill
+	});
 }

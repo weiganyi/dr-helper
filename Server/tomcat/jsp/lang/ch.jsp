@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%-- include the jstl --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%-- index.jsp --%>
 <%
 String loginUser="用户名";
@@ -17,64 +20,61 @@ String menuAdminTable="餐桌管理";
 String menuAdminMenu="菜单管理";
 String menuAdminOption="配置";
 
-String footer="Copyright@2014 Powered by Weiganyi";
+String footer="版权所有	韦干翼 	@2014";
 %>
 
 <%-- ajaxOrderMenu.jsp --%>
-<%
-String thOrder="订单号";
-request.setAttribute("thOrder", thOrder);
-String thTable="桌号";
-request.setAttribute("thTable", thTable);
-String thWaiter="服务员";
-request.setAttribute("thWaiter", thWaiter);
-String thTime="下单时间";
-request.setAttribute("thTime", thTime);
-String thMenu="菜名";
-request.setAttribute("thMenu", thMenu);
-String thAmount="数量";
-request.setAttribute("thAmount", thAmount);
-String thRemark="备注";
-request.setAttribute("thRemark", thRemark);
-String thFinish="完成";
-request.setAttribute("thFinish", thFinish);
+<c:set var="thOrder" value="订单号" scope="request" />
+<c:set var="thTable" value="桌号" scope="request" />
+<c:set var="thWaiter" value="服务员" scope="request" />
+<c:set var="thTime" value="下单时间" scope="request" />
+<c:set var="thMenu" value="菜名" scope="request" />
+<c:set var="thAmount" value="数量" scope="request" />
+<c:set var="thRemark" value="备注" scope="request" />
+<c:set var="thFinish" value="完成" scope="request" />
 
-String tdFetch="领取";
-request.setAttribute("tdFetch", tdFetch);
-String tdFinish="完成";
-request.setAttribute("tdFinish", tdFinish);
-%>
+<c:set var="tdFetch" value="领取" scope="request" />
+<c:set var="tdFinish" value="完成" scope="request" />
 
 <%-- ajaxFinishMenu.jsp --%>
-<%
-String thCancel="取消完成";
-request.setAttribute("thCancel", thCancel);
-String tdCancel="取消完成";
-request.setAttribute("tdCancel", tdCancel);
-%>
+<c:set var="thCancel" value="取消完成" scope="request" />
+
+<c:set var="tdCancel" value="取消完成" scope="request" />
 
 <%-- ajaxAdminOrder.jsp --%>
-<%
-String thAdmin="管理员";
-request.setAttribute("thAdmin", thAdmin);
-String thPay="付款";
-request.setAttribute("thPay", thPay);
-String thPrice="价格";
-request.setAttribute("thPrice", thPrice);
-String thChef="厨师";
-request.setAttribute("thChef", thChef);
+<c:set var="thAdmin" value="管理员" scope="request" />
+<c:set var="thPay" value="付款" scope="request" />
+<c:set var="thPrice" value="价格" scope="request" />
+<c:set var="thChef" value="厨师" scope="request" />
 
-String tdPay="付款";
-request.setAttribute("tdPay", tdPay);
+<c:set var="tdPay" value="付款" scope="request" />
 
-String adminOrderFromOrder="按订单号";
-request.setAttribute("adminOrderFromOrder", adminOrderFromOrder);
-String adminOrderOR="或";
-request.setAttribute("adminOrderOR", adminOrderOR);
-String adminOrderFromTable="按桌号";
-request.setAttribute("adminOrderFromTable", adminOrderFromTable);
-String adminOrderSearch="查询";
-request.setAttribute("adminOrderSearch", adminOrderSearch);
-String adminOrderClear="清空";
-request.setAttribute("adminOrderClear", adminOrderClear);
-%>
+<c:set var="adminOrderByOrder" value="按订单号" scope="request" />
+<c:set var="adminOrderOR" value="或" scope="request" />
+<c:set var="adminOrderByTable" value="按桌号" scope="request" />
+<c:set var="adminOrderSearch" value="查询" scope="request" />
+<c:set var="adminOrderClear" value="清空" scope="request" />
+
+<c:set var="tdYes" value="是" scope="request" />
+<c:set var="tdNo" value="否" scope="request" />
+
+<%-- ajaxAdminUser.jsp --%>
+<c:set var="adminUserName" value="用户名" scope="request" />
+<c:set var="adminUserPasswd" value="密码" scope="request" />
+<c:set var="adminUserAuth" value="权限" scope="request" />
+<c:set var="adminUserCommit" value="提交" scope="request" />
+<c:set var="adminUserDelete" value="删除" scope="request" />
+<c:set var="adminUserClear" value="清空" scope="request" />
+<c:set var="adminUserNull" value="用户名或密码为空，请重新输入" scope="request" />
+
+<c:set var="adminUserWaiter" value="服务员" scope="request" />
+<c:set var="adminUserChef" value="厨师" scope="request" />
+<c:set var="adminUserAdmin" value="管理员" scope="request" />
+
+<c:set var="thUserName" value="用户名" scope="request" />
+<c:set var="thUserPasswd" value="密码" scope="request" />
+<c:set var="thUserAuth" value="权限" scope="request" />
+<c:set var="thEdit" value="修改" scope="request" />
+
+<c:set var="tdEdit" value="修改" scope="request" />
+

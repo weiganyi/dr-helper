@@ -7,10 +7,10 @@
 
 <div id="login_div">
 	<span><%= loginUser %>:  </span>
-	<input type="text" id="login_user_input"></input>
+	<input type="text" id="login_user_input"/>
 	<span><%= loginPasswd %>: </span>
-	<input type="password" id="login_passwd_input"></input>
-	<input type="button" id="login_submit_input" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'></input>
+	<input type="password" id="login_passwd_input"/>
+	<input type="button" id="login_submit_input" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'/>
 </div>
 <div id="title_div">
 	<%= request.getAttribute("webName") %>

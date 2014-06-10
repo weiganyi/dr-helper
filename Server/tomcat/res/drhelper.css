@@ -98,13 +98,13 @@ body {
 }
 
 /* ajaxOrderMenu.jsp style */
-#menu_table {
+#page_content_table {
 	border-style: solid;
 	border-width: 1px;
 	border-collapse: collapse;
 }
 
-#menu_table th, #menu_table td {
+#page_content_table th, #page_content_table td {
 	border-style: dashed;
 	border-width: 1px;
 	border-collapse: collapse;
@@ -137,7 +137,7 @@ body {
 }
 
 /* ajaxAdminOrder.jsp style */
-#search_order_div {
+#page_op_div {
 	width: 80%;
 	margin: 0 auto;
 }

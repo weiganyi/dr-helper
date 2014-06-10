@@ -201,4 +201,13 @@
         <url-pattern>/ajaxAdminOrder.do</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AjaxAdminUserServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxAdminUserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxAdminUserServlet</servlet-name>
+        <url-pattern>/ajaxAdminUser.do</url-pattern>
+    </servlet-mapping>
+
 </web-app>

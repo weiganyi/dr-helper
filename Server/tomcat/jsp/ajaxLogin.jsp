@@ -9,11 +9,11 @@
 		request.getAttribute("loginResult").equals(Boolean.valueOf(false))) { %>
 	<div id="login_div">
 		<span><%= loginUser %>:  </span>
-		<input type="text" id="login_user_input" value="<%= request.getAttribute("loginUser") %>"></input>
+		<input type="text" id="login_user_input" value="<%= request.getAttribute("loginUser") %>"/>
 		<div id="login_fail_notice"><%= loginFailNotice %></div>
 		<span><%= loginPasswd %>: </span>
-		<input type="password" id="login_passwd_input" value="<%= request.getAttribute("loginPasswd") %>"></input>
-		<input type="button" id="login_submit_input" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'></input>
+		<input type="password" id="login_passwd_input" value="<%= request.getAttribute("loginPasswd") %>"/>
+		<input type="button" id="login_submit_input" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'/>
 	</div>
 	<div id="title_div">
 		<%= request.getAttribute("webName") %>
@@ -22,7 +22,7 @@
 	</div>
 <% }else { %>
 	<div id="login_div">
-		<input type="button" id="logout_submit_input" value="<%= logoutSubmit %>" onclick="onBtnLogoutClick();"></input>
+		<input type="button" id="logout_submit_input" value="<%= logoutSubmit %>" onclick="onBtnLogoutClick();"/>
 	</div>
 	<div id="title_div">
 		<%= request.getAttribute("webName") %>

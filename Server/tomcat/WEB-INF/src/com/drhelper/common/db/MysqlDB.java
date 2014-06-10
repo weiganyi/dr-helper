@@ -186,7 +186,7 @@ public class MysqlDB implements DataBase {
 					pstmt.setInt(1, new_table_empty);
 					pstmt.setInt(2, tableNum);
 					
-					//execute the query
+					//execute the update
 					pstmt.executeUpdate();
 				}else {
 					throw new SQLException();
@@ -196,13 +196,13 @@ public class MysqlDB implements DataBase {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.createTable(): sql update catch SQLException");
+			System.out.println("MysqlDB.updateTable(): sql update catch SQLException");
 			
 			try {
 				//if fail, do rollback
 				conn.rollback();
 			} catch (SQLException e2) {
-				System.out.println("MysqlDB.createTable(): sql rollback catch SQLException");
+				System.out.println("MysqlDB.updateTable(): sql rollback catch SQLException");
 			}
 
 			return false;
@@ -361,24 +361,24 @@ public class MysqlDB implements DataBase {
 			pstmt.setInt(1, 1);
 			pstmt.setInt(2, tableNum1);
 
-			// execute the query1
+			// execute the update
 			pstmt.executeUpdate();
 
 			// fill the param2
 			pstmt.setInt(1, 0);
 			pstmt.setInt(2, tableNum2);
 
-			// execute the query2
+			// execute the update2
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.createTable(): sql update catch SQLException");
+			System.out.println("MysqlDB.changeTable(): sql update catch SQLException");
 			
 			try {
 				//if fail, do rollback
 				conn.rollback();
 			} catch (SQLException e2) {
-				System.out.println("MysqlDB.createTable(): sql rollback catch SQLException");
+				System.out.println("MysqlDB.changeTable(): sql rollback catch SQLException");
 			}
 
 			return false;
@@ -508,5 +508,135 @@ public class MysqlDB implements DataBase {
 		}
 
 		return value;
+	}
+	
+	public boolean commitAdminUserItem(int idNum, 
+			String name, 
+			String passwd, 
+			String auth) {
+		PreparedStatement pstmt;
+		String sql1 = null;
+		String sql2 = null;
+		String sql3 = null;
+
+		if (idNum != 0) {
+			//this is a update
+			sql1 = "update dr_user set user_name=? where user_id=?";
+			sql2 = "update dr_user set user_passwd=? where user_id=?";
+			sql3 = "update dr_user set user_auth=? where user_id=?";
+		}else {
+			//this is a insert
+			sql1 = "insert into dr_user values(0, ?, ?, ?)";
+		}
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			if (idNum != 0) {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+				//fill the param
+				pstmt.setString(1, name);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql2);
+				//fill the param
+				pstmt.setString(1, passwd);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql3);
+				//fill the param
+				pstmt.setString(1, auth);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+			}else {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+
+				//fill the param
+				pstmt.setString(1, name);
+				pstmt.setString(2, passwd);
+				pstmt.setString(3, auth);
+
+				//execute the update
+				pstmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.commitAdminUserItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean deleteAdminUserItem(int idNum) {
+		PreparedStatement pstmt;
+		String sql = "delete from dr_user where user_id=?";
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql);
+
+			// fill the param
+			pstmt.setInt(1, idNum);
+
+			// execute the update
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.deleteAdminUserItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public ArrayList<User> getUserList() {
+		ArrayList<User> userList = new ArrayList<User>();
+		PreparedStatement pstmt;
+		String sql = "select * from dr_user";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			//get the result
+			while (rs.next()) {
+				int user_id = rs.getInt(1);
+				String user_name = rs.getString(2);
+				String user_passwd = rs.getString(3);
+				String user_auth = rs.getString(4);
+				
+				User user = new User();
+				user.setUser_id(user_id);
+				user.setUser_name(user_name);
+				user.setUser_passwd(user_passwd);
+				user.setUser_auth(user_auth);
+				
+				userList.add(user);
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getUserList(): sql query catch SQLException");
+			return userList;
+		}
+		
+		return userList;
 	}
 }

@@ -610,4 +610,65 @@ public class DBManager {
 		clear();
 		return orderList;
 	}
+	
+	public boolean commitAdminUserItem(int idNum, 
+			String name, 
+			String passwd, 
+			String auth) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.commitAdminUserItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//add or modify a user
+		result = mysqldb.commitAdminUserItem(idNum, name, passwd, auth);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean deleteAdminUserItem(int idNum) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.deleteAdminUserItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//delete a user
+		result = mysqldb.deleteAdminUserItem(idNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+
+	public ArrayList<User> getUserList() {
+		ArrayList<User> userList = null;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getUserList(): open mysqldb failure");
+			return userList;
+		}
+		
+		//get the user list
+		userList = mysqldb.getUserList();
+
+		//release the connect to sql
+		clear();
+		return userList;
+	}
 }
