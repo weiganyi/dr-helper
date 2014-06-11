@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import com.drhelper.common.entity.Menu;
 import com.drhelper.common.entity.MenuType;
+import com.drhelper.common.entity.Option;
 import com.drhelper.common.entity.Table;
 import com.drhelper.common.entity.User;
 
@@ -479,7 +480,7 @@ public class MysqlDB implements DataBase {
 	}
 	
 	public int getOptionInt(String name) {
-		int value = 0;
+		String value = null;
 		PreparedStatement pstmt;
 		String sql = "select * from dr_option where option_name=?";
 
@@ -499,15 +500,15 @@ public class MysqlDB implements DataBase {
 			//get the result
 			while (rs.next()) {
 				//3 is the option_value
-				value = rs.getInt(3);
+				value = rs.getString(3);
 				
-				return value;
+				return Integer.valueOf(value);
 			}
 		} catch (SQLException e) {
 			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException");
 		}
 
-		return value;
+		return 0;
 	}
 	
 	public boolean commitAdminUserItem(int idNum, 
@@ -768,5 +769,248 @@ public class MysqlDB implements DataBase {
 		}
 		
 		return tableList;
+	}
+	
+	public boolean commitAdminMenuTypeItem(int idNum, String name) {
+		PreparedStatement pstmt;
+		String sql1 = null;
+
+		if (idNum != 0) {
+			//this is a update
+			sql1 = "update dr_menu_type set menu_type_name=? where menu_type_id=?";
+		}else {
+			//this is a insert
+			sql1 = "insert into dr_menu_type values(0, ?)";
+		}
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			if (idNum != 0) {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+
+				//fill the param
+				pstmt.setString(1, name);
+				pstmt.setInt(2, idNum);
+
+				//execute the update
+				pstmt.executeUpdate();
+			}else {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+
+				//fill the param
+				pstmt.setString(1, name);
+
+				//execute the update
+				pstmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.commitAdminMenuTypeItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean deleteAdminMenuTypeItem(int idNum) {
+		PreparedStatement pstmt;
+		String sql = "delete from dr_menu_type where menu_type_id=?";
+		String sql2 = "update dr_menu set menu_type_id=1 where menu_type_id=?";
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql);
+
+			// fill the param
+			pstmt.setInt(1, idNum);
+
+			// execute the update
+			pstmt.executeUpdate();
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql2);
+
+			//fill the param
+			pstmt.setInt(1, idNum);
+
+			//execute the update
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.deleteAdminMenuTypeItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean commitAdminMenuItem(int idNum, 
+			String name, 
+			int priceNum, 
+			int typeNum) {
+		PreparedStatement pstmt;
+		String sql1 = null;
+		String sql2 = null;
+		String sql3 = null;
+
+		if (idNum != 0) {
+			//this is a update
+			sql1 = "update dr_menu set menu_name=? where menu_id=?";
+			sql2 = "update dr_menu set menu_price=? where menu_id=?";
+			sql3 = "update dr_menu set menu_type_id=? where menu_id=?";
+		}else {
+			//this is a insert
+			sql1 = "insert into dr_menu values(0, ?, ?, ?)";
+		}
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			if (idNum != 0) {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+				//fill the param
+				pstmt.setString(1, name);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql2);
+				//fill the param
+				pstmt.setInt(1, priceNum);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql3);
+				//fill the param
+				pstmt.setInt(1, typeNum);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+			}else {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+
+				//fill the param
+				pstmt.setString(1, name);
+				pstmt.setInt(2, priceNum);
+				pstmt.setInt(3, typeNum);
+
+				//execute the update
+				pstmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.commitAdminMenuItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean deleteAdminMenuItem(int idNum) {
+		PreparedStatement pstmt;
+		String sql = "delete from dr_menu where menu_id=?";
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql);
+
+			// fill the param
+			pstmt.setInt(1, idNum);
+
+			// execute the update
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.deleteAdminMenuItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean commitAdminOptionItem(String name, String item) {
+		PreparedStatement pstmt;
+		String sql1 = "update dr_option set option_value=? where option_name=?";
+		String sql2 = "update dr_option set option_value=? where option_name=?";
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql1);
+			// fill the param
+			pstmt.setString(1, name);
+			pstmt.setString(2, "web_name");
+			// execute the update
+			pstmt.executeUpdate();
+
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql2);
+			// fill the param
+			pstmt.setString(1, item);
+			pstmt.setString(2, "item_per_page");
+			// execute the update
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.commitAdminOptionItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public ArrayList<Option> getOptionList() {
+		ArrayList<Option> optionList = null;;
+		Option option = null;
+		PreparedStatement pstmt;
+		String sql = "select * from dr_option";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			optionList = new ArrayList<Option>();
+			
+			//get the result
+			while (rs.next()) {
+				int option_id = rs.getInt(1);
+				String option_name = rs.getString(2);
+				String option_value = rs.getString(3);
+				
+				option = new Option();
+				option.setOption_id(option_id);
+				option.setOption_name(option_name);
+				option.setOption_value(option_value);
+				
+				optionList.add(option);
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getOptionList(): sql query catch SQLException");
+			return optionList;
+		}
+		
+		return optionList;
 	}
 }

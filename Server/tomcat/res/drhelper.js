@@ -446,3 +446,157 @@ function onAdminTablePageClick(page) {
 	var ajaxData = page;
 	fnBtnAdminTable(ajaxData);
 }
+
+/* ajaxAdminMenuType.jsp */
+function fnBtnAdminMenuType(param) {
+	//start ajax to access the menu type list
+	var ajaxUrl = "ajaxAdminMenuType.do";
+	var ajaxData = param;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : ajaxData,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+function onBtnMenuTypeCommitClick(log) {
+	var id = $(menu_type_id_input).val();
+	var name = $(menu_type_name_input).val();
+
+	//check the input
+	if (name == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to add menu type
+	var ajaxData = "op=commit" + "&" + "id=" + id + "&" + "name=" + name;
+	fnBtnAdminMenuType(ajaxData);
+}
+
+
+function onBtnMenuTypeClearClick() {
+	$(menu_type_id_input).val("");
+	$(menu_type_name_input).val("");
+
+	$(page_content_table).html("");
+	$(page_link_div).html("");
+}
+
+function onBtnMenuTypeDeleteClick(log) {
+	var id = $(menu_type_id_input).val();
+
+	//check the input
+	if (id == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to delete menu type
+	var ajaxData = "op=delete" + "&" + "id=" + id;
+	fnBtnAdminMenuType(ajaxData);
+}
+
+function onAdminMenuTypeEditClick(menu_type_id, menu_type_name) {
+	$(menu_type_id_input).val(menu_type_id);
+	$(menu_type_name_input).val(menu_type_name);
+}
+
+function onAdminMenuTypePageClick(page) {
+	//start ajax to fetch the menu type list
+	var ajaxData = page;
+	fnBtnAdminMenuType(ajaxData);
+}
+
+/* ajaxAdminMenu.jsp */
+function fnBtnAdminMenu(param) {
+	//start ajax to access the menu list
+	var ajaxUrl = "ajaxAdminMenu.do";
+	var ajaxData = param;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : ajaxData,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+function onBtnMenuCommitClick(log) {
+	var id = $(menu_id_input).val();
+	var name = $(menu_name_input).val();
+	var price = $(menu_price_input).val();
+	var type = $(menu_type_select).val();
+
+	//check the input
+	if (name == "" || price == "" || type == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to add menu
+	var ajaxData = "op=commit" + "&" + "id=" + id + "&" + "name=" + name + "&" + "price=" + price + "&" + "type=" + type;
+	fnBtnAdminMenu(ajaxData);
+}
+
+function onBtnMenuClearClick() {
+	$(menu_id_input).val("");
+	$(menu_name_input).val("");
+	$(menu_price_input).val("");
+	$(menu_type_select).val("Œ¥∑÷¿‡");
+
+	$(page_content_table).html("");
+	$(page_link_div).html("");
+}
+
+function onBtnMenuDeleteClick(log) {
+	var id = $(menu_id_input).val();
+
+	//check the input
+	if (id == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to delete menu
+	var ajaxData = "op=delete" + "&" + "id=" + id;
+	fnBtnAdminMenu(ajaxData);
+}
+
+function onAdminMenuEditClick(menu_id, menu_name, menu_price, menu_type_id) {
+	$(menu_id_input).val(menu_id);
+	$(menu_name_input).val(menu_name);
+	$(menu_price_input).val(menu_price);
+	$(menu_type_select).val(menu_type_id);
+}
+
+function onAdminMenuPageClick(page) {
+	//start ajax to fetch the menu list
+	var ajaxData = page;
+	fnBtnAdminMenu(ajaxData);
+}
+
+/* ajaxAdminOption.jsp */
+function onBtnOptionCommitClick(log) {
+	var webName = $(web_name_input).val();
+	var itemPerPage = $(item_per_page_input).val();
+
+	//check the input
+	if (webName == "" || itemPerPage == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to edit option
+	var ajaxUrl = "ajaxAdminOption.do";
+	var ajaxData = "op=commit" + "&" + "name=" + webName + "&" + "item=" + itemPerPage;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : ajaxData,
+		dataType : "html",
+		success : fnContentFill
+	});
+}

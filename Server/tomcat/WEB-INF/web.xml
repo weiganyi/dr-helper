@@ -224,4 +224,31 @@
         <url-pattern>/ajaxAdminTable.do</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>AjaxAdminMenuTypeServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxAdminMenuTypeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxAdminMenuTypeServlet</servlet-name>
+        <url-pattern>/ajaxAdminMenuType.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AjaxAdminMenuServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxAdminMenuServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxAdminMenuServlet</servlet-name>
+        <url-pattern>/ajaxAdminMenu.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AjaxAdminOptionServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxAdminOptionServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxAdminOptionServlet</servlet-name>
+        <url-pattern>/ajaxAdminOption.do</url-pattern>
+    </servlet-mapping>
+
 </web-app>

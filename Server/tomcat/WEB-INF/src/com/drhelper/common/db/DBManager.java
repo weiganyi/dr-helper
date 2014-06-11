@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.drhelper.android.util.LogicException;
 import com.drhelper.common.entity.Menu;
 import com.drhelper.common.entity.MenuType;
+import com.drhelper.common.entity.Option;
 import com.drhelper.common.entity.Order;
 import com.drhelper.common.entity.Table;
 import com.drhelper.common.entity.User;
@@ -426,7 +427,7 @@ public class DBManager {
 			return value;
 		}
 		
-		//get the option record typeof string
+		//get the string option record
 		value = mysqldb.getOptionString(name);
 
 		//release the connect to sql
@@ -446,7 +447,7 @@ public class DBManager {
 			return value;
 		}
 		
-		//get the option record typeof string
+		//get the int option record
 		value = mysqldb.getOptionInt(name);
 
 		//release the connect to sql
@@ -696,5 +697,133 @@ public class DBManager {
 		//release the connect to sql
 		clear();
 		return tableList;
+	}
+	
+	public boolean commitAdminMenuTypeItem(int idNum, String name) {
+		boolean result = false;
+		
+		//filter out the uncaterogies
+		if (idNum == 1) {
+			return result;
+		}
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.commitAdminMenuTypeItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//add or modify a menu type
+		result = mysqldb.commitAdminMenuTypeItem(idNum, name);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean deleteAdminMenuTypeItem(int idNum) {
+		boolean result = false;
+		
+		//filter out the uncaterogies
+		if (idNum == 1) {
+			return result;
+		}
+
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.deleteAdminMenuTypeItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//delete a menu type
+		result = mysqldb.deleteAdminMenuTypeItem(idNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean commitAdminMenuItem(int idNum, 
+			String name, 
+			int priceNum, 
+			int typeNum) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.commitAdminMenuItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//add or modify a menu
+		result = mysqldb.commitAdminMenuItem(idNum, name, priceNum, typeNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean deleteAdminMenuItem(int idNum) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.deleteAdminMenuItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//delete a menu
+		result = mysqldb.deleteAdminMenuItem(idNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean commitAdminOptionItem(String name, String item) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.commitAdminOptionItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//add or modify a option
+		result = mysqldb.commitAdminOptionItem(name, item);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public ArrayList<Option> getOptionList() {
+		ArrayList<Option> optionList = null;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOptionList(): open mysqldb failure");
+			return optionList;
+		}
+		
+		//get the option list
+		optionList = mysqldb.getOptionList();
+
+		//release the connect to sql
+		clear();
+		return optionList;
 	}
 }

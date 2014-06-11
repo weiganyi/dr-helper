@@ -6,19 +6,17 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpSession;
 
 import com.drhelper.common.db.DBManager;
-import com.drhelper.common.entity.Table;
-import com.drhelper.web.bean.AdminTableObject;
+import com.drhelper.common.entity.MenuType;
+import com.drhelper.web.bean.AdminMenuTypeObject;
 import com.drhelper.web.bean.PageInfo;
 import com.drhelper.web.util.ServiceUtil;
 
-public class AjaxAdminTableService implements Service<HttpSession, String, AdminTableObject>{
-	public AdminTableObject doAction(HttpSession session, String... param) {
-		AdminTableObject resultObj = null;
+public class AjaxAdminMenuTypeService implements Service<HttpSession, String, AdminMenuTypeObject>{
+	public AdminMenuTypeObject doAction(HttpSession session, String... param) {
+		AdminMenuTypeObject resultObj = null;
 		String op = null;
 		String id = null;
-		String table = null;
-		String seat = null;
-		String empty = null;
+		String name = null;
 		String page = null;
 		
 		if (checkAuth(session) != true) {
@@ -33,27 +31,21 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 			id = param[1];
 		}
 		if (param[2] != null) {
-			table = param[2];
+			name = param[2];
 		}
 		if (param[3] != null) {
-			seat = param[3];
-		}
-		if (param[4] != null) {
-			empty = param[4];
-		}
-		if (param[5] != null) {
-			page = param[5];
+			page = param[3];
 		}
 
 		if (op != null) {
 			if (op.equals("commit") == true) { 
-				commitAdminTableItem(session, id, table, seat, empty);
+				commitAdminMenuTypeItem(session, id, name);
 			}else if (op.equals("delete") == true) { 
-				deleteAdminTableItem(session, id);
+				deleteAdminMenuTypeItem(session, id);
 			}
 		}
 
-		resultObj = getAdminTableObject(page);
+		resultObj = getAdminMenuTypeObject(page);
 	
 		return resultObj;
 	}
@@ -63,56 +55,39 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 
 		//if session not exist, it may be a fault
 		if (session == null) {
-			System.out.println("AjaxAdminTableService.checkAuth(): session isn't exist");
+			System.out.println("AjaxAdminMenuTypeService.checkAuth(): session isn't exist");
 			return false;
 		}
 		
 		//check the admin
 		auth = (String) session.getAttribute("auth");
 		if (auth == null || auth.equals("admin") != true) {
-			System.out.println("AjaxAdminTableService.checkAuth(): auth isn't admin");
+			System.out.println("AjaxAdminMenuTypeService.checkAuth(): auth isn't admin");
 			return false;
 		}
 		
 		return true;
 	}
 
-	public boolean commitAdminTableItem(HttpSession session, 
+	public boolean commitAdminMenuTypeItem(HttpSession session, 
 			String id, 
-			String table, 
-			String seat, 
-			String empty) {
+			String name) {
 		boolean result = false;
 		int idNum = 0;
-		int tableNum = 0;
-		int seatNum = 0;
-		int emptyNum = 0;
 
 		//convert String to Integer
 		if (id != null && id.equals("") != true) {
 			idNum = Integer.valueOf(id);
 		}
-		//convert String to Integer
-		if (table != null && table.equals("") != true) {
-			tableNum = Integer.valueOf(table);
-		}
-		//convert String to Integer
-		if (seat != null && seat.equals("") != true) {
-			seatNum = Integer.valueOf(seat);
-		}
-		//convert String to Integer
-		if (empty != null && empty.equals("") != true) {
-			emptyNum = Integer.valueOf(empty);
-		}
 
-		//add or modify a user
+		//add or modify a menu type
 		DBManager db = new DBManager();
-		result = db.commitAdminTableItem(idNum, tableNum, seatNum, emptyNum);
+		result = db.commitAdminMenuTypeItem(idNum, name);
 
 		return result;
 	}
 
-	public boolean deleteAdminTableItem(HttpSession session, String id) {
+	public boolean deleteAdminMenuTypeItem(HttpSession session, String id) {
 		boolean result = false;
 		int idNum = 0;
 
@@ -123,16 +98,16 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 			return false;
 		}
 
-		//delete a table
+		//delete a menu type
 		DBManager db = new DBManager();
-		result = db.deleteAdminTableItem(idNum);
+		result = db.deleteAdminMenuTypeItem(idNum);
 
 		return result;
 	}
 
-	public AdminTableObject getAdminTableObject(String page) {
-		ArrayList<Table> tableList = null;
-		ArrayList<Table> table2List = null;
+	public AdminMenuTypeObject getAdminMenuTypeObject(String page) {
+		ArrayList<MenuType> menuTypeList = null;
+		ArrayList<MenuType> menuType2List = null;
 		int itemNum = 0;
 		int currPage = 0;
 		
@@ -143,10 +118,10 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 			currPage = 1;
 		}
 
-		//get the table list
+		//get the menu type list
 		DBManager db = new DBManager();
-		tableList = db.getTableList();
-		if (tableList == null) {
+		menuTypeList = db.getMenuTypeList();
+		if (menuTypeList == null) {
 			return null;
 		}
 		
@@ -157,15 +132,15 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 		int start = (currPage-1)*itemPerPage;
 		int end = start+itemPerPage;
 		
-		//construct the table2List
-		table2List = new ArrayList<Table>();
-		int size = tableList.size();
-		ListIterator<Table> it = tableList.listIterator(size);
+		//construct the menuType2List
+		menuType2List = new ArrayList<MenuType>();
+		int size = menuTypeList.size();
+		ListIterator<MenuType> it = menuTypeList.listIterator(size);
 		while (it.hasPrevious()) {
-			Table obj = it.previous();
+			MenuType obj = it.previous();
 
 			if (itemNum >= start && itemNum < end) {
-				table2List.add(obj);
+				menuType2List.add(obj);
 			}
 
 			itemNum++;
@@ -174,11 +149,11 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 		//calculate the start page and end page
 		PageInfo pgInfo = ServiceUtil.makePageInfo(currPage, itemNum, itemPerPage);
 
-		Table[] tableArray = new Table[table2List.size()];
-		table2List.toArray(tableArray);
+		MenuType[] menuTypeArray = new MenuType[menuType2List.size()];
+		menuType2List.toArray(menuTypeArray);
 
-		AdminTableObject obj = new AdminTableObject();
-		obj.setTable(tableArray);
+		AdminMenuTypeObject obj = new AdminMenuTypeObject();
+		obj.setMenuType(menuTypeArray);
 		obj.setCurrPage(currPage);
 		obj.setStartPage(pgInfo.getStartPage());
 		obj.setEndPage(pgInfo.getEndPage());

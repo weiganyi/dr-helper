@@ -92,3 +92,30 @@ String footer="版权所有	韦干翼 	@2014";
 <c:set var="thTableNum" value="桌号" scope="request" />
 <c:set var="thTableSeatNum" value="座位数" scope="request" />
 <c:set var="thTableEmpty" value="空置" scope="request" />
+
+<%-- ajaxAdminMenuType.jsp --%>
+<c:set var="adminMenuTypeName" value="菜类别名" scope="request" />
+<c:set var="adminMenuTypeCommit" value="提交" scope="request" />
+<c:set var="adminMenuTypeDelete" value="删除" scope="request" />
+<c:set var="adminMenuTypeClear" value="清空" scope="request" />
+<c:set var="adminMenuTypeNull" value="菜类别为空，请重新输入" scope="request" />
+
+<c:set var="thMenuTypeName" value="菜类别名" scope="request" />
+
+<%-- ajaxAdminMenu.jsp --%>
+<c:set var="adminMenuName" value="菜名" scope="request" />
+<c:set var="adminMenuPrice" value="价格" scope="request" />
+<c:set var="adminMenuCommit" value="提交" scope="request" />
+<c:set var="adminMenuDelete" value="删除" scope="request" />
+<c:set var="adminMenuClear" value="清空" scope="request" />
+<c:set var="adminMenuNull" value="菜名或价格为空，请重新输入" scope="request" />
+
+<c:set var="thMenuName" value="菜名" scope="request" />
+<c:set var="thMenuPrice" value="价格" scope="request" />
+
+<%-- ajaxAdminOption.jsp --%>
+<c:set var="tdWebName" value="应用名称" scope="request" />
+<c:set var="tdItemPerPage" value="每页最大列表项数目" scope="request" />
+<c:set var="adminOptionCommit" value="提交" scope="request" />
+<c:set var="adminOptionNull" value="有配置项为空，请重新输入" scope="request" />
+
