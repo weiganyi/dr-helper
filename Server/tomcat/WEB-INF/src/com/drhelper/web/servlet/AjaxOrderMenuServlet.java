@@ -35,7 +35,7 @@ public class AjaxOrderMenuServlet extends HttpServlet {
 		AjaxOrderMenuService service = new AjaxOrderMenuService();
 		OrderMenuObject resultObj = service.doAction(session, op, order, menu, page);
 		if (resultObj == null) {
-			response.setStatus(400);
+			response.sendError(500);
 			System.out.println("AjaxOrderMenuServlet.doGet(): Service return fail");
 			return;
 		}

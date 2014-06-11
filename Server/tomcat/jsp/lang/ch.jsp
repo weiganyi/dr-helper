@@ -17,6 +17,7 @@ String menuFinishMenu="已完成";
 String menuAdminOrder="订单管理";
 String menuAdminUser="用户管理";
 String menuAdminTable="餐桌管理";
+String menuAdminMenuType="菜单类别管理";
 String menuAdminMenu="菜单管理";
 String menuAdminOption="配置";
 
@@ -42,18 +43,19 @@ String footer="版权所有	韦干翼 	@2014";
 <c:set var="tdCancel" value="取消完成" scope="request" />
 
 <%-- ajaxAdminOrder.jsp --%>
+<c:set var="adminOrderByOrder" value="按订单号" scope="request" />
+<c:set var="adminOrderOR" value="或" scope="request" />
+<c:set var="adminOrderByTable" value="按桌号" scope="request" />
+<c:set var="adminOrderSearch" value="查询" scope="request" />
+<c:set var="adminOrderClear" value="清空" scope="request" />
+<c:set var="adminOrderNull" value="订单号或桌号为空，请重新输入" scope="request" />
+
 <c:set var="thAdmin" value="管理员" scope="request" />
 <c:set var="thPay" value="付款" scope="request" />
 <c:set var="thPrice" value="价格" scope="request" />
 <c:set var="thChef" value="厨师" scope="request" />
 
 <c:set var="tdPay" value="付款" scope="request" />
-
-<c:set var="adminOrderByOrder" value="按订单号" scope="request" />
-<c:set var="adminOrderOR" value="或" scope="request" />
-<c:set var="adminOrderByTable" value="按桌号" scope="request" />
-<c:set var="adminOrderSearch" value="查询" scope="request" />
-<c:set var="adminOrderClear" value="清空" scope="request" />
 
 <c:set var="tdYes" value="是" scope="request" />
 <c:set var="tdNo" value="否" scope="request" />
@@ -78,3 +80,15 @@ String footer="版权所有	韦干翼 	@2014";
 
 <c:set var="tdEdit" value="修改" scope="request" />
 
+<%-- ajaxAdminTable.jsp --%>
+<c:set var="adminTableNum" value="桌号" scope="request" />
+<c:set var="adminTableSeatNum" value="座位数" scope="request" />
+<c:set var="adminTableEmpty" value="空置" scope="request" />
+<c:set var="adminTableCommit" value="提交" scope="request" />
+<c:set var="adminTableDelete" value="删除" scope="request" />
+<c:set var="adminTableClear" value="清空" scope="request" />
+<c:set var="adminTableNull" value="桌号或座位数为空，请重新输入" scope="request" />
+
+<c:set var="thTableNum" value="桌号" scope="request" />
+<c:set var="thTableSeatNum" value="座位数" scope="request" />
+<c:set var="thTableEmpty" value="空置" scope="request" />

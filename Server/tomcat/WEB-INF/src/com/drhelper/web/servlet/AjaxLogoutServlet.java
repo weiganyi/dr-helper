@@ -26,7 +26,7 @@ public class AjaxLogoutServlet extends HttpServlet {
 		AjaxLogoutService service = new AjaxLogoutService();
 		LogoutObject resultObj = service.doAction(session);
 		if (resultObj == null) {
-			response.setStatus(400);
+			response.sendError(500);
 			System.out.println("AjaxLogoutServlet.doGet(): Service return fail");
 			return;
 		}

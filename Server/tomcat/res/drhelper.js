@@ -9,6 +9,15 @@ function fnHeaderFill(data, code, request) {
 	}
 }
 
+function fnContentFill(data, code, request) {
+	var content = $(content_div);
+	content.html(data);
+
+	if (code == "success") {
+		content.html(data);
+	}
+}
+
 function onBtnLoginClick(log) {
 	var loginUser = $(login_user_input).val();
 	var loginPasswd = $(login_passwd_input).val();
@@ -44,17 +53,8 @@ function onBtnLogoutClick() {
 	});
 }
 
-function fnContentFill(data, code, request) {
-	var content = $(content_div);
-	content.html("");
-
-	if (code == "success") {
-		content.html(data);
-	}
-}
-
 function onMenuOrderMenuClick() {
-	//start ajax to fetch the order menu list
+	//start ajax to get the order menu list
 	var ajaxUrl = "ajaxOrderMenu.do";
 	jQuery.ajax({
 		type : "GET",
@@ -66,7 +66,7 @@ function onMenuOrderMenuClick() {
 }
 
 function onMenuFinishMenuClick() {
-	//start ajax to fetch the order menu list
+	//start ajax to get the order menu list
 	var ajaxUrl = "ajaxFinishMenu.do";
 	jQuery.ajax({
 		type : "GET",
@@ -78,7 +78,7 @@ function onMenuFinishMenuClick() {
 }
 
 function onMenuAdminOrderClick() {
-	//start ajax to fetch the order list
+	//start ajax to get the order list
 	var ajaxUrl = "ajaxAdminOrder.do";
 	jQuery.ajax({
 		type : "GET",
@@ -90,7 +90,7 @@ function onMenuAdminOrderClick() {
 }
 
 function onMenuAdminUserClick() {
-	//start ajax to fetch the user list
+	//start ajax to get the user list
 	var ajaxUrl = "ajaxAdminUser.do";
 	jQuery.ajax({
 		type : "GET",
@@ -102,87 +102,121 @@ function onMenuAdminUserClick() {
 }
 
 function onMenuAdminTableClick() {
-}
-
-function onMenuAdminMenuClick() {
-}
-
-function onMenuAdminOptionClick() {
-}
-
-/* ajaxOrderMenu.jsp */
-function onBtnFetchClick(param) {
-	//start ajax to update the order menu
-	var ajaxUrl = "ajaxOrderMenu.do";
-	var ajaxData = "op=fetch" + "&" + param;
+	//start ajax to get the table list
+	var ajaxUrl = "ajaxAdminTable.do";
 	jQuery.ajax({
-		type : "POST",
+		type : "GET",
 		url : ajaxUrl,
-		data : ajaxData,
+		data : null,
 		dataType : "html",
 		success : fnContentFill
 	});
+}
+
+function onMenuAdminMenuTypeClick() {
+	//start ajax to get the menu type list
+	var ajaxUrl = "ajaxAdminMenuType.do";
+	jQuery.ajax({
+		type : "GET",
+		url : ajaxUrl,
+		data : null,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+function onMenuAdminMenuClick() {
+	//start ajax to get the menu list
+	var ajaxUrl = "ajaxAdminMenu.do";
+	jQuery.ajax({
+		type : "GET",
+		url : ajaxUrl,
+		data : null,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+function onMenuAdminOptionClick() {
+	//start ajax to get the option list
+	var ajaxUrl = "ajaxAdminOption.do";
+	jQuery.ajax({
+		type : "GET",
+		url : ajaxUrl,
+		data : null,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
+/* ajaxOrderMenu.jsp */
+function fnBtnOrderMenu(param) {
+	//start ajax to access the order menu
+	var ajaxUrl = "ajaxOrderMenu.do";
+	var ajaxData = param;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : param,
+		dataType : "html",
+		success : fnContentFill
+	});
+
+}
+
+function onBtnFetchClick(param) {
+	//start ajax to update the order menu
+	var ajaxData = "op=fetch" + "&" + param;
+	fnBtnOrderMenu(ajaxData)
 }
 
 function onBtnFinishClick(param) {
 	//start ajax to update the order menu
-	var ajaxUrl = "ajaxOrderMenu.do";
 	var ajaxData = "op=finish" + "&" + param;
-	jQuery.ajax({
-		type : "POST",
-		url : ajaxUrl,
-		data : ajaxData,
-		dataType : "html",
-		success : fnContentFill
-	});
+	fnBtnOrderMenu(ajaxData)
 }
 
 function onOrderMenuPageClick(page) {
 	//start ajax to get the order menu
-	var ajaxUrl = "ajaxOrderMenu.do" + "?" + page;
-	jQuery.ajax({
-		type : "GET",
-		url : ajaxUrl,
-		data : null,
-		dataType : "html",
-		success : fnContentFill
-	});
+	var ajaxData = page;
+	fnBtnOrderMenu(ajaxData)
 }
 
 /* ajaxFinishMenu.jsp */
-function onBtnCancelClick(param) {
-	//start ajax to update the finish menu
+function fnBtnFinishMenu(param) {
+	//start ajax to access the finish menu
 	var ajaxUrl = "ajaxFinishMenu.do";
-	var ajaxData = "op=cancel" + "&" + param;
+	var ajaxData = param;
 	jQuery.ajax({
 		type : "POST",
 		url : ajaxUrl,
-		data : ajaxData,
+		data : param,
 		dataType : "html",
 		success : fnContentFill
 	});
+
+}
+
+function onBtnCancelClick(param) {
+	//start ajax to update the finish menu
+	var ajaxData = "op=cancel" + "&" + param;
+	fnBtnFinishMenu(ajaxData)
 }
 
 function onFinishMenuPageClick(page) {
 	//start ajax to get the finish menu
-	var ajaxUrl = "ajaxFinishMenu.do" + "?" + page;
-	jQuery.ajax({
-		type : "GET",
-		url : ajaxUrl,
-		data : null,
-		dataType : "html",
-		success : fnContentFill
-	});
+	var ajaxData = page;
+	fnBtnFinishMenu(ajaxData)
 }
 
 /* ajaxAdminOrder.jsp */
-function fnBtnOrderSearch(param) {
+function fnBtnAdminOrder(param) {
 	var order = $(order_num_input).val();
 	var startOrder = $(start_order_input).val();
 	var endOrder = $(end_order_input).val();
 	var table = $(table_num_input).val();
 
-	//start ajax to fetch the order list
+	//start ajax to access the order list
 	var ajaxUrl = "ajaxAdminOrder.do";
 	var ajaxData = null;
 	var firstParam = true;
@@ -236,7 +270,7 @@ function fnBtnOrderSearch(param) {
 }
 
 function onBtnOrderSearchClick() {
-	fnBtnOrderSearch(null);
+	fnBtnAdminOrder(null);
 }
 
 function onBtnOrderClearClick() {
@@ -249,18 +283,47 @@ function onBtnOrderClearClick() {
 	$(page_link_div).html("");
 }
 
+function onBtnOrderDeleteClick(log) {
+	var order = $(order_num_input).val();
+	var startOrder = $(start_order_input).val();
+	var endOrder = $(end_order_input).val();
+	var table = $(table_num_input).val();
+
+	//check the input
+	if (order == "" && startOrder == "" && endOrder == "" && table == "") {
+		alert(log);
+		return;
+	}
+	
+	var param = "op=delete";
+	fnBtnAdminOrder(param);
+}
+
 function onBtnPayClick(param) {
 	//start ajax to update admin order
 	var ajaxData = "op=pay" + "&" + param;
-	fnBtnOrderSearch(ajaxData);
+	fnBtnAdminOrder(ajaxData);
 }
 
 function onAdminOrderPageClick(page) {
 	//start ajax to get the admin order
-	fnBtnOrderSearch(page);
+	fnBtnAdminOrder(page);
 }
 
 /* ajaxAdminUser.jsp */
+function fnBtnAdminUser(param) {
+	//start ajax to access the user list
+	var ajaxUrl = "ajaxAdminUser.do";
+	var ajaxData = param;
+	jQuery.ajax({
+		type : "POST",
+		url : ajaxUrl,
+		data : ajaxData,
+		dataType : "html",
+		success : fnContentFill
+	});
+}
+
 function onBtnUserCommitClick(log) {
 	var id = $(user_id_input).val();
 	var name = $(user_name_input).val();
@@ -274,36 +337,8 @@ function onBtnUserCommitClick(log) {
 	}
 
 	//start ajax to add user
-	var ajaxUrl = "ajaxAdminUser.do";
 	var ajaxData = "op=commit" + "&" + "id=" + id + "&" + "name=" + name + "&" + "passwd=" + passwd + "&" + "auth=" + auth;
-	jQuery.ajax({
-		type : "POST",
-		url : ajaxUrl,
-		data : ajaxData,
-		dataType : "html",
-		success : fnContentFill
-	});
-}
-
-function onBtnUserDeleteClick(log) {
-	var id = $(user_id_input).val();
-
-	//check the input
-	if (id == "") {
-		alert(log);
-		return;
-	}
-
-	//start ajax to delete user
-	var ajaxUrl = "ajaxAdminUser.do";
-	var ajaxData = "op=delete" + "&" + "id=" + id;
-	jQuery.ajax({
-		type : "POST",
-		url : ajaxUrl,
-		data : ajaxData,
-		dataType : "html",
-		success : fnContentFill
-	});
+	fnBtnAdminUser(ajaxData);
 }
 
 function onBtnUserClearClick() {
@@ -316,6 +351,20 @@ function onBtnUserClearClick() {
 	$(page_link_div).html("");
 }
 
+function onBtnUserDeleteClick(log) {
+	var id = $(user_id_input).val();
+
+	//check the input
+	if (id == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to delete user
+	var ajaxData = "op=delete" + "&" + "id=" + id;
+	fnBtnAdminUser(ajaxData);
+}
+
 function onAdminUserEditClick(user_id, user_name, user_passwd, user_auth) {
 	$(user_id_input).val(user_id);
 	$(user_name_input).val(user_name);
@@ -325,12 +374,75 @@ function onAdminUserEditClick(user_id, user_name, user_passwd, user_auth) {
 
 function onAdminUserPageClick(page) {
 	//start ajax to fetch the user list
-	var ajaxUrl = "ajaxAdminUser.do" + "?" + page;
+	var ajaxData = page;
+	fnBtnAdminUser(ajaxData);
+}
+
+/* ajaxAdminTable.jsp */
+function fnBtnAdminTable(param) {
+	//start ajax to access the table list
+	var ajaxUrl = "ajaxAdminTable.do";
+	var ajaxData = param;
 	jQuery.ajax({
-		type : "GET",
+		type : "POST",
 		url : ajaxUrl,
-		data : null,
+		data : ajaxData,
 		dataType : "html",
 		success : fnContentFill
 	});
+}
+
+function onBtnTableCommitClick(log) {
+	var id = $(table_id_input).val();
+	var table = $(table_num_input).val();
+	var seat = $(table_seat_num_input).val();
+	var empty = $(table_empty_select).val();
+
+	//check the input
+	if (table == "" || seat == "" || empty == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to add table
+	var ajaxData = "op=commit" + "&" + "id=" + id + "&" + "table=" + table + "&" + "seat=" + seat + "&" + "empty=" + empty;
+	fnBtnAdminTable(ajaxData);
+}
+
+
+function onBtnTableClearClick() {
+	$(table_id_input).val("");
+	$(table_num_input).val("");
+	$(table_seat_num_input).val("");
+	$(table_empty_select).val("waiter");
+
+	$(page_content_table).html("");
+	$(page_link_div).html("");
+}
+
+function onBtnTableDeleteClick(log) {
+	var id = $(table_id_input).val();
+
+	//check the input
+	if (id == "") {
+		alert(log);
+		return;
+	}
+
+	//start ajax to delete table
+	var ajaxData = "op=delete" + "&" + "id=" + id;
+	fnBtnAdminTable(ajaxData);
+}
+
+function onAdminTableEditClick(table_id, table_num, table_seat_num, table_empty) {
+	$(table_id_input).val(table_id);
+	$(table_num_input).val(table_num);
+	$(table_seat_num_input).val(table_seat_num);
+	$(table_empty_select).val(table_empty);
+}
+
+function onAdminTablePageClick(page) {
+	//start ajax to fetch the table list
+	var ajaxData = page;
+	fnBtnAdminTable(ajaxData);
 }

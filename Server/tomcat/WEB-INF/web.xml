@@ -141,6 +141,11 @@
 	<welcome-file-list>
 		<welcome-file>index.do</welcome-file>
 	</welcome-file-list>
+	
+	<error-page>
+		<error-code>500</error-code>
+		<location>/jsp/error.jsp</location>
+	</error-page>
 
 	<context-param>
 		<param-name>jspPath</param-name>
@@ -208,6 +213,15 @@
     <servlet-mapping>
         <servlet-name>AjaxAdminUserServlet</servlet-name>
         <url-pattern>/ajaxAdminUser.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AjaxAdminTableServlet</servlet-name>
+        <servlet-class>com.drhelper.web.servlet.AjaxAdminTableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AjaxAdminTableServlet</servlet-name>
+        <url-pattern>/ajaxAdminTable.do</url-pattern>
     </servlet-mapping>
 
 </web-app>

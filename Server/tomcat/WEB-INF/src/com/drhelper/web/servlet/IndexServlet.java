@@ -35,7 +35,7 @@ public class IndexServlet extends HttpServlet {
 		IndexService service = new IndexService();
 		IndexObject resultObj = service.doAction(session);
 		if (resultObj == null) {
-			response.setStatus(400);
+			response.sendError(500);
 			System.out.println("IndexServlet.doGet(): Service return fail");
 			return;
 		}

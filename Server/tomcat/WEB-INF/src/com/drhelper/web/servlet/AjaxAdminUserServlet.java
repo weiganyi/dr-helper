@@ -40,7 +40,7 @@ public class AjaxAdminUserServlet extends HttpServlet {
 		AdminUserObject resultObj = service.doAction(
 				session, op, id, name, passwd, auth, page);
 		if (resultObj == null) {
-			response.setStatus(400);
+			response.sendError(500);
 			System.out.println("AjaxAdminUserServlet.doGet(): Service return fail");
 			return;
 		}

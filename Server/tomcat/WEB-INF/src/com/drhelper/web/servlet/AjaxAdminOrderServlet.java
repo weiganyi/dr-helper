@@ -42,7 +42,7 @@ public class AjaxAdminOrderServlet extends HttpServlet {
 		AdminOrderObject resultObj = service.doAction(
 				session, op, payOrder, page, order, startOrder, endOrder, table);
 		if (resultObj == null) {
-			response.setStatus(400);
+			response.sendError(500);
 			System.out.println("AjaxAdminOrderServlet.doGet(): Service return fail");
 			return;
 		}

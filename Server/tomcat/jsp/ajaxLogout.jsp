@@ -10,7 +10,7 @@
 	<input type="text" id="login_user_input"/>
 	<span><%= loginPasswd %>: </span>
 	<input type="password" id="login_passwd_input"/>
-	<input type="button" id="login_submit_input" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'/>
+	<input type="button" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'/>
 </div>
 <div id="title_div">
 	<%= request.getAttribute("webName") %>

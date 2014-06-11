@@ -21,9 +21,9 @@
 		</select>
 	</div>
 	<div>
-		<input type="button" id="user_edit_input" value="${adminUserCommit}" onclick='onBtnUserCommitClick("${adminUserNull}");'/>
-		<input type="button" id="user_delete_input" value="${adminUserDelete}" onclick='onBtnUserDeleteClick("${adminUserNull}");'/>
-		<input type="button" id="user_clear_input" value="${adminUserClear}" onclick="onBtnUserClearClick();"/>
+		<input type="button" value="${adminUserCommit}" onclick='onBtnUserCommitClick("${adminUserNull}");'/>
+		<input type="button" value="${adminUserClear}" onclick="onBtnUserClearClick();"/>
+		<input type="button" value="${adminUserDelete}" onclick='onBtnUserDeleteClick("${adminUserNull}");'/>
 	</div>
 </div>
 

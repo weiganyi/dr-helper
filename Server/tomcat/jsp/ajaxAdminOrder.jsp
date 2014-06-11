@@ -9,19 +9,40 @@
 <div id="page_op_div">
 	<div>
 		<span>${adminOrderByOrder}:  </span>
+		<c:if test="${orderNum != 0}">
 		<input type="text" id="order_num_input" value="${orderNum}"/>
+		</c:if>
+		<c:if test="${orderNum == 0}">
+		<input type="text" id="order_num_input"/>
+		</c:if>
 		<span>${adminOrderOR}:  </span>
+		<c:if test="${startOrder != 0}">
 		<input type="text" id="start_order_input" value="${startOrder}"/>
+		</c:if>
+		<c:if test="${startOrder == 0}">
+		<input type="text" id="start_order_input"/>
+		</c:if>
 		<span> - </span>
+		<c:if test="${endOrder != 0}">
 		<input type="text" id="end_order_input" value="${endOrder}"/>
+		</c:if>
+		<c:if test="${endOrder == 0}">
+		<input type="text" id="end_order_input"/>
+		</c:if>
 	</div>
 	<div>
 		<span>${adminOrderByTable}:  </span>
+		<c:if test="${tableNum != 0}">
 		<input type="text" id="table_num_input" value="${tableNum}"/>
+		</c:if>
+		<c:if test="${tableNum == 0}">
+		<input type="text" id="table_num_input"/>
+		</c:if>
 	</div>
 	<div>
-		<input type="button" id="order_search_input" value="${adminOrderSearch}" onclick="onBtnOrderSearchClick();"/>
-		<input type="button" id="order_clear_input" value="${adminOrderClear}" onclick="onBtnOrderClearClick();"/>
+		<input type="button" value="${adminOrderSearch}" onclick="onBtnOrderSearchClick();"/>
+		<input type="button" value="${adminOrderClear}" onclick="onBtnOrderClearClick();"/>
+		<input type="button" value="${adminUserDelete}" onclick='onBtnOrderDeleteClick("${adminOrderNull}");'/>
 	</div>
 </div>
 

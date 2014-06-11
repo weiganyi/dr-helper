@@ -639,4 +639,134 @@ public class MysqlDB implements DataBase {
 		
 		return userList;
 	}
+	
+	public boolean commitAdminTableItem(int idNum, 
+			int tableNum, 
+			int seatNum, 
+			int emptyNum) {
+		PreparedStatement pstmt;
+		String sql1 = null;
+		String sql2 = null;
+		String sql3 = null;
+
+		if (idNum != 0) {
+			//this is a update
+			sql1 = "update dr_table set table_num=? where table_id=?";
+			sql2 = "update dr_table set table_seat_num=? where table_id=?";
+			sql3 = "update dr_table set table_empty=? where table_id=?";
+		}else {
+			//this is a insert
+			sql1 = "insert into dr_table values(0, ?, ?, ?)";
+		}
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			if (idNum != 0) {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+				//fill the param
+				pstmt.setInt(1, tableNum);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql2);
+				//fill the param
+				pstmt.setInt(1, seatNum);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql3);
+				//fill the param
+				pstmt.setInt(1, emptyNum);
+				pstmt.setInt(2, idNum);
+				//execute the update
+				pstmt.executeUpdate();
+			}else {
+				//prepare the statement
+				pstmt = conn.prepareStatement(sql1);
+
+				//fill the param
+				pstmt.setInt(1, tableNum);
+				pstmt.setInt(2, seatNum);
+				pstmt.setInt(3, emptyNum);
+
+				//execute the update
+				pstmt.executeUpdate();
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.commitAdminTableItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean deleteAdminTableItem(int idNum) {
+		PreparedStatement pstmt;
+		String sql = "delete from dr_table where table_id=?";
+		
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			// prepare the statement
+			pstmt = conn.prepareStatement(sql);
+
+			// fill the param
+			pstmt.setInt(1, idNum);
+
+			// execute the update
+			pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.deleteAdminTableItem(): sql update catch SQLException");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public ArrayList<Table> getTableList() {
+		ArrayList<Table> tableList = new ArrayList<Table>();
+		PreparedStatement pstmt;
+		String sql = "select * from dr_table";
+
+		try {
+			//set autocommit mode
+			conn.setAutoCommit(true);
+
+			//prepare the statement
+			pstmt = conn.prepareStatement(sql);
+			
+			//execute the query
+			ResultSet rs = pstmt.executeQuery();
+			
+			//get the result
+			while (rs.next()) {
+				int table_id = rs.getInt(1);
+				int table_num = rs.getInt(2);
+				int table_seat_num = rs.getInt(3);
+				int table_empty = rs.getInt(4);
+				
+				Table table = new Table();
+				table.setTable_id(table_id);
+				table.setTable_num(table_num);
+				table.setTable_seat_num(table_seat_num);
+				table.setTable_empty(table_empty);
+				
+				tableList.add(table);
+			}
+		} catch (SQLException e) {
+			System.out.println("MysqlDB.getTableList(): sql query catch SQLException");
+			return tableList;
+		}
+		
+		return tableList;
+	}
 }

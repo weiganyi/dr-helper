@@ -54,6 +54,8 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		if (op != null) {
 			if (op.equals("pay") == true) { 
 				updateAdminOrderPay(session, payOrder);
+			}else if (op.equals("delete") == true) { 
+				deleteAdminOrderItem(session, order, startOrder, endOrder, table);
 			}
 		}
 
@@ -102,6 +104,38 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		return result;
 	}
 
+	public boolean deleteAdminOrderItem(HttpSession session, 
+			String order, 
+			String startOrder, 
+			String endOrder, 
+			String table) {
+		boolean result = false;
+		int orderNum = 0;
+		int startOrderNum = 0;
+		int endOrderNum = 0;
+		int tableNum = 0;
+
+		//convert String to Integer
+		if (order != null && order.equals("") != true) {
+			orderNum = Integer.valueOf(order);
+		}
+		if (startOrder != null && startOrder.equals("") != true) {
+			startOrderNum = Integer.valueOf(startOrder);
+		}
+		if (endOrder != null && endOrder.equals("") != true) {
+			endOrderNum = Integer.valueOf(endOrder);
+		}
+		if (table != null && table.equals("") != true) {
+			tableNum = Integer.valueOf(table);
+		}
+
+		//delete a order
+		DBManager db = new DBManager();
+		result = db.deleteAdminOrderItem(orderNum, startOrderNum, endOrderNum, tableNum);
+
+		return result;
+	}
+
 	public AdminOrderObject getAdminOrderObject(String page, 
 			String order,
 			String startOrder,
@@ -140,15 +174,7 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 
 		//get the order list
 		DBManager db = new DBManager();
-		if (orderNum != 0) {
-			orderList = db.getOrderListByOrder(orderNum);
-		}else if (startOrderNum != 0 || endOrderNum != 0) {
-			orderList = db.getOrderListByOrderRange(startOrderNum, endOrderNum);
-		}else if (tableNum != 0) {
-			orderList = db.getOrderListByTable(tableNum);
-		}else {
-			orderList = db.getOrderList();
-		}
+		orderList = db.getOrderList(orderNum, startOrderNum, endOrderNum, tableNum);
 		if (orderList == null) {
 			return null;
 		}

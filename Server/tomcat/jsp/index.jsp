@@ -21,7 +21,7 @@
 			<input type="text" id="login_user_input"></input>
 			<span><%= loginPasswd %>: </span>
 			<input type="password" id="login_passwd_input"></input>
-			<input type="button" id="login_submit_input" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'></input>
+			<input type="button" value="<%= loginSubmit %>" onclick='onBtnLoginClick("<%= loginSubmitNull %>");'></input>
 		</div>
 		<div id="title_div">
 			<%= request.getAttribute("webName") %>
@@ -30,7 +30,7 @@
 		</div>
 	<% }else { %>
 	    <div id="login_div">
-			<input type="button" id="logout_submit_input" value="<%= logoutSubmit %>" onclick="onBtnLogoutClick();"></input>
+			<input type="button" value="<%= logoutSubmit %>" onclick="onBtnLogoutClick();"></input>
 		</div>
 		<div id="title_div">
 			<%= request.getAttribute("webName") %>
@@ -44,6 +44,7 @@
 			<a href="#" class="menu_item_a" onclick="onMenuAdminOrderClick();"><%= menuAdminOrder %></a>
 			<a href="#" class="menu_item_a" onclick="onMenuAdminUserClick();"><%= menuAdminUser %></a>
 			<a href="#" class="menu_item_a" onclick="onMenuAdminTableClick();"><%= menuAdminTable %></a>
+			<a href="#" class="menu_item_a" onclick="onMenuAdminMenuTypeClick();"><%= menuAdminMenuType %></a>
 			<a href="#" class="menu_item_a" onclick="onMenuAdminMenuClick();"><%= menuAdminMenu %></a>
 			<a href="#" class="menu_item_a" onclick="onMenuAdminOptionClick();"><%= menuAdminOption %></a>
 		<% } %>

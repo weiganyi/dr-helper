@@ -36,7 +36,7 @@ public class AjaxLoginServlet extends HttpServlet {
 		AjaxLoginService service = new AjaxLoginService();
 		LoginObject resultObj = service.doAction(session, user, passwd);
 		if (resultObj == null) {
-			response.setStatus(400);
+			response.sendError(500);
 			System.out.println("AjaxLoginServlet.doGet(): Service return fail");
 			return;
 		}

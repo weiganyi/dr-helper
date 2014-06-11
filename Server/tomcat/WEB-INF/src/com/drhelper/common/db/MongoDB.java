@@ -496,7 +496,37 @@ public class MongoDB implements DataBase {
 		return true;
 	}
 
-	public ArrayList<Order> getOrderListByOrder(int orderNum) {
+	public boolean deleteAdminOrderItem(int orderNum, 
+			int startOrderNum, 
+			int endOrderNum, 
+			int tableNum) {
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//delete the order 
+		DBObject query = new BasicDBObject();
+		if (orderNum != 0) {
+			query.put("order", orderNum);
+		}else if (startOrderNum != 0 && endOrderNum != 0) {
+			query.put("order", new BasicDBObject("$gte", startOrderNum).append("$lte", endOrderNum));
+		}else if (startOrderNum != 0) {
+			query.put("order", new BasicDBObject("$gte", startOrderNum));
+		}else if (endOrderNum != 0) {
+			query.put("order", new BasicDBObject("$lte", endOrderNum));
+		}else if (tableNum != 0) {
+			query.put("table", tableNum);
+		}else {
+			return false;
+		}
+
+		coll.remove(query);
+		return true;
+	}
+
+	public ArrayList<Order> getOrderList(int orderNum, 
+			int startOrderNum, 
+			int endOrderNum, 
+			int tableNum) {
 		Order order = null;
 		DBObject dbObj = null;
 		ArrayList<Order> orderList = null;
@@ -506,108 +536,18 @@ public class MongoDB implements DataBase {
 		
 		//get the order
 		DBObject query = new BasicDBObject();
-		query.put("order", orderNum);
+		if (orderNum != 0) {
+			query.put("order", orderNum);
+		}else if (startOrderNum != 0 && endOrderNum != 0) {
+			query.put("order", new BasicDBObject("$gte", startOrderNum).append("$lte", endOrderNum));
+		}else if (startOrderNum != 0) {
+			query.put("order", new BasicDBObject("$gte", startOrderNum));
+		}else if (endOrderNum != 0) {
+			query.put("order", new BasicDBObject("$lte", endOrderNum));
+		}else if (tableNum != 0) {
+			query.put("table", tableNum);
+		}
 		DBCursor cr = coll.find(query);
-		
-		if (cr.hasNext()) {
-			orderList = new ArrayList<Order>();
-		}else {
-			return orderList;
-		}
-		
-		//construct the order list
-		while (cr.hasNext()) {
-			dbObj = cr.next();
-
-			if (dbObj != null) {
-				order = JSON.parseObject(dbObj.toString(), Order.class);
-				if (order != null) {
-					orderList.add(order);
-				}
-			}
-		}
-		
-		return orderList;
-	}
-
-	public ArrayList<Order> getOrderListByOrderRange(int startOrderNum, int endOrderNum) {
-		Order order = null;
-		DBObject dbObj = null;
-		ArrayList<Order> orderList = null;
-		
-		//get the collection
-		DBCollection coll = db.getCollection("dr_order");
-		
-		//get the order
-		DBObject query = new BasicDBObject();
-		query.put("order", new BasicDBObject("$gte", startOrderNum).append("$lte", endOrderNum));
-		DBCursor cr = coll.find(query);
-		
-		if (cr.hasNext()) {
-			orderList = new ArrayList<Order>();
-		}else {
-			return orderList;
-		}
-		
-		//construct the order list
-		while (cr.hasNext()) {
-			dbObj = cr.next();
-
-			if (dbObj != null) {
-				order = JSON.parseObject(dbObj.toString(), Order.class);
-				if (order != null) {
-					orderList.add(order);
-				}
-			}
-		}
-		
-		return orderList;
-	}
-
-	public ArrayList<Order> getOrderListByTable(int tableNum) {
-		Order order = null;
-		DBObject dbObj = null;
-		ArrayList<Order> orderList = null;
-		
-		//get the collection
-		DBCollection coll = db.getCollection("dr_order");
-		
-		//get the order
-		DBObject query = new BasicDBObject();
-		query.put("table", tableNum);
-		DBCursor cr = coll.find(query);
-		
-		if (cr.hasNext()) {
-			orderList = new ArrayList<Order>();
-		}else {
-			return orderList;
-		}
-		
-		//construct the order list
-		while (cr.hasNext()) {
-			dbObj = cr.next();
-
-			if (dbObj != null) {
-				order = JSON.parseObject(dbObj.toString(), Order.class);
-				if (order != null) {
-					orderList.add(order);
-				}
-			}
-		}
-		
-		return orderList;
-	}
-
-	public ArrayList<Order> getOrderList() {
-		Order order = null;
-		DBObject dbObj = null;
-		ArrayList<Order> orderList = null;
-		
-		//get the collection
-		DBCollection coll = db.getCollection("dr_order");
-		
-		//get the order
-		DBCursor cr = coll.find();
 		
 		if (cr.hasNext()) {
 			orderList = new ArrayList<Order>();

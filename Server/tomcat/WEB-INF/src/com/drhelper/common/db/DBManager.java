@@ -530,48 +530,33 @@ public class DBManager {
 		clear();
 		return result;
 	}
-
-	public ArrayList<Order> getOrderListByOrder(int orderNum) {
-		ArrayList<Order> orderList = null;
+	
+	public boolean deleteAdminOrderItem(int orderNum, 
+			int startOrderNum, 
+			int endOrderNum, 
+			int tableNum) {
 		boolean result;
 		
 		//create the connect to mongodb
 		mongodb = new MongoDB();
 		result = mongodb.openConnect();
 		if (!result) {
-			System.out.println("DBManager.getOrderListByOrder(): open mongodb failure");
-			return orderList;
+			System.out.println("DBManager.deleteAdminOrderItem(): open mongodb failure");
+			return result;
 		}
 		
-		//get the order list
-		orderList = mongodb.getOrderListByOrder(orderNum);
+		//delete a order
+		result = mongodb.deleteAdminOrderItem(orderNum, startOrderNum, endOrderNum, tableNum);
 
 		//release the connect to sql
 		clear();
-		return orderList;
+		return result;
 	}
 
-	public ArrayList<Order> getOrderListByOrderRange(int startOrderNum, int endOrderNum) {
-		ArrayList<Order> orderList = null;
-		boolean result;
-		
-		//create the connect to mongodb
-		mongodb = new MongoDB();
-		result = mongodb.openConnect();
-		if (!result) {
-			System.out.println("DBManager.getOrderListByOrderRange(): open mongodb failure");
-			return orderList;
-		}
-		
-		//get the order list
-		orderList = mongodb.getOrderListByOrderRange(startOrderNum, endOrderNum);
-
-		//release the connect to sql
-		clear();
-		return orderList;
-	}
-
-	public ArrayList<Order> getOrderListByTable(int tableNum) {
+	public ArrayList<Order> getOrderList(int orderNum, 
+			int startOrderNum, 
+			int endOrderNum, 
+			int tableNum) {
 		ArrayList<Order> orderList = null;
 		boolean result;
 		
@@ -584,27 +569,7 @@ public class DBManager {
 		}
 		
 		//get the order list
-		orderList = mongodb.getOrderListByTable(tableNum);
-
-		//release the connect to sql
-		clear();
-		return orderList;
-	}
-
-	public ArrayList<Order> getOrderList() {
-		ArrayList<Order> orderList = null;
-		boolean result;
-		
-		//create the connect to mongodb
-		mongodb = new MongoDB();
-		result = mongodb.openConnect();
-		if (!result) {
-			System.out.println("DBManager.getOrderListByTable(): open mongodb failure");
-			return orderList;
-		}
-		
-		//get the order list
-		orderList = mongodb.getOrderList();
+		orderList = mongodb.getOrderList(orderNum, startOrderNum, endOrderNum, tableNum);
 
 		//release the connect to sql
 		clear();
@@ -670,5 +635,66 @@ public class DBManager {
 		//release the connect to sql
 		clear();
 		return userList;
+	}
+	
+	public boolean commitAdminTableItem(int idNum, 
+			int tableNum, 
+			int seatNum, 
+			int emptyNum) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.commitAdminTableItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//add or modify a table
+		result = mysqldb.commitAdminTableItem(idNum, tableNum, seatNum, emptyNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+	
+	public boolean deleteAdminTableItem(int idNum) {
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.deleteAdminTableItem(): open mysqldb failure");
+			return result;
+		}
+		
+		//delete a user
+		result = mysqldb.deleteAdminTableItem(idNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+
+	public ArrayList<Table> getTableList() {
+		ArrayList<Table> tableList = null;
+		boolean result;
+		
+		//create the connect to mysql
+		mysqldb = new MysqlDB();
+		result = mysqldb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getTableList(): open mysqldb failure");
+			return tableList;
+		}
+		
+		//get the table list
+		tableList = mysqldb.getTableList();
+
+		//release the connect to sql
+		clear();
+		return tableList;
 	}
 }

@@ -8,35 +8,40 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.drhelper.web.bean.FinishMenuObject;
-import com.drhelper.web.service.AjaxFinishMenuService;
+import com.drhelper.web.bean.AdminTableObject;
+import com.drhelper.web.service.AjaxAdminTableService;
 import com.drhelper.web.util.ServletUtil;
 
 @SuppressWarnings("serial")
-public class AjaxFinishMenuServlet extends HttpServlet {
+public class AjaxAdminTableServlet extends HttpServlet {
 	private HttpSession session;
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws IOException, ServletException {
 		String op;
-		String order;
-		String menu;
+		String id;
+		String table;
+		String seat;
+		String empty;
 		String page;
-
+		
 		//get the request params
 		session = request.getSession(false);
 		op = request.getParameter("op");
-		order = request.getParameter("order");
-		menu = request.getParameter("menu");
+		id = request.getParameter("id");
+		table = request.getParameter("table");
+		seat = request.getParameter("seat");
+		empty = request.getParameter("empty");
 		page = request.getParameter("page");
-		
+
 		//call the service
-		AjaxFinishMenuService service = new AjaxFinishMenuService();
-		FinishMenuObject resultObj = service.doAction(session, op, order, menu, page);
+		AjaxAdminTableService service = new AjaxAdminTableService();
+		AdminTableObject resultObj = service.doAction(
+				session, op, id, table, seat, empty, page);
 		if (resultObj == null) {
 			response.sendError(500);
-			System.out.println("AjaxFinishMenuServlet.doGet(): Service return fail");
+			System.out.println("AjaxAdminTableServlet.doGet(): Service return fail");
 			return;
 		}
 		
@@ -44,7 +49,7 @@ public class AjaxFinishMenuServlet extends HttpServlet {
 		ServletUtil.setRequestAttr(request, resultObj);
 		
 		//dispatch the request
-		String JspFileBaseName = "ajaxFinishMenu.jsp";
+		String JspFileBaseName = "ajaxAdminTable.jsp";
 		String JspPath = getServletContext().getInitParameter("jspPath");
 		String JspFile = JspPath + JspFileBaseName;
 		RequestDispatcher view = request.getRequestDispatcher(JspFile);
