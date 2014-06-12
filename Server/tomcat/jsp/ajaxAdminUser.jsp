@@ -39,7 +39,15 @@
 		<tr>
 			<td>${item.user_name}</td>
 			<td>${item.user_passwd}</td>
-			<td>${item.user_auth}</td>
+			<c:if test="${item.user_auth eq 'waiter'}">
+			<td>${adminUserWaiter}</td>
+			</c:if>
+			<c:if test="${item.user_auth eq 'chef'}">
+			<td>${adminUserChef}</td>
+			</c:if>
+			<c:if test="${item.user_auth eq 'admin'}">
+			<td>${adminUserAdmin}</td>
+			</c:if>
 			<td><a href="#" onclick='onAdminUserEditClick("${item.user_id}", "${item.user_name}", "${item.user_passwd}", "${item.user_auth}");'>${tdEdit}</a></td>
 		</tr>
 		</c:forEach>

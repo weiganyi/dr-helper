@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.fastjson.JSON;
@@ -66,6 +68,9 @@ public class NoticeService extends Service {
 	
 	private ReentrantLock lock;
 	
+	private Timer timer;
+	private HeartBeatTask task;
+	
 	private static final String connectLostEvent = "connlost";
 	
 	@Override
@@ -97,6 +102,11 @@ public class NoticeService extends Service {
 		//create a lock
 		lock = new ReentrantLock();
 		
+		//start a timer to do heartbeat
+		timer = new Timer();
+		task = new HeartBeatTask();
+		timer.schedule(task, 10000, 10000);	//after 10s to start, loop 10s timeout
+
 		super.onCreate();
 	}
 	
@@ -110,6 +120,10 @@ public class NoticeService extends Service {
 	
 	@Override
 	public void onDestroy() {
+		//stop the timer
+		task.cancel();
+		timer.purge();
+		
 		//stop the notice recv thread
 		//after do it, the thread will detect the interrupt flag, then exit
 		if (threadId != null) {
@@ -121,7 +135,7 @@ public class NoticeService extends Service {
 			worker.doLogout();
 		}
 		
-		//unregister the eceiver
+		//unregister the receiver
 		unregisterReceiver(exitReceiver);
 		unregisterReceiver(subReceiver);
 		
@@ -154,6 +168,7 @@ public class NoticeService extends Service {
 			// do login first
 			result = doLogin();
 			if (!result) {
+				doExitService();
 				return;
 			}
 
@@ -170,18 +185,17 @@ public class NoticeService extends Service {
 
 					//check if is connectLostEvent
 					if (content.equals(connectLostEvent) == true) {
-						//because it means the remote connect had lost, reconnect again
-						doLogin();
+						//because it means the remote connect had lost, exit this worker and service
 						lock.unlock();
-						continue;
+						break;
 					}
 					
-					// check if is NoticeHeartBeat
+					// check if is NoticeHeartBeat response
 					NoticeHeartBeat nhb = JSON.parseObject(content, NoticeHeartBeat.class);
 					if (nhb != null && 
 							nhb.getMsg() != null &&
-							nhb.getMsg().equals(heartBeatEvent) == true) {
-						doHeartBeatResp();
+							nhb.getMsg().equals(heartBeatEvent) == true && 
+							nhb.isResult() == true) {
 						lock.unlock();
 						continue;
 					}
@@ -199,21 +213,9 @@ public class NoticeService extends Service {
 				}
 			}
 			
+			doExitService();
 			System.out.println("ServiceWorker.run(): thread exit");
 			return;
-		}
-
-		private void doHeartBeatResp() {
-			// create NoticeHeartBeat object
-			NoticeHeartBeat nhbResp = new NoticeHeartBeat();
-			nhbResp.setMsg(heartBeatEvent);
-			nhbResp.setResult(true);
-	
-			// serialize by fastjson
-			String response = JSON.toJSONString(nhbResp);
-	
-			// send the response
-			writeToServer(out, response);
 		}
 		
 		private void doNoticeDetailPull() {
@@ -280,6 +282,25 @@ public class NoticeService extends Service {
 			}
 		}
 		
+		private boolean doExitService() {
+			String action = null;
+			Intent intent = null;
+			String userName = null;
+
+			SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
+			if (prefs != null) {
+				//get the user
+				userName = prefs.getString("user_name", "");
+			}
+			action = "com.drhelper.service.intent.action.EXIT";
+			intent = new Intent(action);
+			intent.putExtra("logout_user", userName);
+			sendBroadcast(intent);
+			PrefsManager.setNotice_service_start(false);
+			
+			return true;
+		}
+		
 		private boolean doLogin() {
 			//create a socket
 			String url = PrefsManager.getServer_address();
@@ -333,10 +354,8 @@ public class NoticeService extends Service {
 			String request = JSON.toJSONString(loginReq);
 
 			//send the request and recv response
-			lock.lock();
 			writeToServer(out, request);
 			String content = readFromServer(in);
-			lock.unlock();
 			if (content == null) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogin(): login return null");
 				return false;
@@ -364,20 +383,20 @@ public class NoticeService extends Service {
 			String request = JSON.toJSONString(logoutReq);
 			
 			//send the request and recv response
-			lock.lock();
 			writeToServer(out, request);
 			String content = readFromServer(in);
-			lock.unlock();
 			if (content == null) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogout(): logout return null");
 				return false;
 			}
+			/*
 			NoticeLogout logoutResp = JSON.parseObject(content, NoticeLogout.class);
 			if (logoutResp.isResult() != true || 
 					logoutResp.getLogoutUserName().equals(logoutUserName) == false) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogout(): logout result is failure");
 				return false;
 			}
+			*/
 			
 			return true;
 		}
@@ -473,6 +492,24 @@ public class NoticeService extends Service {
 				//do subscribe
 				worker.doSubscribe(is_empty_table, is_finish_menu);
 			}
+		}
+	}
+
+	class HeartBeatTask extends TimerTask {
+		@Override
+		public void run() {
+			//create the NoticeHeartBeat object
+			NoticeHeartBeat hbReq = new NoticeHeartBeat();
+			hbReq.setMsg(heartBeatEvent);
+			
+			//serialize by fastjson
+			String request = JSON.toJSONString(hbReq);
+
+			//send the request
+			lock.lock();
+			writeToServer(out, request);
+			lock.unlock();
+			return;
 		}
 	}
 }

@@ -20,7 +20,7 @@ public class HttpEngine {
 			return null;
 		}
 		
-		String fullUrl = "http://" + PrefsManager.getServer_address() + "/drhelper/" + url;
+		String fullUrl = "http://" + PrefsManager.getServer_address() + "/" + url;
 		HttpPost request = new HttpPost(fullUrl);
 		
 		if (reqBody != null && reqBody.length() != 0) {

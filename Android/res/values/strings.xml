@@ -37,7 +37,7 @@
     <string name="check_table_activity_remote_failure">目前没有空闲的桌位，请稍候</string>
     <string name="create_table_activity_remote_failure">开桌失败，可能没有空闲的桌位，请稍候再试</string>
     <string name="order_activity_order">订单号</string>
-    <string name="order_activity_user">操作者</string>
+    <string name="order_activity_waiter">服务员</string>
     <string name="order_activity_time">下单时间</string>
     <string name="order_activity_table">桌号</string>
     <string name="order_activity_menu_list">订单明细</string>
@@ -99,5 +99,7 @@
     <string name="prefs_activity_finish_menu_notice_summary">请选择是否订阅上菜通知</string>
     <string name="notice_service_empty_table">有空位了</string>
     <string name="notice_service_finish_menu">号桌有菜上</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
 
 </resources>

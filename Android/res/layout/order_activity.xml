@@ -55,13 +55,13 @@
 	        android:layout_height="wrap_content" >
 	
 	        <TextView
-	            android:id="@+id/order_activity_user_label_textview"
+	            android:id="@+id/order_activity_waiter_label_textview"
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="@string/order_activity_user" />
+	            android:text="@string/order_activity_waiter" />
 	
 	        <TextView
-	            android:id="@+id/order_activity_user_value_textview"
+	            android:id="@+id/order_activity_waiter_value_textview"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:layout_marginLeft="10dp" />

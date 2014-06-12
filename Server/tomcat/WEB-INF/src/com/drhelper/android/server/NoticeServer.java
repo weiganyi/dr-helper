@@ -36,7 +36,7 @@ public class NoticeServer implements Runnable {
 	private LinkedList<UserSocketChannel> loginChanList;
 	private LinkedList<UserSocketChannel> emptyTableChanList;
 	private LinkedList<UserSocketChannel> finishMenuChanList;
-	private LinkedList<UserSocketChannel> waitRespChanList;
+	private LinkedList<UserSocketChannel> waitHeartBeatChanList;
 	
 	private Timer timer;
 	
@@ -50,7 +50,7 @@ public class NoticeServer implements Runnable {
 		loginChanList = new LinkedList<UserSocketChannel>();
 		emptyTableChanList = new LinkedList<UserSocketChannel>();
 		finishMenuChanList = new LinkedList<UserSocketChannel>();
-		waitRespChanList = new LinkedList<UserSocketChannel>();
+		waitHeartBeatChanList = new LinkedList<UserSocketChannel>();
 	}
 	
 	@Override
@@ -96,12 +96,12 @@ public class NoticeServer implements Runnable {
 
 							String buffer = TypeConvert.getStringFromByteBuffer(rBuf);
 							if (buffer != null && buffer.equals("") != true) {
-								// check if is heartbeat response
+								// check if is heartbeat request
 								NoticeHeartBeat hbResp = JSON.parseObject(buffer, NoticeHeartBeat.class);
 								if (hbResp != null &&
 										hbResp.getMsg() != null &&
 										hbResp.getMsg().equals(heartBeatEvent) == true) {
-									doHeartBeatResp(hbResp, socketChannel);
+									doHeartBeatReq(hbResp, socketChannel);
 									continue;
 								}
 								
@@ -129,7 +129,7 @@ public class NoticeServer implements Runnable {
 									continue;
 								}
 							}
-							// channel to the heartbeat
+						// channel to the heartbeat
 						} else if (channel instanceof DatagramChannel) {
 							DatagramChannel datagramChannel = (DatagramChannel) channel;
 
@@ -143,19 +143,19 @@ public class NoticeServer implements Runnable {
 
 								// check if is heartbeat event
 								if (eventReq.getEvent().equals(heartBeatEvent) == true) {
-									doHeartBeatReq();
+									doHeartBeatEvent();
 									continue;
 								}
 
 								// check if is emptytable event
 								if (eventReq.getEvent().equals(emptyTableEvent) == true) {
-									doEmptyTable();
+									doEmptyTableEvent();
 									continue;
 								}
 
 								// check if is finishmenu event
 								if (eventReq.getEvent().equals(finishMenuEvent) == true) {
-									doFinishMenu(eventReq.getUserName());
+									doFinishMenuEvent(eventReq.getUserName());
 									continue;
 								}
 							}
@@ -261,7 +261,7 @@ public class NoticeServer implements Runnable {
 				removeChannel(loginChanList, channel);
 				removeChannel(emptyTableChanList, channel);
 				removeChannel(finishMenuChanList, channel);
-				removeChannel(waitRespChanList, channel);
+				removeChannel(waitHeartBeatChanList, channel);
 			}
 		}catch (LogicException e) {
 			result = false;
@@ -333,21 +333,40 @@ public class NoticeServer implements Runnable {
 			}
 		}
 	}
+	
+	public void doHeartBeatReq(NoticeHeartBeat hbResp, SocketChannel channel) {
+		//create NoticeHeartBeat response object
+		try {
+			NoticeHeartBeat nhbResp = new NoticeHeartBeat();
+			nhbResp.setMsg(heartBeatEvent);
+			nhbResp.setResult(true);
+	
+			//serialize by fastjson
+			String response = JSON.toJSONString(nhbResp);
+			ByteBuffer sBuf = TypeConvert.getByteBufferFromString(response);
+	
+			//send the heartbeat response
+			channel.write(sBuf);
+		} catch (IOException e) {
+			System.out.println("NoticeServer.doHeartBeatReq(): catch IOException");
+		}
 
-	public void doHeartBeatReq() {
+		//remove it from waitHeartBeatChanList
+		removeChannel(waitHeartBeatChanList, channel);
+	}
+
+	public void doHeartBeatEvent() {
 		UserSocketChannel prevItem = null;
 		SocketChannel channel = null;
-		String userName = null;
-		SelectionKey key = null;
 		
-		//close all connect in waitRespChanList, because it means the remote connect had lost.
-		for (UserSocketChannel item : waitRespChanList) {
+		//close all connect in waitHeartBeatChanList, because it means the remote connect had lost.
+		for (UserSocketChannel item : waitHeartBeatChanList) {
 			//first to process the prev item
 			if (prevItem != null) {
 				channel = prevItem.getChannel();
 
 				prevItem.getKey().cancel();
-				removeChannel(waitRespChanList, channel);
+				removeChannel(waitHeartBeatChanList, channel);
 				removeChannel(loginChanList, channel);
 				removeChannel(emptyTableChanList, channel);
 				removeChannel(finishMenuChanList, channel);
@@ -370,7 +389,7 @@ public class NoticeServer implements Runnable {
 			channel = prevItem.getChannel();
 
 			prevItem.getKey().cancel();
-			removeChannel(waitRespChanList, channel);
+			removeChannel(waitHeartBeatChanList, channel);
 			removeChannel(loginChanList, channel);
 			removeChannel(emptyTableChanList, channel);
 			removeChannel(finishMenuChanList, channel);
@@ -384,40 +403,13 @@ public class NoticeServer implements Runnable {
 			prevItem = null;
 		}
 		
-		//send heartbeat request in loginChanList, move them to waitRespChanList
+		//move all channels into waitHeartBeatChanList
 		for (UserSocketChannel item : loginChanList) {
-			try {
-				channel = item.getChannel();
-				userName = item.getUserName();
-				key = item.getKey();
-				
-				NoticeHeartBeat hbReq = new NoticeHeartBeat();
-				hbReq.setMsg(heartBeatEvent);
-				
-				String request = JSON.toJSONString(hbReq);
-				ByteBuffer sBuf = TypeConvert.getByteBufferFromString(request);
-				
-				//send the heartbeat request
-				channel.write(sBuf);
-				
-				//add it into waitRespChanList
-				addChannel(waitRespChanList, userName, channel, key);
-			} catch (IOException e) {
-				System.out.println("NoticeServer.doHeartBeat(): catch IOException");
-
-				//add it into waitRespChanList
-				addChannel(waitRespChanList, userName, channel, key);
-			}
-		}
-	}
-	
-	public void doHeartBeatResp(NoticeHeartBeat hbResp, SocketChannel channel) {
-		if (hbResp.isResult() == true) {
-			removeChannel(waitRespChanList, channel);
+			addChannel(waitHeartBeatChanList, item);
 		}
 	}
 
-	public void doEmptyTable() {
+	public void doEmptyTableEvent() {
 		for (UserSocketChannel item : emptyTableChanList) {
 			SocketChannel channel = item.getChannel();
 			
@@ -436,7 +428,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 
-	public void doFinishMenu(String userName) {
+	public void doFinishMenuEvent(String userName) {
 		for (UserSocketChannel item : finishMenuChanList) {
 			String user = item.getUserName();
 			
@@ -461,18 +453,20 @@ public class NoticeServer implements Runnable {
 	}
 	
 	public synchronized void publishEvent(String event, String userName) {
-		NoticeEvent obj = new NoticeEvent();
-		obj.setEvent(event);
-		obj.setUserName(userName);
-		String buffer = JSON.toJSONString(obj);
-		ByteBuffer sBuf = TypeConvert.getByteBufferFromString(buffer);
-
-		//send the event to server
-		try {
-			InetSocketAddress address = new InetSocketAddress(NoticeServer.listenPort);
-			eventChannel.send(sBuf, address);
-		} catch (IOException e) {
-			System.out.println("NoticeServer.publishEvent(): channel.send catch IOException");
+		if (eventChannel != null) {
+			NoticeEvent obj = new NoticeEvent();
+			obj.setEvent(event);
+			obj.setUserName(userName);
+			String buffer = JSON.toJSONString(obj);
+			ByteBuffer sBuf = TypeConvert.getByteBufferFromString(buffer);
+	
+			//send the event to server
+			try {
+				InetSocketAddress address = new InetSocketAddress(NoticeServer.listenPort);
+				eventChannel.send(sBuf, address);
+			} catch (IOException e) {
+				System.out.println("NoticeServer.publishEvent(): channel.send catch IOException");
+			}
 		}
 	}
 	

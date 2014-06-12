@@ -33,7 +33,7 @@ public class OrderActivity extends AfterLoginActivity {
 
 	private TextView orderTV;
 	private TextView tableTV;
-	private TextView userTV;
+	private TextView waiterTV;
 	private TextView timeTV;
 	private TextView payTV;
 	private Button orderBtn;
@@ -81,7 +81,7 @@ public class OrderActivity extends AfterLoginActivity {
 		//get widget handler
 		orderTV = (TextView)findViewById(R.id.order_activity_order_value_textview);
 		tableTV = (TextView)findViewById(R.id.order_activity_table_value_textview);
-		userTV = (TextView)findViewById(R.id.order_activity_user_value_textview);
+		waiterTV = (TextView)findViewById(R.id.order_activity_waiter_value_textview);
 		timeTV = (TextView)findViewById(R.id.order_activity_time_value_textview);
 		payTV = (TextView)findViewById(R.id.order_activity_pay_value_textview);
 		orderBtn = (Button)findViewById(R.id.order_activity_order_menu_button);
@@ -190,9 +190,13 @@ public class OrderActivity extends AfterLoginActivity {
 		//fill the value into TextView 
 		orderTV.setText(String.valueOf(order.getOrder()));
 		tableTV.setText(String.valueOf(order.getTable()));
-		userTV.setText(order.getUser());
+		waiterTV.setText(order.getWaiter());
 		timeTV.setText(order.getTime());
-		payTV.setText(String.valueOf(order.isPay()));
+		if (order.isPay() == true) {
+			payTV.setText(getString(R.string.yes));
+		}else {
+			payTV.setText(getString(R.string.no));
+		}
 
 		//fill the title into the map
 		HashMap<String, String> map = new HashMap<String, String>();

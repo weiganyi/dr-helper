@@ -28,7 +28,7 @@ CREATE TABLE `dr_menu` (
   `menu_price` int(16) NOT NULL,
   `menu_type_id` int(4) NOT NULL,
   PRIMARY KEY (`menu_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -37,7 +37,7 @@ CREATE TABLE `dr_menu` (
 
 LOCK TABLES `dr_menu` WRITE;
 /*!40000 ALTER TABLE `dr_menu` DISABLE KEYS */;
-INSERT INTO `dr_menu` VALUES (1,'香芹香干肉丝',12,2),(2,'宫保鸡丁',15,2),(3,'馒头',5,1),(4,'皮蛋瘦肉粥',8,1),(5,'双皮奶',6,4),(6,'凉拌三丝',3,3),(7,'紫菜蛋汤',8,5),(8,'米饭',2,1);
+INSERT INTO `dr_menu` VALUES (1,'香芹香干肉丝',12,3),(2,'宫保鸡丁',15,3),(3,'馒头',5,2),(4,'皮蛋瘦肉粥',8,2),(5,'双皮奶',6,9),(6,'凉拌三丝',3,4),(7,'紫菜蛋汤',8,7),(9,'米饭',2,2);
 /*!40000 ALTER TABLE `dr_menu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,7 +52,7 @@ CREATE TABLE `dr_menu_type` (
   `menu_type_id` int(4) NOT NULL AUTO_INCREMENT,
   `menu_type_name` char(255) NOT NULL,
   PRIMARY KEY (`menu_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,7 +61,7 @@ CREATE TABLE `dr_menu_type` (
 
 LOCK TABLES `dr_menu_type` WRITE;
 /*!40000 ALTER TABLE `dr_menu_type` DISABLE KEYS */;
-INSERT INTO `dr_menu_type` VALUES (1,'主食'),(2,'炒菜'),(3,'凉菜'),(4,'甜点'),(5,'汤');
+INSERT INTO `dr_menu_type` VALUES (1,'未分类'),(2,'主食'),(3,'炒菜'),(4,'凉菜'),(7,'汤'),(9,'甜点');
 /*!40000 ALTER TABLE `dr_menu_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +77,7 @@ CREATE TABLE `dr_option` (
   `option_name` char(255) NOT NULL,
   `option_value` char(255) NOT NULL,
   PRIMARY KEY (`option_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,7 @@ CREATE TABLE `dr_option` (
 
 LOCK TABLES `dr_option` WRITE;
 /*!40000 ALTER TABLE `dr_option` DISABLE KEYS */;
-INSERT INTO `dr_option` VALUES (1,'web_name','餐厅助手');
+INSERT INTO `dr_option` VALUES (1,'web_name','餐厅助手'),(2,'item_per_page','3');
 /*!40000 ALTER TABLE `dr_option` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -103,7 +103,7 @@ CREATE TABLE `dr_table` (
   `table_seat_num` int(4) NOT NULL,
   `table_empty` int(1) NOT NULL,
   PRIMARY KEY (`table_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +112,7 @@ CREATE TABLE `dr_table` (
 
 LOCK TABLES `dr_table` WRITE;
 /*!40000 ALTER TABLE `dr_table` DISABLE KEYS */;
-INSERT INTO `dr_table` VALUES (1,1,4,1),(2,2,4,1),(3,3,4,1),(4,4,4,1),(5,5,8,1),(6,6,8,1);
+INSERT INTO `dr_table` VALUES (1,1,4,1),(2,2,4,0),(3,3,4,0),(4,4,4,1),(5,5,8,1),(8,6,8,1);
 /*!40000 ALTER TABLE `dr_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -129,7 +129,7 @@ CREATE TABLE `dr_user` (
   `user_passwd` char(255) NOT NULL,
   `user_auth` enum('waiter','chef','admin') NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,7 +138,7 @@ CREATE TABLE `dr_user` (
 
 LOCK TABLES `dr_user` WRITE;
 /*!40000 ALTER TABLE `dr_user` DISABLE KEYS */;
-INSERT INTO `dr_user` VALUES (1,'weigy','123456','waiter'),(2,'hongj','123456','chef'),(3,'admin','123456','admin');
+INSERT INTO `dr_user` VALUES (2,'hongj','123456','chef'),(3,'admin','123456','admin'),(5,'weigy','123456','waiter');
 /*!40000 ALTER TABLE `dr_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,4 +183,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-06-02 21:12:48
+-- Dump completed on 2014-06-12 17:23:41

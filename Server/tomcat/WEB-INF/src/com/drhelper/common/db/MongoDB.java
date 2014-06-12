@@ -116,8 +116,9 @@ public class MongoDB implements DataBase {
 		DBObject doc = new BasicDBObject();
 		doc.put("order", order);
 		doc.put("table", table);
-		doc.put("user", user);
+		doc.put("waiter", user);
 		doc.put("time", date);
+		doc.put("admin", "");
 		doc.put("pay", pay);
 		doc.put("detail", detail);
 		
@@ -223,6 +224,7 @@ public class MongoDB implements DataBase {
 				node.put("menu", detailItem.getMenu());
 				node.put("price", detailItem.getPrice());
 				node.put("amount", detailItem.getAmount());
+				node.put("chef", "");
 				node.put("finish", detailItem.isFinish());
 				node.put("remark", detailItem.getRemark());
 				detail.add(node);

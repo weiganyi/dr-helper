@@ -151,6 +151,7 @@ public class AjaxOrderMenuService implements Service<HttpSession, String, OrderM
 			ArrayList<Detail> detailList = obj.getDetail();
 			for (Detail detail : detailList) {
 				if (detail.isFinish() == false &&
+						detail.getChef() != null && 
 						(detail.getChef().equals("") == true || 
 						detail.getChef().equals(user) == true)) {
 					if (itemNum >= start && itemNum < end) {

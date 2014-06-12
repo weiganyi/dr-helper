@@ -38,7 +38,12 @@
 		<tr>
 			<td>${item.table_num}</td>
 			<td>${item.table_seat_num}</td>
-			<td>${item.table_empty}</td>
+			<c:if test="${item.table_empty eq '1'}">
+			<td>${tdYes}</td>
+			</c:if>
+			<c:if test="${item.table_empty eq '0'}">
+			<td>${tdNo}</td>
+			</c:if>
 			<td><a href="#" onclick='onAdminTableEditClick("${item.table_id}", "${item.table_num}", "${item.table_seat_num}", "${item.table_empty}");'>${tdEdit}</a></td>
 		</tr>
 		</c:forEach>

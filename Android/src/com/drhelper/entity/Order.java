@@ -5,8 +5,9 @@ import java.util.ArrayList;
 public class Order {
 	private int order;
 	private int table;
-	private String user;
+	private String waiter;
 	private String time;
+	private String admin;
 	private boolean pay;
 	private ArrayList<Detail> detail;
 	
@@ -22,17 +23,23 @@ public class Order {
 	public void setTable(int table) {
 		this.table = table;
 	}
-	public String getUser() {
-		return user;
+	public String getWaiter() {
+		return waiter;
 	}
-	public void setUser(String user) {
-		this.user = user;
+	public void setWaiter(String waiter) {
+		this.waiter = waiter;
 	}
 	public String getTime() {
 		return time;
 	}
 	public void setTime(String time) {
 		this.time = time;
+	}
+	public String getAdmin() {
+		return admin;
+	}
+	public void setAdmin(String admin) {
+		this.admin = admin;
 	}
 	public boolean isPay() {
 		return pay;
