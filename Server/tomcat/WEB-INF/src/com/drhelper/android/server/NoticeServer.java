@@ -26,6 +26,7 @@ import com.drhelper.android.bean.com.NoticeSubscribe;
 import com.drhelper.android.util.LogicException;
 import com.drhelper.android.util.TypeConvert;
 import com.drhelper.common.db.DBManager;
+import com.drhelper.common.entity.Order;
 import com.drhelper.common.entity.User;
 
 public class NoticeServer implements Runnable {
@@ -41,8 +42,8 @@ public class NoticeServer implements Runnable {
 	private Timer timer;
 	
 	public static final String heartBeatEvent = "heartbeat";
-	public static final String emptyTableEvent = "emptytable";
-	public static final String finishMenuEvent = "finishmenu";
+	public final String emptyTableEvent = "emptytable";
+	public final String finishMenuEvent = "finishmenu";
 	
 	DatagramChannel eventChannel = null;
 
@@ -149,7 +150,7 @@ public class NoticeServer implements Runnable {
 
 								// check if is emptytable event
 								if (eventReq.getEvent().equals(emptyTableEvent) == true) {
-									doEmptyTableEvent();
+									doEmptyTableEvent(eventReq.getUserName());
 									continue;
 								}
 
@@ -374,7 +375,7 @@ public class NoticeServer implements Runnable {
 				try {
 					channel.close();
 				} catch (IOException e) {
-					System.out.println("NoticeServer.doHeartBeat(): channel.close catch IOException");
+					System.out.println("NoticeServer.doHeartBeatEvent(): channel.close catch IOException");
 				}
 
 				prevItem = null;
@@ -397,7 +398,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel.close();
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doHeartBeat(): channel.close catch IOException");
+				System.out.println("NoticeServer.doHeartBeatEvent(): channel.close catch IOException");
 			}
 
 			prevItem = null;
@@ -409,21 +410,21 @@ public class NoticeServer implements Runnable {
 		}
 	}
 
-	public void doEmptyTableEvent() {
+	public void doEmptyTableEvent(String userName) {
 		for (UserSocketChannel item : emptyTableChanList) {
 			SocketChannel channel = item.getChannel();
-			
+				
 			NoticePush hpReq = new NoticePush();
-			hpReq.setNotice(true);
-			
+			hpReq.setEvent(emptyTableEvent);
+				
 			String request = JSON.toJSONString(hpReq);
 			ByteBuffer sBuf = TypeConvert.getByteBufferFromString(request);
-			
+				
 			//send the emptytable request
 			try {
 				channel.write(sBuf);
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doEmptyTable(): channel.write catch IOException");
+				System.out.println("NoticeServer.doEmptyTableEvent(): channel.write catch IOException");
 			}
 		}
 	}
@@ -436,7 +437,7 @@ public class NoticeServer implements Runnable {
 				SocketChannel channel = item.getChannel();
 				
 				NoticePush hpReq = new NoticePush();
-				hpReq.setNotice(true);
+				hpReq.setEvent(finishMenuEvent);
 				
 				String request = JSON.toJSONString(hpReq);
 				ByteBuffer sBuf = TypeConvert.getByteBufferFromString(request);
@@ -446,9 +447,23 @@ public class NoticeServer implements Runnable {
 					channel.write(sBuf);
 					return;
 				} catch (IOException e) {
-					System.out.println("NoticeServer.doFinishMenu(): channel.write catch IOException");
+					System.out.println("NoticeServer.doFinishMenuEvent(): channel.write catch IOException");
 				}
 			}
+		}
+	}
+	
+	public void publishEmptyTableNotice() {
+		publishEvent(emptyTableEvent, "");
+	}
+	
+	public void publishFinishMenuNotice(int orderNum) {
+		//get the user of this order
+		DBManager db = new DBManager();
+		Order orderObj = db.getOrderObjByOrder(orderNum);
+		String waiter = orderObj.getWaiter();
+		if (waiter != null && waiter.equals("") != true) {
+			publishEvent(finishMenuEvent, waiter);
 		}
 	}
 	

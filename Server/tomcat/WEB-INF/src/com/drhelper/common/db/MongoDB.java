@@ -321,7 +321,7 @@ public class MongoDB implements DataBase {
 		
 		//get the order
 		DBObject query = new BasicDBObject();
-		query.put("user", user);
+		query.put("waiter", user);
 		DBCursor cr = coll.find(query);
 		if (cr.hasNext()) {
 			dbObj = cr.next();
@@ -466,6 +466,25 @@ public class MongoDB implements DataBase {
 		}
 		
 		return orderList;
+	}
+
+	public boolean getOrderIsPay(int orderNum) {
+		DBObject dbObj = null;
+		Boolean pay;
+		
+		//get the collection
+		DBCollection coll = db.getCollection("dr_order");
+		
+		//check if the order is exist 
+		DBObject query = new BasicDBObject();
+		query.put("order", orderNum);
+		dbObj = coll.findOne(query);
+		if (dbObj == null) {
+			return false;
+		}
+
+		pay = (Boolean)dbObj.get("pay");
+		return pay;
 	}
 
 	public boolean updateAdminOrderPay(int orderNum, String user) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
+import com.drhelper.android.listener.NoticeServerListener;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Detail;
 import com.drhelper.common.entity.Order;
@@ -106,6 +107,9 @@ public class AjaxOrderMenuService implements Service<HttpSession, String, OrderM
 		//update the finish status into the order
 		DBManager db = new DBManager();
 		result = db.updateOrderMenuFinish(orderNum, menu);
+
+		//publish finish menu notice
+		NoticeServerListener.worker.publishFinishMenuNotice(orderNum);
 
 		return result;
 	}

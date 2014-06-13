@@ -473,7 +473,7 @@ public class DBManager {
 		clear();
 		return result;
 	}
-	
+
 	public boolean updateOrderMenuFinish(int orderNum, String menu) {
 		boolean result = false;
 		
@@ -513,6 +513,25 @@ public class DBManager {
 		return orderList;
 	}
 	
+	public boolean getOrderIsPay(int orderNum) {
+		boolean result = false;
+		
+		//create the connect to mongodb
+		mongodb = new MongoDB();
+		result = mongodb.openConnect();
+		if (!result) {
+			System.out.println("DBManager.getOrderIsPay(): open mongodb failure");
+			return result;
+		}
+		
+		//get the pay status
+		result = mongodb.getOrderIsPay(orderNum);
+
+		//release the connect to sql
+		clear();
+		return result;
+	}
+
 	public boolean updateAdminOrderPay(int orderNum, String user) {
 		boolean result = false;
 		

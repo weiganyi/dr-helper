@@ -1,6 +1,8 @@
 package com.drhelper.android.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServlet;
@@ -30,9 +32,23 @@ public class GetNoticeServlet extends HttpServlet {
 			return;
 		}
 
+		//read the request body
+		InputStreamReader input = new InputStreamReader(request.getInputStream());
+		BufferedReader br = new BufferedReader(input);
+		String line = null;
+		String reqBody = br.readLine();
+		while((line = br.readLine()) != null) {
+			reqBody = reqBody+line;
+		}
+		if (reqBody.length() == 0) {
+			response.setStatus(400);
+			System.out.println("GetNoticeServlet.doGet(): request body is null");
+			return;
+		}
+
 		//call the service
 		GetNoticeService service = new GetNoticeService();
-		String respBody = service.doAction(session, null);
+		String respBody = service.doAction(session, reqBody);
 		if (respBody == null) {
 			response.setStatus(400);
 			System.out.println("GetNoticeServlet.doGet(): response body is null");

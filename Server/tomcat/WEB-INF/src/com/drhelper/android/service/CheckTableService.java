@@ -8,8 +8,6 @@ import javax.servlet.http.HttpSession;
 import com.alibaba.fastjson.JSON;
 import com.drhelper.android.bean.com.EmptyTable;
 import com.drhelper.android.bean.com.EmptyTableList;
-import com.drhelper.android.listener.NoticeServerListener;
-import com.drhelper.android.server.NoticeServer;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Table;
 
@@ -47,11 +45,13 @@ public class CheckTableService extends Service {
 		respEmptyTableList.setResult(true);
 		
 		//test notice push
+		/*
 		if (NoticeServerListener.worker != null) {
 			NoticeServerListener.worker.publishEvent(
 					NoticeServer.emptyTableEvent, 
 					(String)session.getAttribute("id"));
 		}
+		*/
 		
 		//serialize the object
 		respBody = JSON.toJSONString(respEmptyTableList);

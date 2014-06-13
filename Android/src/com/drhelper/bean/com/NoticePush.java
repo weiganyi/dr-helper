@@ -1,13 +1,13 @@
 package com.drhelper.bean.com;
 
 public class NoticePush {
-	private boolean notice;
+	private String event;
 
-	public boolean isNotice() {
-		return notice;
+	public String getEvent() {
+		return event;
 	}
 
-	public void setNotice(boolean notice) {
-		this.notice = notice;
+	public void setEvent(String event) {
+		this.event = event;
 	}
 }

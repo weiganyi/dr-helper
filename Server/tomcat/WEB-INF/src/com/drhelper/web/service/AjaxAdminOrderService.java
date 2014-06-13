@@ -5,6 +5,7 @@ import java.util.ListIterator;
 
 import javax.servlet.http.HttpSession;
 
+import com.drhelper.android.listener.NoticeServerListener;
 import com.drhelper.common.db.DBManager;
 import com.drhelper.common.entity.Detail;
 import com.drhelper.common.entity.Order;
@@ -101,6 +102,13 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		DBManager db = new DBManager();
 		result = db.updateAdminOrderPay(orderNum, user);
 
+		//if the order is pay status, it means empty table happen
+		boolean pay = db.getOrderIsPay(orderNum);
+		if (pay == true) {
+			//publish empty table notice
+			NoticeServerListener.worker.publishEmptyTableNotice();
+		}
+		
 		return result;
 	}
 

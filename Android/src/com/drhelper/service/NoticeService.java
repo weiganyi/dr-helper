@@ -202,8 +202,8 @@ public class NoticeService extends Service {
 
 					// check if is NoticePush
 					NoticePush np = JSON.parseObject(content, NoticePush.class);
-					if (np != null && np.isNotice() == true) {
-						doNoticeDetailPull();
+					if (np != null && np.getEvent() != null) {
+						doNoticeDetailPull(np.getEvent());
 					}
 					
 					lock.unlock();
@@ -218,11 +218,17 @@ public class NoticeService extends Service {
 			return;
 		}
 		
-		private void doNoticeDetailPull() {
+		private void doNoticeDetailPull(String event) {
 			// if has notice, then get the notice detail from server
+			NoticeDetail noticeDetailReq = new NoticeDetail();
+			noticeDetailReq.setEvent(event);
+			
+			//serialize by fastjson
+			String reqBody = JSON.toJSONString(noticeDetailReq);
+			
 			// send the http post and recv response
 			String specUrl = "getNotice.do";
-			String respBody = HttpEngine.doPost(specUrl, null);
+			String respBody = HttpEngine.doPost(specUrl, reqBody);
 			if (respBody == null || respBody.length() == 0) {
 				Log.e(NOTICE_SERVICE_TAG,
 						"NoticeService.ServiceWorker.doNoticeDetailPull(): respBody is null");

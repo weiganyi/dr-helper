@@ -1,10 +1,17 @@
 package com.drhelper.android.bean.com;
 
 public class NoticeDetail {
+	private String event;
 	private boolean emptyTable;
 	private boolean finishMenu;
 	private int table;
 
+	public String getEvent() {
+		return event;
+	}
+	public void setEvent(String event) {
+		this.event = event;
+	}
 	public boolean isEmptyTable() {
 		return emptyTable;
 	}
@@ -23,5 +30,4 @@ public class NoticeDetail {
 	public void setTable(int table) {
 		this.table = table;
 	}
-
 }
