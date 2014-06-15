@@ -1,7 +1,7 @@
 Introduce
 =====
 This project is a dinner room management system. it contain three roles, the first is waiter, they can operate the order by a android app. the second is chef, they can get the ordered food by web, and if they finish a food, can send a notice to the waiter by web. the third is administrator, they operator the orders and do some other system management.<br/>
-It use mysql to store the table user、table、menu、option, and use mongodb to store order collection.<br/>
+It use mysql to store the table: user、table、menu、option, and use mongodb to store order collection.<br/>
 It use servlet to provide backgroud service in the tomcat container, make web page by JSP, and use JSON message to communicate with android app.<br/>
 
 Directory
