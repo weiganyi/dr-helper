@@ -174,6 +174,8 @@ public class NoticeService extends Service {
 			String content = null;
 			boolean isConnLost = false;
 
+			System.out.println("ServiceWorker.run(): thread enter");
+			
 			// do login first
 			result = doLogin();
 			if (!result) {
@@ -223,11 +225,8 @@ public class NoticeService extends Service {
 				}
 			}
 			
-			//if connect lost, we should exit this service too
+			//if connect lost, it means the thread had been killed, we should start this thread again
 			if (isConnLost) {
-				doExitService();
-			//if the thread had been killed, we should start this thread again
-			}else {
 				doKilledService();
 			}
 
@@ -259,7 +258,7 @@ public class NoticeService extends Service {
 					PrefsManager.isFinish_menu_notice() == true) {
 				String action = null;
 				Intent intent = null;
-
+				
 				action = "com.drhelper.service.intent.action.KILLED";
 				intent = new Intent(action);
 				sendBroadcast(intent);
