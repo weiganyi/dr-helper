@@ -44,6 +44,7 @@ public class NoticeService extends Service {
 	
 	private ExitReceiver exitReceiver;
 	private SubReceiver subReceiver;
+	private KilledReceiver killedReceiver;
 
 	private NotificationManager noticeMgr;
 	private int noticeNum = 0;
@@ -87,6 +88,12 @@ public class NoticeService extends Service {
 		filter2.addAction("com.drhelper.service.intent.action.SUBSCRIBE");
 		registerReceiver(subReceiver, filter2);
 
+		//register the kill receiver
+		killedReceiver = new KilledReceiver();
+		IntentFilter filter3 = new IntentFilter();
+		filter3.addAction("com.drhelper.service.intent.action.KILLED");
+		registerReceiver(killedReceiver, filter3);
+
 		//get the notice manager
 		noticeMgr = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 		
@@ -123,12 +130,6 @@ public class NoticeService extends Service {
 		//stop the timer
 		task.cancel();
 		timer.purge();
-		
-		//stop the notice recv thread
-		//after do it, the thread will detect the interrupt flag, then exit
-		if (threadId != null) {
-			threadId.interrupt();
-		}
 
 		//do logout
 		if (logoutUserName != null && logoutUserName.equals("") != true) {
@@ -138,6 +139,7 @@ public class NoticeService extends Service {
 		//unregister the receiver
 		unregisterReceiver(exitReceiver);
 		unregisterReceiver(subReceiver);
+		unregisterReceiver(killedReceiver);
 		
 		//close the socket;
 		if (socket != null) {
@@ -150,6 +152,12 @@ public class NoticeService extends Service {
 
 		//cancel all notice
 		noticeMgr.cancelAll();
+
+		//stop the notice recv thread
+		//after do it, the thread will detect the interrupt flag, then exit
+		if (threadId != null) {
+			threadId.interrupt();
+		}
 
 		super.onDestroy();
 	}
@@ -164,6 +172,7 @@ public class NoticeService extends Service {
 		public void run() {
 			boolean result = false;
 			String content = null;
+			boolean isConnLost = false;
 
 			// do login first
 			result = doLogin();
@@ -187,6 +196,7 @@ public class NoticeService extends Service {
 					if (content.equals(connectLostEvent) == true) {
 						//because it means the remote connect had lost, exit this worker and service
 						lock.unlock();
+						isConnLost = true;
 						break;
 					}
 					
@@ -213,9 +223,48 @@ public class NoticeService extends Service {
 				}
 			}
 			
-			doExitService();
+			//if connect lost, we should exit this service too
+			if (isConnLost) {
+				doExitService();
+			//if the thread had been killed, we should start this thread again
+			}else {
+				doKilledService();
+			}
+
 			System.out.println("ServiceWorker.run(): thread exit");
 			return;
+		}
+		
+		private boolean doExitService() {
+			String action = null;
+			Intent intent = null;
+			String userName = null;
+
+			SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
+			if (prefs != null) {
+				//get the user
+				userName = prefs.getString("user_name", "");
+			}
+			action = "com.drhelper.service.intent.action.EXIT";
+			intent = new Intent(action);
+			intent.putExtra("logout_user", userName);
+			sendBroadcast(intent);
+			PrefsManager.setNotice_service_start(false);
+			
+			return true;
+		}
+		
+		private boolean doKilledService() {
+			if (PrefsManager.isEmpty_table_notice() == true || 
+					PrefsManager.isFinish_menu_notice() == true) {
+				String action = null;
+				Intent intent = null;
+
+				action = "com.drhelper.service.intent.action.KILLED";
+				intent = new Intent(action);
+				sendBroadcast(intent);
+			}
+			return true;
 		}
 		
 		private void doNoticeDetailPull(String event) {
@@ -287,26 +336,7 @@ public class NoticeService extends Service {
 				noticeMgr.notify(noticeNum++, finishMenuNotice);
 			}
 		}
-		
-		private boolean doExitService() {
-			String action = null;
-			Intent intent = null;
-			String userName = null;
 
-			SharedPreferences prefs = getSharedPreferences("login_user", MODE_WORLD_WRITEABLE);
-			if (prefs != null) {
-				//get the user
-				userName = prefs.getString("user_name", "");
-			}
-			action = "com.drhelper.service.intent.action.EXIT";
-			intent = new Intent(action);
-			intent.putExtra("logout_user", userName);
-			sendBroadcast(intent);
-			PrefsManager.setNotice_service_start(false);
-			
-			return true;
-		}
-		
 		private boolean doLogin() {
 			//create a socket
 			String url = PrefsManager.getServer_address();
@@ -390,12 +420,12 @@ public class NoticeService extends Service {
 			
 			//send the request and recv response
 			writeToServer(out, request);
+			/*
 			String content = readFromServer(in);
 			if (content == null) {
 				Log.e(NOTICE_SERVICE_TAG, "NoticeService.ServiceWorker.doLogout(): logout return null");
 				return false;
 			}
-			/*
 			NoticeLogout logoutResp = JSON.parseObject(content, NoticeLogout.class);
 			if (logoutResp.isResult() != true || 
 					logoutResp.getLogoutUserName().equals(logoutUserName) == false) {
@@ -497,6 +527,22 @@ public class NoticeService extends Service {
 				
 				//do subscribe
 				worker.doSubscribe(is_empty_table, is_finish_menu);
+			}
+		}
+	}
+	
+	private class KilledReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals("com.drhelper.service.intent.action.KILLED")) {
+				//create a thread to detect notice from background
+				worker = new ServiceWorker();
+				if (worker != null) {
+					threadId = new Thread(worker, "NoticeService");
+					if (threadId != null) {
+						threadId.start();
+					}
+				}
 			}
 		}
 	}
