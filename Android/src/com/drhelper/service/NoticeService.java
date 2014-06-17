@@ -76,6 +76,8 @@ public class NoticeService extends Service {
 	
 	@Override
 	public void onCreate() {
+		Log.e(NOTICE_SERVICE_TAG, "NoticeService.onCreate(): enter");
+		
 		//register the exit receiver
 		exitReceiver = new ExitReceiver();
 		IntentFilter filter = new IntentFilter();
@@ -127,6 +129,8 @@ public class NoticeService extends Service {
 	
 	@Override
 	public void onDestroy() {
+		Log.e(NOTICE_SERVICE_TAG, "NoticeService.onDestroy(): enter");
+		
 		//stop the timer
 		task.cancel();
 		timer.purge();
@@ -141,7 +145,7 @@ public class NoticeService extends Service {
 		unregisterReceiver(subReceiver);
 		unregisterReceiver(killedReceiver);
 		
-		//close the socket;
+		//close the socket
 		if (socket != null) {
 			try {
 				socket.close();
@@ -174,11 +178,12 @@ public class NoticeService extends Service {
 			String content = null;
 			boolean isConnLost = false;
 
-			System.out.println("ServiceWorker.run(): thread enter");
+			Log.e(NOTICE_SERVICE_TAG, "ServiceWorker.run(): thread enter");
 			
 			// do login first
 			result = doLogin();
 			if (!result) {
+				Log.e(NOTICE_SERVICE_TAG, "ServiceWorker.run(): doLogin failure");
 				doExitService();
 				return;
 			}
@@ -227,10 +232,11 @@ public class NoticeService extends Service {
 			
 			//if connect lost, it means the thread had been killed, we should start this thread again
 			if (isConnLost) {
+				Log.e(NOTICE_SERVICE_TAG, "ServiceWorker.run(): connect lost");
 				doKilledService();
 			}
 
-			System.out.println("ServiceWorker.run(): thread exit");
+			Log.e(NOTICE_SERVICE_TAG, "ServiceWorker.run(): thread exit");
 			return;
 		}
 		
@@ -534,6 +540,15 @@ public class NoticeService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("com.drhelper.service.intent.action.KILLED")) {
+				//close the socket
+				if (socket != null) {
+					try {
+						socket.close();
+					} catch (IOException e) {
+						Log.e(NOTICE_SERVICE_TAG, "NoticeService.KilledReceiver.onReceive(): close the socket failure");
+					}
+				}
+
 				//create a thread to detect notice from background
 				worker = new ServiceWorker();
 				if (worker != null) {

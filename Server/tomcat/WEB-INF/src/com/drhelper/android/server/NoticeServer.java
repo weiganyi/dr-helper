@@ -56,6 +56,8 @@ public class NoticeServer implements Runnable {
 	
 	@Override
 	public void run() {
+		System.out.println("NoticeServer.run(): thread enter");
+		
 		try {
 			// do some prepare work
 			initServer();
