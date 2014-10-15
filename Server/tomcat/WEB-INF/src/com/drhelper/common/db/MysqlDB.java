@@ -17,12 +17,12 @@ import com.drhelper.common.entity.Table;
 import com.drhelper.common.entity.User;
 
 public class MysqlDB implements DataBase {
-	String mysql_driver;
-	String mysql_url;
-	String mysql_username;
-	String mysql_password;
+	private String mysql_driver;
+	private String mysql_url;
+	private String mysql_username;
+	private String mysql_password;
 	
-	Connection conn;
+	private Connection conn;
 	
 	@Override
 	public boolean openConnect() {

@@ -58,7 +58,7 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -77,7 +77,7 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 		return true;
 	}
 
-	public boolean commitAdminTableItem(HttpSession session, 
+	private boolean commitAdminTableItem(HttpSession session, 
 			String id, 
 			String table, 
 			String seat, 
@@ -112,7 +112,7 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 		return result;
 	}
 
-	public boolean deleteAdminTableItem(HttpSession session, String id) {
+	private boolean deleteAdminTableItem(HttpSession session, String id) {
 		boolean result = false;
 		int idNum = 0;
 
@@ -130,7 +130,7 @@ public class AjaxAdminTableService implements Service<HttpSession, String, Admin
 		return result;
 	}
 
-	public AdminTableObject getAdminTableObject(String page) {
+	private AdminTableObject getAdminTableObject(String page) {
 		ArrayList<Table> tableList = null;
 		ArrayList<Table> table2List = null;
 		int itemNum = 0;

@@ -16,7 +16,7 @@ public class IndexService implements Service<HttpSession, String, IndexObject>{
 		return resultObj;
 	}
 
-	public String getWebName() {
+	private String getWebName() {
 		//get web_name
 		DBManager db = new DBManager();
 		String webName = db.getOptionString("web_name");

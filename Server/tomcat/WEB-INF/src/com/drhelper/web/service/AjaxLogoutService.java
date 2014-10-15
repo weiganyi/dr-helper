@@ -22,7 +22,7 @@ public class AjaxLogoutService implements Service<HttpSession, String, LogoutObj
 		return resultObj;
 	}
 
-	public boolean doLogout(HttpSession session) {
+	private boolean doLogout(HttpSession session) {
 		if (session == null) {
 			System.out.println("AjaxLogoutService.doLogout(): session isn't exist");
 			return false;
@@ -34,7 +34,7 @@ public class AjaxLogoutService implements Service<HttpSession, String, LogoutObj
 		
 	}
 	
-	public String getWebName() {
+	private String getWebName() {
 		//get web_name
 		DBManager db = new DBManager();
 		String webName = db.getOptionString("web_name");

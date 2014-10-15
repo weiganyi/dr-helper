@@ -65,7 +65,7 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -84,7 +84,7 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		return true;
 	}
 
-	public boolean updateAdminOrderPay(HttpSession session, String order) {
+	private boolean updateAdminOrderPay(HttpSession session, String order) {
 		boolean result = false;
 		int orderNum = 0;
 		
@@ -112,7 +112,7 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		return result;
 	}
 
-	public boolean deleteAdminOrderItem(HttpSession session, 
+	private boolean deleteAdminOrderItem(HttpSession session, 
 			String order, 
 			String startOrder, 
 			String endOrder, 
@@ -144,7 +144,7 @@ public class AjaxAdminOrderService implements Service<HttpSession, String, Admin
 		return result;
 	}
 
-	public AdminOrderObject getAdminOrderObject(String page, 
+	private AdminOrderObject getAdminOrderObject(String page, 
 			String order,
 			String startOrder,
 			String endOrder,

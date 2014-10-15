@@ -33,7 +33,7 @@ public class AjaxLoginService implements Service<HttpSession, String, LoginObjec
 		return resultObj;
 	}
 
-	public boolean doLogin(HttpSession session, String userName, String userPasswd) {
+	private boolean doLogin(HttpSession session, String userName, String userPasswd) {
 		//check input param
 		if (userName == null || userName.equals("") == true ||
 				userPasswd == null || userPasswd.equals("") == true) {
@@ -61,7 +61,7 @@ public class AjaxLoginService implements Service<HttpSession, String, LoginObjec
 		return true;
 	}
 
-	public String getWebName() {
+	private String getWebName() {
 		//get web_name
 		DBManager db = new DBManager();
 		String webName = db.getOptionString("web_name");

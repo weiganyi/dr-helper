@@ -11,8 +11,8 @@ import com.drhelper.common.entity.Table;
 import com.drhelper.common.entity.User;
 
 public class DBManager {
-	MysqlDB mysqldb = null;
-	MongoDB mongodb = null;
+	private MysqlDB mysqldb = null;
+	private MongoDB mongodb = null;
 	
 	public void clear() {
 		if (mysqldb != null) {

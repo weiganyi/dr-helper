@@ -52,7 +52,7 @@ public class AjaxOrderMenuService implements Service<HttpSession, String, OrderM
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -71,7 +71,7 @@ public class AjaxOrderMenuService implements Service<HttpSession, String, OrderM
 		return true;
 	}
 	
-	public boolean updateOrderMenuFetch(HttpSession session, String order, String menu) {
+	private boolean updateOrderMenuFetch(HttpSession session, String order, String menu) {
 		boolean result = false;
 		String user;
 		int orderNum = 0;
@@ -93,7 +93,7 @@ public class AjaxOrderMenuService implements Service<HttpSession, String, OrderM
 		return result;
 	}
 
-	public boolean updateOrderMenuFinish(HttpSession session, String order, String menu) {
+	private boolean updateOrderMenuFinish(HttpSession session, String order, String menu) {
 		boolean result = false;
 		int orderNum = 0;
 
@@ -114,7 +114,7 @@ public class AjaxOrderMenuService implements Service<HttpSession, String, OrderM
 		return result;
 	}
 
-	public OrderMenuObject getOrderMenuObject(HttpSession session, String page) {
+	private OrderMenuObject getOrderMenuObject(HttpSession session, String page) {
 		String user;
 		ArrayList<OrderMenu> orderMenuList = null;
 		int itemNum = 0;

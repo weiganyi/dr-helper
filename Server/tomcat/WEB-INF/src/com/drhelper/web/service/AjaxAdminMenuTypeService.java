@@ -50,7 +50,7 @@ public class AjaxAdminMenuTypeService implements Service<HttpSession, String, Ad
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -69,7 +69,7 @@ public class AjaxAdminMenuTypeService implements Service<HttpSession, String, Ad
 		return true;
 	}
 
-	public boolean commitAdminMenuTypeItem(HttpSession session, 
+	private boolean commitAdminMenuTypeItem(HttpSession session, 
 			String id, 
 			String name) {
 		boolean result = false;
@@ -87,7 +87,7 @@ public class AjaxAdminMenuTypeService implements Service<HttpSession, String, Ad
 		return result;
 	}
 
-	public boolean deleteAdminMenuTypeItem(HttpSession session, String id) {
+	private boolean deleteAdminMenuTypeItem(HttpSession session, String id) {
 		boolean result = false;
 		int idNum = 0;
 
@@ -105,7 +105,7 @@ public class AjaxAdminMenuTypeService implements Service<HttpSession, String, Ad
 		return result;
 	}
 
-	public AdminMenuTypeObject getAdminMenuTypeObject(String page) {
+	private AdminMenuTypeObject getAdminMenuTypeObject(String page) {
 		ArrayList<MenuType> menuTypeList = null;
 		ArrayList<MenuType> menuType2List = null;
 		int itemNum = 0;

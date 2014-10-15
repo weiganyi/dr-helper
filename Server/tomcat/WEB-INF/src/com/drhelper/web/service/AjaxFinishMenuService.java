@@ -50,7 +50,7 @@ public class AjaxFinishMenuService implements Service<HttpSession, String, Finis
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -69,7 +69,7 @@ public class AjaxFinishMenuService implements Service<HttpSession, String, Finis
 		return true;
 	}
 	
-	public boolean updateFinishMenuCancel(HttpSession session, String order, String menu) {
+	private boolean updateFinishMenuCancel(HttpSession session, String order, String menu) {
 		boolean result = false;
 		int orderNum = 0;
 
@@ -87,7 +87,7 @@ public class AjaxFinishMenuService implements Service<HttpSession, String, Finis
 		return result;
 	}
 
-	public FinishMenuObject getFinishMenuObject(HttpSession session, String page) {
+	private FinishMenuObject getFinishMenuObject(HttpSession session, String page) {
 		ArrayList<FinishMenu> finishMenuList = null;
 		int itemNum = 0;
 		int currPage = 0;

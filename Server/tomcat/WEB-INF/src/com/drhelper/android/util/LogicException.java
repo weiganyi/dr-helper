@@ -2,7 +2,7 @@ package com.drhelper.android.util;
 
 @SuppressWarnings("serial")
 public class LogicException extends Exception {
-	String log;
+	private String log;
 	
 	public LogicException() {
 		

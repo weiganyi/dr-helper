@@ -45,7 +45,7 @@ public class NoticeServer implements Runnable {
 	public final String emptyTableEvent = "emptytable";
 	public final String finishMenuEvent = "finishmenu";
 	
-	DatagramChannel eventChannel = null;
+	private DatagramChannel eventChannel = null;
 
 	public NoticeServer() {
 		loginChanList = new LinkedList<UserSocketChannel>();
@@ -62,7 +62,7 @@ public class NoticeServer implements Runnable {
 			// do some prepare work
 			initServer();
 		} catch (IOException e) {
-			System.out.println("NoticeServer.run(): initServer catch Exception");
+			System.out.println("NoticeServer.run(): initServer catch Exception: " + e.getMessage());
 			return;
 		}
 
@@ -177,7 +177,7 @@ public class NoticeServer implements Runnable {
 		return;
 	}
 	
-	public void initServer() throws IOException {
+	private void initServer() throws IOException {
 		//create a tcp server channel for client
 		ServerSocketChannel srvChan = ServerSocketChannel.open();
 		srvChan.configureBlocking(false);
@@ -206,7 +206,7 @@ public class NoticeServer implements Runnable {
 		timer.schedule(task, 5000, 30000);	//after 5s to start, loop 30s timeout
 	}
 	
-	public void doLogin(NoticeLogin loginReq, SocketChannel channel, SelectionKey key) {
+	private void doLogin(NoticeLogin loginReq, SocketChannel channel, SelectionKey key) {
 		String userName = loginReq.getLoginUserName();
 		String userPasswd = loginReq.getLoginUserPasswd();
 		boolean result = true;
@@ -247,7 +247,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 	
-	public void doLogout(NoticeLogout logoutReq, SocketChannel channel) throws IOException {
+	private void doLogout(NoticeLogout logoutReq, SocketChannel channel) throws IOException {
 		String userName = logoutReq.getLogoutUserName();
 		boolean result = true;
 
@@ -288,7 +288,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 	
-	public void doSubscribe(NoticeSubscribe subReq, SocketChannel channel, SelectionKey key) {
+	private void doSubscribe(NoticeSubscribe subReq, SocketChannel channel, SelectionKey key) {
 		boolean isEmptyTable = subReq.isEmptyTable();
 		boolean isFinishMenu = subReq.isFinishMenu();
 		boolean result = true;
@@ -337,7 +337,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 	
-	public void doHeartBeatReq(NoticeHeartBeat hbResp, SocketChannel channel) {
+	private void doHeartBeatReq(NoticeHeartBeat hbResp, SocketChannel channel) {
 		//create NoticeHeartBeat response object
 		try {
 			NoticeHeartBeat nhbResp = new NoticeHeartBeat();
@@ -358,7 +358,7 @@ public class NoticeServer implements Runnable {
 		removeChannel(waitHeartBeatChanList, channel);
 	}
 
-	public void doHeartBeatEvent() {
+	private void doHeartBeatEvent() {
 		UserSocketChannel prevItem = null;
 		SocketChannel channel = null;
 		
@@ -412,7 +412,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 
-	public void doEmptyTableEvent(String userName) {
+	private void doEmptyTableEvent(String userName) {
 		for (UserSocketChannel item : emptyTableChanList) {
 			SocketChannel channel = item.getChannel();
 				
@@ -431,7 +431,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 
-	public void doFinishMenuEvent(String userName) {
+	private void doFinishMenuEvent(String userName) {
 		for (UserSocketChannel item : finishMenuChanList) {
 			String user = item.getUserName();
 			
@@ -469,7 +469,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 	
-	public synchronized void publishEvent(String event, String userName) {
+	private synchronized void publishEvent(String event, String userName) {
 		if (eventChannel != null) {
 			NoticeEvent obj = new NoticeEvent();
 			obj.setEvent(event);
@@ -487,7 +487,7 @@ public class NoticeServer implements Runnable {
 		}
 	}
 	
-	public UserSocketChannel findChannel(LinkedList<UserSocketChannel> list, 
+	private UserSocketChannel findChannel(LinkedList<UserSocketChannel> list, 
 			SocketChannel channel) {
 		SocketChannel chan = null;
 		UserSocketChannel findItem = null;
@@ -503,7 +503,7 @@ public class NoticeServer implements Runnable {
 		return findItem;
 	}
 	
-	public UserSocketChannel addChannel(LinkedList<UserSocketChannel> list, 
+	private UserSocketChannel addChannel(LinkedList<UserSocketChannel> list, 
 			String userName, 
 			SocketChannel channel, 
 			SelectionKey key) {
@@ -516,7 +516,7 @@ public class NoticeServer implements Runnable {
 		return item;
 	}
 	
-	public UserSocketChannel addChannel(LinkedList<UserSocketChannel> list, 
+	private UserSocketChannel addChannel(LinkedList<UserSocketChannel> list, 
 			UserSocketChannel item) {
 		list.add(item);
 		
@@ -545,8 +545,8 @@ public class NoticeServer implements Runnable {
 }
 
 class HeartBeatTask extends TimerTask {
-	DatagramChannel channel = null;
-	SocketAddress address;
+	private DatagramChannel channel = null;
+	private SocketAddress address;
 	
 	public HeartBeatTask() {
 		//create a udp channel

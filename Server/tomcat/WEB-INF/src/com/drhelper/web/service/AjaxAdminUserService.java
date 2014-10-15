@@ -58,7 +58,7 @@ public class AjaxAdminUserService implements Service<HttpSession, String, AdminU
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -77,7 +77,7 @@ public class AjaxAdminUserService implements Service<HttpSession, String, AdminU
 		return true;
 	}
 
-	public boolean commitAdminUserItem(HttpSession session, 
+	private boolean commitAdminUserItem(HttpSession session, 
 			String id, 
 			String name, 
 			String passwd, 
@@ -97,7 +97,7 @@ public class AjaxAdminUserService implements Service<HttpSession, String, AdminU
 		return result;
 	}
 
-	public boolean deleteAdminUserItem(HttpSession session, String id) {
+	private boolean deleteAdminUserItem(HttpSession session, String id) {
 		boolean result = false;
 		int idNum = 0;
 
@@ -115,7 +115,7 @@ public class AjaxAdminUserService implements Service<HttpSession, String, AdminU
 		return result;
 	}
 
-	public AdminUserObject getAdminUserObject(String page) {
+	private AdminUserObject getAdminUserObject(String page) {
 		ArrayList<User> userList = null;
 		ArrayList<User> user2List = null;
 		int itemNum = 0;

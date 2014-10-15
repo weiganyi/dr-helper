@@ -20,14 +20,14 @@ import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
 public class MongoDB implements DataBase {
-	String mongodb_host;
-	String mongodb_port;
-	String mongodb_db;
-	String mongodb_username;
-	String mongodb_password;
+	private String mongodb_host;
+	private String mongodb_port;
+	private String mongodb_db;
+	private String mongodb_username;
+	private String mongodb_password;
 	
-	Mongo m = null;
-	DB db = null;
+	private Mongo m = null;
+	private DB db = null;
 	
 	@Override
 	public boolean openConnect() {
@@ -77,7 +77,7 @@ public class MongoDB implements DataBase {
 		return true;
 	}
 	
-	public DBObject findLastOne(DBCollection coll) {
+	private DBObject findLastOne(DBCollection coll) {
 		DBObject dbObj = null;
 		
 		DBCursor cr = coll.find();

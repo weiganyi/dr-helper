@@ -42,7 +42,7 @@ public class AjaxAdminOptionService implements Service<HttpSession, String, Admi
 		return resultObj;
 	}
 	
-	public boolean checkAuth(HttpSession session) {
+	private boolean checkAuth(HttpSession session) {
 		String auth;
 
 		//if session not exist, it may be a fault
@@ -61,7 +61,7 @@ public class AjaxAdminOptionService implements Service<HttpSession, String, Admi
 		return true;
 	}
 
-	public boolean commitAdminOptionItem(HttpSession session, 
+	private boolean commitAdminOptionItem(HttpSession session, 
 			String name, 
 			String item) {
 		boolean result = false;
@@ -73,7 +73,7 @@ public class AjaxAdminOptionService implements Service<HttpSession, String, Admi
 		return result;
 	}
 
-	public AdminOptionObject getAdminOptionObject() {
+	private AdminOptionObject getAdminOptionObject() {
 		ArrayList<Option> optionList = null;
 		String webName = null;
 		String itemPerPage = null;
