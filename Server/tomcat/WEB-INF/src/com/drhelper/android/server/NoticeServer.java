@@ -169,7 +169,7 @@ public class NoticeServer implements Runnable {
 					it.remove();
 				}
 			} catch (Exception e) {
-				System.out.println("NoticeServer.run(): while catch Exception");
+				System.out.println("NoticeServer.run(): while catch Exception: " + e.getMessage());
 			}
 		}
 		
@@ -228,6 +228,7 @@ public class NoticeServer implements Runnable {
 				}
 			}
 		} catch (LogicException e) {
+			System.out.println("NoticeServer.doLogin(): catch LogicException: " + e.getMessage());
 			result = false;
 		} finally {
 			//create the response
@@ -242,7 +243,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel.write(sBuf);
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doLogin(): write channel catch IOException");
+				System.out.println("NoticeServer.doLogin(): write channel catch IOException: " + e.getMessage());
 			}
 		}
 	}
@@ -267,6 +268,7 @@ public class NoticeServer implements Runnable {
 				removeChannel(waitHeartBeatChanList, channel);
 			}
 		}catch (LogicException e) {
+			System.out.println("NoticeServer.doLogout(): catch LogicException: " + e.getMessage());
 			result = false;
 		}finally {
 			//create the response
@@ -280,7 +282,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel.write(sBuf);
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doLogout(): write channel catch IOException");
+				System.out.println("NoticeServer.doLogout(): write channel catch IOException: " + e.getMessage());
 			}
 			
 			//close the socket
@@ -318,6 +320,7 @@ public class NoticeServer implements Runnable {
 				throw new LogicException();
 			}
 		}catch (LogicException e) {
+			System.out.println("NoticeServer.doSubscribe(): catch LogicException: " + e.getMessage());
 			result = false;
 		}finally {
 			//create the response
@@ -332,7 +335,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel.write(sBuf);
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doSubscribe(): write channel catch IOException");
+				System.out.println("NoticeServer.doSubscribe(): write channel catch IOException: " + e.getMessage());
 			}
 		}
 	}
@@ -351,7 +354,7 @@ public class NoticeServer implements Runnable {
 			//send the heartbeat response
 			channel.write(sBuf);
 		} catch (IOException e) {
-			System.out.println("NoticeServer.doHeartBeatReq(): catch IOException");
+			System.out.println("NoticeServer.doHeartBeatReq(): catch IOException: " + e.getMessage());
 		}
 
 		//remove it from waitHeartBeatChanList
@@ -377,7 +380,7 @@ public class NoticeServer implements Runnable {
 				try {
 					channel.close();
 				} catch (IOException e) {
-					System.out.println("NoticeServer.doHeartBeatEvent(): channel.close catch IOException");
+					System.out.println("NoticeServer.doHeartBeatEvent(): channel.close catch IOException: " + e.getMessage());
 				}
 
 				prevItem = null;
@@ -400,7 +403,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel.close();
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doHeartBeatEvent(): channel.close catch IOException");
+				System.out.println("NoticeServer.doHeartBeatEvent(): channel.close catch IOException: " + e.getMessage());
 			}
 
 			prevItem = null;
@@ -426,7 +429,7 @@ public class NoticeServer implements Runnable {
 			try {
 				channel.write(sBuf);
 			} catch (IOException e) {
-				System.out.println("NoticeServer.doEmptyTableEvent(): channel.write catch IOException");
+				System.out.println("NoticeServer.doEmptyTableEvent(): channel.write catch IOException: " + e.getMessage());
 			}
 		}
 	}
@@ -449,7 +452,7 @@ public class NoticeServer implements Runnable {
 					channel.write(sBuf);
 					return;
 				} catch (IOException e) {
-					System.out.println("NoticeServer.doFinishMenuEvent(): channel.write catch IOException");
+					System.out.println("NoticeServer.doFinishMenuEvent(): channel.write catch IOException: " + e.getMessage());
 				}
 			}
 		}
@@ -482,7 +485,7 @@ public class NoticeServer implements Runnable {
 				InetSocketAddress address = new InetSocketAddress(NoticeServer.listenPort);
 				eventChannel.send(sBuf, address);
 			} catch (IOException e) {
-				System.out.println("NoticeServer.publishEvent(): channel.send catch IOException");
+				System.out.println("NoticeServer.publishEvent(): channel.send catch IOException: " + e.getMessage());
 			}
 		}
 	}
@@ -554,7 +557,7 @@ class HeartBeatTask extends TimerTask {
 			channel = DatagramChannel.open();
 		} catch (IOException e) {
 			channel = null;
-			System.out.println("HeartBeatTask.HeartBeatTask(): DatagramChannel.open catch IOException");
+			System.out.println("HeartBeatTask.HeartBeatTask(): DatagramChannel.open catch IOException: " + e.getMessage());
 			return;
 		}
 		
@@ -564,7 +567,7 @@ class HeartBeatTask extends TimerTask {
 			channel.connect(address);
 		} catch (IOException e) {
 			channel = null;
-			System.out.println("HeartBeatTask.HeartBeatTask(): channel.connect catch IOException");
+			System.out.println("HeartBeatTask.HeartBeatTask(): channel.connect catch IOException: " + e.getMessage());
 			return;
 		}
 	}
@@ -581,7 +584,7 @@ class HeartBeatTask extends TimerTask {
 			try {
 				channel.send(sBuf, address);
 			} catch (IOException e) {
-				System.out.println("HeartBeatTask.run(): channel.send catch IOException");
+				System.out.println("HeartBeatTask.run(): channel.send catch IOException: " + e.getMessage());
 			}
 		}
 	}

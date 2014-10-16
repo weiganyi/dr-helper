@@ -17,7 +17,7 @@ public class LoadOrderService extends Service {
 		try{
 			reqOrder = JSON.parseObject(reqBody, OrderInfo.class);
 		}catch (Exception e) {
-			System.out.println("LoadOrderService.doAction(): json parse body failure");
+			System.out.println("LoadOrderService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 

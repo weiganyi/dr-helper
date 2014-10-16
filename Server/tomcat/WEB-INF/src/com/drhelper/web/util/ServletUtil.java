@@ -13,9 +13,9 @@ public class ServletUtil {
 			try {
 				request.setAttribute(fields[i].getName(), fields[i].get(obj));
 			} catch (IllegalArgumentException e) {
-				System.out.println("AjaxOrderMenuServlet.doGet(): catch a IllegalArgumentException");
+				System.out.println("AjaxOrderMenuServlet.doGet(): catch a IllegalArgumentException: " + e.getMessage());
 			} catch (IllegalAccessException e) {
-				System.out.println("AjaxOrderMenuServlet.doGet(): catch a IllegalAccessException");
+				System.out.println("AjaxOrderMenuServlet.doGet(): catch a IllegalAccessException: " + e.getMessage());
 			}
 		}
 		

@@ -17,7 +17,7 @@ public class CheckOrderService extends Service {
 		try{
 			reqOrder = JSON.parseObject(reqBody, OneTableOneOrder.class);
 		}catch (Exception e) {
-			System.out.println("CheckOrderService.doAction(): json parse body failure");
+			System.out.println("CheckOrderService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 
@@ -48,6 +48,7 @@ public class CheckOrderService extends Service {
 
 			respOrder.setResult(true);
 		}catch (LogicException e) {
+			System.out.println("CheckOrderService.doAction(): catch LogicException: " + e.getMessage());
 			respOrder.setResult(false);
 		}finally {
 			//create the resp object

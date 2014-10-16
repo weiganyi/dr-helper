@@ -17,7 +17,7 @@ public class LoginService extends Service {
 		try{
 			reqLogin = JSON.parseObject(reqBody, Login.class);
 		}catch (Exception e) {
-			System.out.println("LoginService.doAction(): json parse body failure");
+			System.out.println("LoginService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 

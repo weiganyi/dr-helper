@@ -17,7 +17,7 @@ public class DeleteOrderService extends Service {
 		try{
 			reqOrder = JSON.parseObject(reqBody, OrderInfo.class);
 		}catch (Exception e) {
-			System.out.println("DeleteOrderService.doAction(): json parse body failure");
+			System.out.println("DeleteOrderService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 

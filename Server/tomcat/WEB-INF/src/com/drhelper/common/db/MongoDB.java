@@ -42,7 +42,7 @@ public class MongoDB implements DataBase {
 			mongodb_username = prop.getProperty("mongodb_username");
 			mongodb_password = prop.getProperty("mongodb_password");
 		} catch (IOException e) {
-			System.out.println("MongoDB.openConnect(): properties catch IOException");
+			System.out.println("MongoDB.openConnect(): properties catch IOException: " + e.getMessage());
 			return false;
 		}
 		
@@ -50,10 +50,10 @@ public class MongoDB implements DataBase {
 		try {
 			m = new Mongo(mongodb_host, Integer.valueOf(mongodb_port));
 		} catch (UnknownHostException e) {
-			System.out.println("MongoDB.openConnect(): create the mongo catch UnknownHostException");
+			System.out.println("MongoDB.openConnect(): create the mongo catch UnknownHostException: " + e.getMessage());
 			return false;
 		} catch (MongoException e) {
-			System.out.println("MongoDB.openConnect(): create the mongo catch MongoException");
+			System.out.println("MongoDB.openConnect(): create the mongo catch MongoException: " + e.getMessage());
 			return false;
 		}
 		

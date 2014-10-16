@@ -16,7 +16,7 @@ public class ChangeTableService extends Service {
 		try{
 			reqTable = JSON.parseObject(reqBody, TwoTableOneOrder.class);
 		}catch (Exception e) {
-			System.out.println("ChangeTableService.doAction(): json parse body failure");
+			System.out.println("ChangeTableService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 

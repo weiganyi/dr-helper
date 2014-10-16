@@ -36,7 +36,7 @@ public class MysqlDB implements DataBase {
 			mysql_username = prop.getProperty("mysql_username");
 			mysql_password = prop.getProperty("mysql_password");
 		} catch (IOException e) {
-			System.out.println("MysqlDB.openConnect(): properties catch IOException");
+			System.out.println("MysqlDB.openConnect(): properties catch IOException: " + e.getMessage());
 			return false;
 		}
 
@@ -44,7 +44,7 @@ public class MysqlDB implements DataBase {
 		try {
 			Class.forName(mysql_driver);
 		} catch (ClassNotFoundException e) {
-			System.out.println("MysqlDB.openConnect(): load the driver catch ClassNotFoundException");
+			System.out.println("MysqlDB.openConnect(): load the driver catch ClassNotFoundException: " + e.getMessage());
 			return false;
 		}
 		
@@ -52,7 +52,7 @@ public class MysqlDB implements DataBase {
 		try {
 			conn = DriverManager.getConnection(mysql_url, mysql_username, mysql_password);
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.openConnect(): connect to the mysql catch SQLException");
+			System.out.println("MysqlDB.openConnect(): connect to the mysql catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -64,7 +64,7 @@ public class MysqlDB implements DataBase {
 		try {
 			conn.close();
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.closeConnect(): close the connect catch SQLException");
+			System.out.println("MysqlDB.closeConnect(): close the connect catch SQLException: " + e.getMessage());
 			return false;
 		}
 		return true;
@@ -103,7 +103,7 @@ public class MysqlDB implements DataBase {
 				user.setUser_auth(user_auth);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getUser(): sql query catch SQLException");
+			System.out.println("MysqlDB.getUser(): sql query catch SQLException: " + e.getMessage());
 			return user;
 		}
 		
@@ -144,7 +144,7 @@ public class MysqlDB implements DataBase {
 				tableList.add(table);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getEmptyTableList(): sql query catch SQLException");
+			System.out.println("MysqlDB.getEmptyTableList(): sql query catch SQLException: " + e.getMessage());
 			return tableList;
 		}
 		
@@ -197,13 +197,13 @@ public class MysqlDB implements DataBase {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.updateTable(): sql update catch SQLException");
+			System.out.println("MysqlDB.updateTable(): sql update catch SQLException: " + e.getMessage());
 			
 			try {
 				//if fail, do rollback
 				conn.rollback();
 			} catch (SQLException e2) {
-				System.out.println("MysqlDB.updateTable(): sql rollback catch SQLException");
+				System.out.println("MysqlDB.updateTable(): sql rollback catch SQLException: " + e2.getMessage());
 			}
 
 			return false;
@@ -216,7 +216,7 @@ public class MysqlDB implements DataBase {
 		try {
 			conn.rollback();
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.rollBack(): sql rollback catch SQLException");
+			System.out.println("MysqlDB.rollBack(): sql rollback catch SQLException: " + e.getMessage());
 			return false;
 		}
 		return true;
@@ -227,7 +227,7 @@ public class MysqlDB implements DataBase {
 		try {
 			conn.commit();
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.commit(): sql commit catch SQLException");
+			System.out.println("MysqlDB.commit(): sql commit catch SQLException: " + e.getMessage());
 		}
 		return true;
 	}
@@ -262,7 +262,7 @@ public class MysqlDB implements DataBase {
 				menuTypeList.add(menuType);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getMenuTypeList(): sql query catch SQLException");
+			System.out.println("MysqlDB.getMenuTypeList(): sql query catch SQLException: " + e.getMessage());
 			return menuTypeList;
 		}
 		
@@ -303,7 +303,7 @@ public class MysqlDB implements DataBase {
 				menuList.add(menu);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getMenuList(): sql query catch SQLException");
+			System.out.println("MysqlDB.getMenuList(): sql query catch SQLException: " + e.getMessage());
 			return menuList;
 		}
 		
@@ -373,13 +373,13 @@ public class MysqlDB implements DataBase {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.changeTable(): sql update catch SQLException");
+			System.out.println("MysqlDB.changeTable(): sql update catch SQLException: " + e.getMessage());
 			
 			try {
 				//if fail, do rollback
 				conn.rollback();
 			} catch (SQLException e2) {
-				System.out.println("MysqlDB.changeTable(): sql rollback catch SQLException");
+				System.out.println("MysqlDB.changeTable(): sql rollback catch SQLException: " + e2.getMessage());
 			}
 
 			return false;
@@ -403,7 +403,7 @@ public class MysqlDB implements DataBase {
 			//execute the procedure call
 			cstmt.execute();
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.unionTable(): call procedure call catch SQLException");
+			System.out.println("MysqlDB.unionTable(): call procedure call catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -441,7 +441,7 @@ public class MysqlDB implements DataBase {
 				return table;
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getEmptyTable(): sql query catch SQLException");
+			System.out.println("MysqlDB.getEmptyTable(): sql query catch SQLException: " + e.getMessage());
 		}
 
 		return table;
@@ -473,7 +473,7 @@ public class MysqlDB implements DataBase {
 				return value;
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException");
+			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException: " + e.getMessage());
 		}
 
 		return value;
@@ -505,7 +505,7 @@ public class MysqlDB implements DataBase {
 				return Integer.valueOf(value);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException");
+			System.out.println("MysqlDB.getOptionString(): sql query catch SQLException: " + e.getMessage());
 		}
 
 		return 0;
@@ -571,7 +571,7 @@ public class MysqlDB implements DataBase {
 				pstmt.executeUpdate();
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.commitAdminUserItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.commitAdminUserItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -596,7 +596,7 @@ public class MysqlDB implements DataBase {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.deleteAdminUserItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.deleteAdminUserItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -634,7 +634,7 @@ public class MysqlDB implements DataBase {
 				userList.add(user);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getUserList(): sql query catch SQLException");
+			System.out.println("MysqlDB.getUserList(): sql query catch SQLException: " + e.getMessage());
 			return userList;
 		}
 		
@@ -701,7 +701,7 @@ public class MysqlDB implements DataBase {
 				pstmt.executeUpdate();
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.commitAdminTableItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.commitAdminTableItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -726,7 +726,7 @@ public class MysqlDB implements DataBase {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.deleteAdminTableItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.deleteAdminTableItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -764,7 +764,7 @@ public class MysqlDB implements DataBase {
 				tableList.add(table);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getTableList(): sql query catch SQLException");
+			System.out.println("MysqlDB.getTableList(): sql query catch SQLException: " + e.getMessage());
 			return tableList;
 		}
 		
@@ -808,7 +808,7 @@ public class MysqlDB implements DataBase {
 				pstmt.executeUpdate();
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.commitAdminMenuTypeItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.commitAdminMenuTypeItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -843,7 +843,7 @@ public class MysqlDB implements DataBase {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.deleteAdminMenuTypeItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.deleteAdminMenuTypeItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -910,7 +910,7 @@ public class MysqlDB implements DataBase {
 				pstmt.executeUpdate();
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.commitAdminMenuItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.commitAdminMenuItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -935,7 +935,7 @@ public class MysqlDB implements DataBase {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.deleteAdminMenuItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.deleteAdminMenuItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -968,7 +968,7 @@ public class MysqlDB implements DataBase {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.commitAdminOptionItem(): sql update catch SQLException");
+			System.out.println("MysqlDB.commitAdminOptionItem(): sql update catch SQLException: " + e.getMessage());
 			return false;
 		}
 		
@@ -1007,7 +1007,7 @@ public class MysqlDB implements DataBase {
 				optionList.add(option);
 			}
 		} catch (SQLException e) {
-			System.out.println("MysqlDB.getOptionList(): sql query catch SQLException");
+			System.out.println("MysqlDB.getOptionList(): sql query catch SQLException: " + e.getMessage());
 			return optionList;
 		}
 		

@@ -16,7 +16,7 @@ public class CreateTableService extends Service {
 		try{
 			reqTable = JSON.parseObject(reqBody, OneTableOneOrder.class);
 		}catch (Exception e) {
-			System.out.println("CreateTableService.doAction(): json parse body failure");
+			System.out.println("CreateTableService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 

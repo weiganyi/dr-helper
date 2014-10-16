@@ -18,7 +18,7 @@ public class GetNoticeService extends Service {
 		try{
 			reqNoticeDetail = JSON.parseObject(reqBody, NoticeDetail.class);
 		}catch (Exception e) {
-			System.out.println("GetNoticeService.doAction(): json parse body failure");
+			System.out.println("GetNoticeService.doAction(): json parse body failure: " + e.getMessage());
 			return respBody;
 		}
 
