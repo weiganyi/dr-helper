@@ -66,7 +66,6 @@ public class DBManager {
 		return tableList;
 	}
 
-	@SuppressWarnings("finally")
 	public int createTable(String user, int tableNum) {
 		int orderNum = 0;
 		boolean result = true;
@@ -112,8 +111,8 @@ public class DBManager {
 		} finally {		
 			//release the connect to sql
 			clear();
-			return orderNum;
 		}
+		return orderNum;
 	}
 	
 	public Order getOrderObjByOrder(int orderNum) {
@@ -235,7 +234,6 @@ public class DBManager {
 		return result;
 	}
 	
-	@SuppressWarnings("finally")
 	public boolean deleteOrder(Order order) {
 		boolean result = false;
 
@@ -280,11 +278,10 @@ public class DBManager {
 		} finally {		
 			//release the connect to sql
 			clear();
-			return result;
 		}
+		return result;
 	}
 	
-	@SuppressWarnings("finally")
 	public int changeTable(int tableNum1, int tableNum2) {
 		boolean result = false;
 		int orderNum = 0;
@@ -330,11 +327,10 @@ public class DBManager {
 		} finally {		
 			//release the connect to sql
 			clear();
-			return orderNum;
 		}
+		return orderNum;
 	}
 	
-	@SuppressWarnings("finally")
 	public int unionTable(int tableNum1, int tableNum2) {
 		boolean result = false;
 		int orderNum = 0;
@@ -371,8 +367,8 @@ public class DBManager {
 		} finally {
 			// release the connect to sql
 			clear();
-			return orderNum;
 		}
+		return orderNum;
 	}
 	
 	public Table getEmptyTable() {

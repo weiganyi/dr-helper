@@ -12,8 +12,11 @@ import com.drhelper.web.bean.AdminMenuObject;
 import com.drhelper.web.service.AjaxAdminMenuService;
 import com.drhelper.web.util.ServletUtil;
 
-@SuppressWarnings("serial")
 public class AjaxAdminMenuServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HttpSession session;
 
 	@Override

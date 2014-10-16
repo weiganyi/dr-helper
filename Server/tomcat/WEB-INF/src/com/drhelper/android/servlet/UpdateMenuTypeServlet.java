@@ -10,8 +10,11 @@ import javax.servlet.http.HttpSession;
 
 import com.drhelper.android.service.UpdateMenuTypeService;
 
-@SuppressWarnings("serial")
 public class UpdateMenuTypeServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PrintWriter out;
 	private HttpSession session;
 

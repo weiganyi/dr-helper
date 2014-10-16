@@ -12,8 +12,11 @@ import com.drhelper.web.bean.LoginObject;
 import com.drhelper.web.service.AjaxLoginService;
 import com.drhelper.web.util.ServletUtil;
 
-@SuppressWarnings("serial")
 public class AjaxLoginServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HttpSession session;
 
 	@Override

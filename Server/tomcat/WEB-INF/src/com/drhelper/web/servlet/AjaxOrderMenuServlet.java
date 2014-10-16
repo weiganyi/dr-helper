@@ -12,8 +12,11 @@ import com.drhelper.web.bean.OrderMenuObject;
 import com.drhelper.web.service.AjaxOrderMenuService;
 import com.drhelper.web.util.ServletUtil;
 
-@SuppressWarnings("serial")
 public class AjaxOrderMenuServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HttpSession session;
 
 	@Override

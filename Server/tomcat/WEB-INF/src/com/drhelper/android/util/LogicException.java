@@ -1,7 +1,10 @@
 package com.drhelper.android.util;
 
-@SuppressWarnings("serial")
 public class LogicException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String log;
 	
 	public LogicException() {

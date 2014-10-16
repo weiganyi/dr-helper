@@ -12,8 +12,11 @@ import com.drhelper.web.bean.AdminTableObject;
 import com.drhelper.web.service.AjaxAdminTableService;
 import com.drhelper.web.util.ServletUtil;
 
-@SuppressWarnings("serial")
 public class AjaxAdminTableServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HttpSession session;
 
 	@Override

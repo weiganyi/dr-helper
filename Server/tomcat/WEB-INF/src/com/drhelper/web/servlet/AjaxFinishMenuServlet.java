@@ -12,8 +12,11 @@ import com.drhelper.web.bean.FinishMenuObject;
 import com.drhelper.web.service.AjaxFinishMenuService;
 import com.drhelper.web.util.ServletUtil;
 
-@SuppressWarnings("serial")
 public class AjaxFinishMenuServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HttpSession session;
 
 	@Override

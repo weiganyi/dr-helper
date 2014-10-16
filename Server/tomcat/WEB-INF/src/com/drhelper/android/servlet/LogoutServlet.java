@@ -8,8 +8,11 @@ import javax.servlet.http.HttpSession;
 
 import com.drhelper.android.service.LogoutService;
 
-@SuppressWarnings("serial")
 public class LogoutServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HttpSession session;
 
 	@Override

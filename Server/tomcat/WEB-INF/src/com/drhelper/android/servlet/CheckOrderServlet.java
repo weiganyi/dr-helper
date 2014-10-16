@@ -12,8 +12,11 @@ import javax.servlet.http.HttpSession;
 
 import com.drhelper.android.service.CheckOrderService;
 
-@SuppressWarnings("serial")
 public class CheckOrderServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PrintWriter out;
 	private HttpSession session;
 

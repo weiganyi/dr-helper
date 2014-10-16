@@ -12,8 +12,11 @@ import javax.servlet.http.HttpSession;
 
 import com.drhelper.android.service.GetNoticeService;
 
-@SuppressWarnings("serial")
 public class GetNoticeServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PrintWriter out;
 	private HttpSession session;
 
